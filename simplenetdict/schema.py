@@ -23,7 +23,7 @@ Data format:
 
 
 class _Meta:
-    """A base class holding the underlying dict for data builders.
+    """A base class holding the underlying dict for metadata builders.
     
     Call method `get()` to retrieve the built dictionary.
     """
@@ -37,10 +37,10 @@ class _Meta:
 
 
 class PageMeta(_Meta):
-    """Single page builder -> {is_found, word, sections}."""
+    """Single page metadata builder -> {is_found, word, sections}."""
 
     def __init__(self, word: str, is_found: bool):
-        """Start a new page result for `word`, marking whether it was found via `is_found`."""
+        """Start a new page metadata for `word`, marking whether it was found via `is_found`."""
         super().__init__()
 
         self.meta["is_found"] = is_found
@@ -48,15 +48,15 @@ class PageMeta(_Meta):
         self.meta["sections"] = []
 
     def add_section(self, section: "SectionMeta"):
-        """Append a section (built by `SectionMeta`) to the page."""
+        """Append a section metadata (built by `SectionMeta`) to the page metadata."""
         self.meta["sections"].append(section.get())
 
 
 class SectionMeta(_Meta):
-    """Section builder -> {title, items}."""
+    """Section metadata builder -> {title, items}."""
 
     def __init__(self, title: str):
-        """Start a new section with the given `title`."""
+        """Start a new section metadata with the given `title`."""
         super().__init__()
 
         self.meta["title"] = title
@@ -80,10 +80,10 @@ class SectionMeta(_Meta):
 
 
 class ErrorPageMeta(PageMeta):
-    """Error page builder, providing error information"""
+    """Error page metadata builder, providing error information"""
 
     def __init__(self, error: Exception, word: str):
-        """Start an error page."""
+        """Start an error page metadata."""
         super().__init__(word, is_found=False)
 
         section = SectionMeta(title="错误")
