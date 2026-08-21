@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易网络词典</title>
+    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <aside>
+        <div id="sources">
+            <h1></h1>
+            <h2>字典源</h2>
+            <ul></ul>
+        </div>
+    </aside>
+    <main>
+        <nav>
+            <form id="search" onsubmit="lookup(); return false;">
+                <input type="text" id="query-box" name="q" placeholder="输入单词">
+                <button type="submit" id="query-btn">查词</button>
+            </form>
+        </nav>
+        <section id="result"></section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    display: grid;
+    grid-template-areas: "sidebar main";
+    grid-template-columns: 200px 1fr;
+}
+
+aside {
+    grid-area: sidebar;
+    background-color: #6cf;
+    border-right: 1px solid #e00;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    background-color: #ff0;
+}
+
+main>nav {
+    background-color: #99f;
+    border-bottom: 1px solid #e00;
+}
+
+#search {
+    display: flex;
+    flex-direction: row;
+    height: 30px;
+}
+
+#search>input {
+    flex: 1;
+}
+
+#search>button {
+    flex: 0 0 100px;
+}
+
+#result {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 5px;
+    overflow-y: auto;
+    min-height: 0;
+}
