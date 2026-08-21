@@ -24,7 +24,25 @@ class DictApi:
         self.source: DictionarySource
         self.set_source(self.source_reg_name)
 
-    def list_sources(self) -> list[str]:
+    def get_source_name(self, reg_name: str) -> str | None:
+        """Return the name of the source for `reg_name`."""
+        source = self.sources_registry.get(reg_name)
+        if source is None:
+            return None
+        return source.name
+
+    def get_source_description(self, reg_name: str) -> str:
+        """Return the description of the source for `reg_name`."""
+        source = self.sources_registry.get(reg_name)
+        if source is None:
+            return ""
+        return source.description
+
+    def current_source_reg_name(self) -> str:
+        """Return the `reg_name` of the current source."""
+        return self.source_reg_name
+
+    def list_sources_reg_name(self) -> list[str]:
         """Return the `reg_name`s of all registered sources."""
         return self.sources_registry.list()
 

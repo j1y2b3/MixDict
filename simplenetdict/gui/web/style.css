@@ -19,6 +19,7 @@ aside {
     grid-area: sidebar;
     background-color: #6cf;
     border-right: 1px solid #e00;
+    padding: 5px;
     overflow-y: auto;
     min-height: 0;
 }

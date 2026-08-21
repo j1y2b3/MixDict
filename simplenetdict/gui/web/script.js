@@ -1,5 +1,39 @@
 window.addEventListener("pywebviewready", initApp);
-function initApp() { }
+function initApp() {
+    displayCurrentSource();
+    displayDictSourcesList();
+}
+
+async function displayCurrentSource() {
+    const currentSourceElement = document.getElementById("cur-source");
+    const currentSourceRegName = await pywebview.api.current_source_reg_name();
+    const currentSourceName = await pywebview.api.get_source_name(currentSourceRegName);
+    currentSourceElement.appendChild(document.createTextNode(currentSourceName));
+}
+
+async function displayDictSourcesList() {
+    const sourcesList = await pywebview.api.list_sources_reg_name();
+    const sourcesListElement = document.getElementById("sources-list");
+    
+    let sourceElement, sourceName;
+    for (const sourceRegName of sourcesList) {
+        sourceElement = document.createElement("li");
+
+        sourceName = await pywebview.api.get_source_name(sourceRegName);
+        const sourceNameElement = document.createElement("span");
+        sourceNameElement.className = "source-name";
+        sourceNameElement.appendChild(document.createTextNode(sourceName));
+        sourceElement.appendChild(sourceNameElement);
+
+        sourceDescription = await pywebview.api.get_source_description(sourceRegName);
+        const sourceDescriptionElement = document.createElement("span");
+        sourceDescriptionElement.className = "source-desc";
+        sourceDescriptionElement.appendChild(document.createTextNode(sourceDescription));
+        sourceElement.appendChild(sourceDescriptionElement);
+
+        sourcesListElement.appendChild(sourceElement);
+    }
+}
 
 function lookup() {
     const word = document.getElementById("query-box").value.trim();
@@ -75,9 +109,9 @@ function assembleItem(itemMeta) {
 function assembleText(text, isError = false) {
     const itemElement = document.createElement("li");
     if (isError) {
-        itemElement.setAttribute("class", "error");
+        itemElement.className = "error";
     } else {
-        itemElement.setAttribute("class", "text");
+        itemElement.className = "text";
     }
     itemElement.appendChild(document.createTextNode(text));
     return itemElement;
@@ -85,7 +119,7 @@ function assembleText(text, isError = false) {
 
 function assemblePhonetic(name, phonetic, audioUrl) {
     const itemElement = document.createElement("li");
-    itemElement.setAttribute("class", "phonetic");
+    itemElement.className = "phonetic";
     itemElement.appendChild(document.createTextNode(`${name} /${phonetic}/`));
 
     if (audioUrl) {
