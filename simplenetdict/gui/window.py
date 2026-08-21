@@ -4,6 +4,8 @@ from sys import flags
 
 import webview
 
+from simplenetdict.core.sources.base import DictionarySource
+
 from simplenetdict.core.registry import SourcesRegistry
 from simplenetdict import resources, config
 
@@ -18,7 +20,10 @@ class DictApi:
         """Store the registry and pick the current default source."""
 
         self.sources_registry = sources_registry
-        self.source, self.source_name = sources_registry.get_default()
+        self.source_reg_name = self.sources_registry.default_source_reg_name
+        self.source: DictionarySource
+        self.source_name: str
+        self.change_source(self.source_reg_name)
 
     def list_sources(self) -> list[str]:
         """Return the `reg_name`s of all registered sources."""
@@ -28,7 +33,7 @@ class DictApi:
         """Switch the current source to `reg_name`."""
 
         source, name = self.sources_registry.get(reg_name)
-        if source is None:
+        if source is None or name is None:
             raise ValueError(f"Unknown source: {reg_name!r}")
         self.source = source
         self.source_name = name

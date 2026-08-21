@@ -49,10 +49,6 @@ class SourcesRegistry:
         """Return the `reg_name`s of all registered sources."""
         return list(self.sources.keys())
 
-    def get_default(self) -> tuple[DictionarySource, str]:
-        """Return the current default `(source, display_name)` pair."""
-        return self.sources[self.default_source_reg_name]
-
     def change_default(self, reg_name: str):
         """Set the default source to `reg_name`; raise ValueError if unregistered."""
         if reg_name not in self.sources:
