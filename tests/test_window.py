@@ -1,9 +1,9 @@
 """DictApi (window bridge) tests, using a fake source (offline)."""
 import pytest
 
-from src.core.registry import SourcesRegistry
-from src.core.sources.base import DictionarySource
-from src.gui.window import DictApi
+from simplenetdict.core.registry import SourcesRegistry
+from simplenetdict.core.sources.base import DictionarySource
+from simplenetdict.gui.window import DictApi
 
 
 class FakeSource(DictionarySource):

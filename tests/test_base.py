@@ -1,7 +1,7 @@
 """DictionarySource base tests."""
 import pytest
 
-from src.core.sources.base import DictionarySource
+from simplenetdict.core.sources.base import DictionarySource
 
 
 class GoodSource(DictionarySource):

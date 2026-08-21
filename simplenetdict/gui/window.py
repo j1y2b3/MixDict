@@ -4,8 +4,8 @@ from sys import flags
 
 import webview
 
-from src.core.registry import SourcesRegistry
-from src import resources, config
+from simplenetdict.core.registry import SourcesRegistry
+from simplenetdict import resources, config
 
 
 class DictApi:
@@ -34,7 +34,7 @@ class DictApi:
         self.source_name = name
 
     def lookup(self, word: str) -> dict:
-        """Use current source looking up `word`, return data format according to src/schema.py."""
+        """Use current source looking up `word`, return data format according to simplenetdict/schema.py."""
         return self.source.lookup(word)
 
 

@@ -2,13 +2,13 @@
 import sys
 from pathlib import Path
 
-from src import resources
+from simplenetdict import resources
 
 
 class TestResources:
     def test_web_path(self):
         p = resources.web_path("index.html")
-        assert p == resources.ROOT_DIR / "src" / "gui" / "web" / "index.html"
+        assert p == resources.ROOT_DIR / "simplenetdict" / "gui" / "web" / "index.html"
         assert p.is_absolute()
 
     def test_assets_path(self):

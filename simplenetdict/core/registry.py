@@ -4,9 +4,9 @@ Sources are keyed by their ASCII `reg_name`; each entry stores the
 source instance together with its display `name` for the GUI.
 """
 
-from src import config
-from src.core.sources import youdao
-from src.core.sources.base import DictionarySource
+from simplenetdict import config
+from simplenetdict.core.sources import youdao
+from simplenetdict.core.sources.base import DictionarySource
 
 
 class SourcesRegistry:

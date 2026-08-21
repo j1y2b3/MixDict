@@ -5,12 +5,12 @@ Works in both source code (not packed) and PyInstaller-frozen (packed) modes.
 import sys
 from pathlib import Path
 
-# Not packed: project root (parent of src/). Packed: PyInstaller temp dir.
+# Not packed: project root (parent of simplenetdict/). Packed: PyInstaller temp dir.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 
 def web_path(name: str) -> Path:
-    """Return the absolute path of a file under src/gui/web/."""
-    return ROOT_DIR / "src" / "gui" / "web" / name
+    """Return the absolute path of a file under simplenetdict/gui/web/."""
+    return ROOT_DIR / "simplenetdict" / "gui" / "web" / name
 
 def assets_path(name: str) -> Path:
     """Return the absolute path of a file under assets/."""

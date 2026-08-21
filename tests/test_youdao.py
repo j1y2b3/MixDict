@@ -4,8 +4,8 @@ from unittest import mock
 
 import pytest
 
-from src.core.sources.base import APIError
-from src.core.sources.youdao import Youdao, fetch_json, parse_json, safe_get
+from simplenetdict.core.sources.base import APIError
+from simplenetdict.core.sources.youdao import Youdao, fetch_json, parse_json, safe_get
 
 
 # ---- 模拟有道 jsonapi 返回的 fixture ----

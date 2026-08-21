@@ -1,9 +1,9 @@
 """SourcesRegistry tests (offline, no network)."""
 import pytest
 
-from src import config
-from src.core.registry import SourcesRegistry
-from src.core.sources.base import DictionarySource
+from simplenetdict import config
+from simplenetdict.core.registry import SourcesRegistry
+from simplenetdict.core.sources.base import DictionarySource
 
 
 class FakeSource(DictionarySource):

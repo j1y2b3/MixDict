@@ -5,7 +5,7 @@ All sources produce the same GUI-ready schema page through `lookup()`.
 
 from abc import ABC, abstractmethod
 
-from src import schema
+from simplenetdict import schema
 
 
 class APIError(Exception):

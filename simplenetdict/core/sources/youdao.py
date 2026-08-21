@@ -10,8 +10,8 @@ from urllib.parse import quote
 from typing import Any
 from collections.abc import Iterable
 
-from src import config, schema
-from src.core.sources.base import DictionarySource, APIError
+from simplenetdict import config, schema
+from simplenetdict.core.sources.base import DictionarySource, APIError
 
 
 class Youdao(DictionarySource):

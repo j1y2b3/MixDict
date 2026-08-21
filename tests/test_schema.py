@@ -1,5 +1,5 @@
 """schema(部件工厂)的单元测试。"""
-from src import schema
+from simplenetdict import schema
 
 
 class TestSchema:
