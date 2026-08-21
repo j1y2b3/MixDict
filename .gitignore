@@ -1,0 +1,7 @@
+.venv/
+.pytest_cahce/
+__pycache__/
+
+user_sources/
+tmp/
+NOTE.md
