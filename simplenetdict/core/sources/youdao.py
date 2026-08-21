@@ -24,14 +24,14 @@ class Youdao(DictionarySource):
         return parse_json(fetch_json(word))
 
 
-def fetch_json(word: str, user_agent: str = "", timeout: float | None = None) -> dict:
+def fetch_json(word: str, user_agent: str | None = None, timeout: float | None = None) -> dict:
     """Call Youdao jsonapi interface to get raw JSON."""
 
     # URL
     url = f"https://dict.youdao.com/jsonapi?q={quote(word)}"
 
     # User-Agent
-    if not user_agent:
+    if user_agent is None:
         user_agent = config.DEFAULT_USER_AGENT
 
     # Headers
@@ -144,7 +144,7 @@ def safe_get(data: dict | list, path: Iterable[str | int], *, default=None) -> A
     return cur
 
 if __name__ == "__main__":
-    # Fetch raw json for reference.
+    # Fetch raw JSON for reference.
     import os
 
     os.makedirs("./tmp", exist_ok=True)
