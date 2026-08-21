@@ -1,9 +1,12 @@
-"""Dictionary source base/protocol.
+"""Dictionary source base/protocol and utilities.
 
 All sources produce the same GUI-ready schema page through `lookup()`.
 """
 
 from abc import ABC, abstractmethod
+
+from typing import Any
+from collections.abc import Iterable
 
 from simplenetdict import schema
 from sys import flags
@@ -43,3 +46,27 @@ class DictionarySource(ABC):
     @abstractmethod
     def _lookup(self, word: str) -> dict:
         """Fetch and parse `word` into a schema page."""
+
+
+def safe_get(data: dict | list, path: Iterable[str | int], *, default=None) -> Any:
+    """Get a value from nested data by traversing `path`, returning `default` if any segment missing.
+
+    Supports both dict keys and list indices.
+    """
+    cur = data
+    for item in path:
+        if isinstance(cur, dict) and isinstance(item, str):
+            if item not in cur:
+                return default
+            cur = cur[item]
+
+        elif isinstance(cur, list) and isinstance(item, int):
+            length = len(cur)
+            if not (-length <= item <= length - 1):
+                return default
+            cur = cur[item]
+
+        else:
+            return default
+
+    return cur

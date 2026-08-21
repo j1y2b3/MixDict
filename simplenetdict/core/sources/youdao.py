@@ -7,11 +7,8 @@ https://dict.youdao.com/jsonapi
 import urllib.request, json
 from urllib.parse import quote
 
-from typing import Any
-from collections.abc import Iterable
-
 from simplenetdict import config, schema
-from simplenetdict.core.sources.base import DictionarySource, APIError
+from simplenetdict.core.sources.base import DictionarySource, APIError, safe_get
 
 
 class Youdao(DictionarySource):
@@ -119,29 +116,6 @@ def parse_json(data: dict) -> dict:
     ...
 
     return page.get()
-
-def safe_get(data: dict | list, path: Iterable[str | int], *, default=None) -> Any:
-    """Get a value from nested data by traversing `path`, returning `default` if any segment missing.
-
-    Supports both dict keys and list indices.
-    """
-    cur = data
-    for item in path:
-        if isinstance(cur, dict) and isinstance(item, str):
-            if item not in cur:
-                return default
-            cur = cur[item]
-
-        elif isinstance(cur, list) and isinstance(item, int):
-            length = len(cur)
-            if not (-length <= item <= length - 1):
-                return default
-            cur = cur[item]
-
-        else:
-            return default
-
-    return cur
 
 if __name__ == "__main__":
     # Fetch raw JSON for reference.
