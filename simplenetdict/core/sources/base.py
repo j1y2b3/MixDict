@@ -6,6 +6,7 @@ All sources produce the same GUI-ready schema page through `lookup()`.
 from abc import ABC, abstractmethod
 
 from simplenetdict import schema
+from sys import flags
 
 
 class APIError(Exception):
@@ -30,6 +31,8 @@ class DictionarySource(ABC):
 
     def lookup(self, word: str) -> dict:
         """Return the schema page for `word`; never raises."""
+        if flags.dev_mode and word == "$test-error-display":
+            return schema.ErrorPageMeta(Exception("This is an error."), word).get()
         try:
             return self._lookup(word)
         except Exception as error:
