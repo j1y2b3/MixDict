@@ -75,7 +75,10 @@ class SectionMeta(_Meta):
         return self._add_item("text", text=text)
 
     def add_phonetic(self, name: str, phonetic: str, audio_url: str | None = None) -> "SectionMeta":
-        """Append a phonetic item (pronunciation), with optional `audio_url`."""
+        """Append a phonetic item (pronunciation), with optional `audio_url`.
+        
+        `phonetic` must be the style like "/fəˈnɛtɪk/".
+        """
         return self._add_item("phonetic", name=name, phonetic=phonetic, audio_url=audio_url)
 
 

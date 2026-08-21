@@ -14,7 +14,7 @@ async function displayCurrentSource() {
 async function displayDictSourcesList() {
     const sourcesList = await pywebview.api.list_sources_reg_name();
     const sourcesListElement = document.getElementById("sources-list");
-    
+
     let sourceElement, sourceName;
     for (const sourceRegName of sourcesList) {
         sourceElement = document.createElement("li");
@@ -120,7 +120,7 @@ function assembleText(text, isError = false) {
 function assemblePhonetic(name, phonetic, audioUrl) {
     const itemElement = document.createElement("li");
     itemElement.className = "phonetic";
-    itemElement.appendChild(document.createTextNode(`${name} /${phonetic}/`));
+    itemElement.appendChild(document.createTextNode(`${name} ${phonetic}`));
 
     if (audioUrl) {
         const playButton = document.createElement("button");
