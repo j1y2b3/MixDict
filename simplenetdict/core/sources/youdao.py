@@ -72,10 +72,12 @@ def parse_json(data: dict) -> dict:
         TYPO_WORD_REL_PATH = ("word", )
         TYPO_TRANSLATION_REL_PATH = ("trans", )
         section = schema.SectionMeta("未找到")
-        section.add_text("您要找的是不是：")
-        for typo in safe_get(data, TYPOS_PATH, default=[]):  # This `safe_get()` must return a list.
-            section.add_text(safe_get(typo, TYPO_WORD_REL_PATH))
-            section.add_text(safe_get(typo, TYPO_TRANSLATION_REL_PATH))
+        typos = safe_get(data, TYPOS_PATH, default=[])  # This `safe_get()` must return a list.
+        if typos:
+            section.add_text("您要找的是不是：")
+            for typo in typos:
+                section.add_text(safe_get(typo, TYPO_WORD_REL_PATH))
+                section.add_text(safe_get(typo, TYPO_TRANSLATION_REL_PATH))
         section.add_text(f"提示：抱歉没有找到“{word}”相关的词")
         page.add_section(section)
 
