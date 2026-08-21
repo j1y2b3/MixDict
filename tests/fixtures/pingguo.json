@@ -1,0 +1,429 @@
+{
+  "ce": {
+    "source": {
+      "name": "有道词典",
+      "url": "https://dict.youdao.com"
+    },
+    "word": [
+      {
+        "trs": [
+          {
+            "tr": [
+              {
+                "l": {
+                  "i": [
+                    "",
+                    {
+                      "#text": "apple",
+                      "@action": "link",
+                      "@href": "app:ds:apple"
+                    }
+                  ],
+                  "#tran": "苹果；"
+                }
+              }
+            ]
+          }
+        ],
+        "return-phrase": {
+          "l": {
+            "i": "苹果"
+          }
+        }
+      }
+    ]
+  },
+  "ce_new": {
+    "source": {
+      "name": "新汉英大辞典"
+    },
+    "word": [
+      {
+        "trs": [
+          {
+            "tr": [
+              {
+                "l": {
+                  "i": [
+                    "apple"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "phone": "píng guǒ",
+        "return-phrase": {
+          "l": {
+            "i": [
+              "苹果"
+            ]
+          }
+        },
+        "phrs": [
+          {
+            "i": [
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果白粉病 apple mildew;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果巢蛾 apple ermine moth; yponomeuta malinellus;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果疮痂病 apple scab;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果蠹蛾 carpocapsa pomonella;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果蛾 apple moth;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果分级机 apple grader;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果干 biffin （英国诺福克地方所产的）;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果干煮汤团 schnitz and knepp;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果管 apple tube;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果红色 apple red;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果红蜘蛛 European red mite; panonychus ulmi;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果花色 appleblossom; appleblossompink;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果黄杨 apple box [澳];"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果吉丁虫 apple tree borer;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果坚果 applenut;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果捡拾器 apple gatherer;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果酱 apple jam;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果精 apple essence;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果蚧虫 apple scale;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果卷叶蛾 apple skin worm;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果菌素 expansin;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果溃疡病 apple canker;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果烈酒 Calvados;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果玫瑰 apple rose;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果煤 {地质} apple coal;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果蜜 apple honey;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果绵蚜 eriosoma lanigerum; woolly apple aphid;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果泥 apple butter;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果蛸蛾 pistol casebearer;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果去皮机 apple peeler;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果软木病 cork;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果肉 apple grunt;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果杀菌素 malucidin;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果沙司 applesauce;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果烧（酒） applejack;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果食心虫 codling moth; laspeyresia pomonella;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果属 Malus;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果树 apple (tree);"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果跳甲 apple flea weevil;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果锈病 apple rust;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果酰 maloyl;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果头 apple head;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果蜗牛 apple snail;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果小吉丁 agrilus mali; flat-headed apple borer （害虫）;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果叶峰 apple sawfly;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果疫病 apple blight;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果油 apple oil;"
+                  }
+                }
+              },
+              {
+                "phr": {
+                  "l": {
+                    "i": "苹果汁 cider"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "input": "苹果",
+  "meta": {
+    "input": "苹果",
+    "guessLanguage": "zh",
+    "isHasSimpleDict": "1",
+    "le": "en",
+    "lang": "eng",
+    "dicts": [
+      "web_trans",
+      "special",
+      "blng_sents_part",
+      "ce",
+      "baike",
+      "meta",
+      "wuguanghua",
+      "ce_new",
+      "simple",
+      "media_sents_part",
+      "newhh"
+    ]
+  }
+}
