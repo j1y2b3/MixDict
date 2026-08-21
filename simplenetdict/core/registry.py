@@ -47,7 +47,7 @@ class SourcesRegistry:
 
     def list(self) -> list[str]:
         """Return the `reg_name`s of all registered sources."""
-        return [source_name[1] for source_name in self.sources.values()]
+        return list(self.sources.keys())
 
     def get_default(self) -> tuple[DictionarySource, str]:
         """Return the current default `(source, display_name)` pair."""
