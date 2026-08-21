@@ -16,20 +16,20 @@ class APIError(Exception):
 class DictionarySource(ABC):
     """A dictionary backend producing a schema page for a word.
 
-    Subclasses must call `super().__init__(reg_name=..., name=...[, descript=...])` and implement `_lookup()`.
+    Subclasses must call `super().__init__(reg_name=..., name=...[, description=...])` and implement `_lookup()`.
     The public `lookup()` catches any error and returns an error page instead, so it never raises.
     """
 
     reg_name: str
     name: str
-    descript: str = ""
+    description: str = ""
 
-    def __init__(self, reg_name: str, name: str, descript: str = ""):
+    def __init__(self, reg_name: str, name: str, description: str = ""):
         if not reg_name.isascii():
             raise ValueError(f"reg_name must be ASCII, got {reg_name!r}")
         self.reg_name = reg_name  # Must be ascii string.
         self.name = name  # Display name
-        self.descript = descript
+        self.description = description
 
     def lookup(self, word: str) -> dict:
         """Return the schema page for `word`; never raises."""
