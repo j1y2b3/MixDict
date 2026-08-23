@@ -83,6 +83,10 @@ class SectionMeta(_Meta):
         """
         return self._add_item("phonetic", phonetic=phonetic, name=name, audio_url=audio_url)
 
+    def add_link(self, text: str, url: str):
+        """Append a web link item."""
+        return self._add_item("link", text=text, url=url)
+
 
 class ErrorPageMeta(PageMeta):
     """Error page metadata builder, providing error information"""

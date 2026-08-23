@@ -106,6 +106,8 @@ function assembleItem(itemMeta) {
             return assembleText(itemMeta.text);
         case "phonetic":
             return assemblePhonetic(itemMeta.phonetic, itemMeta.name, itemMeta.audio_url);
+        case "link":
+            return assembleLink(itemMeta.text, itemMeta.url);
         default:
             return assembleText("Unknown type: " + JSON.stringify(itemMeta), true);
     }
@@ -131,5 +133,17 @@ function assemblePhonetic(phonetic, name, audioUrl) {
         itemElement.appendChild(playButton);
     }
 
+    return itemElement;
+}
+
+function assembleLink(text, url) {
+    const itemElement = document.createElement("li");
+
+    const LinkElement = document.createElement("a");
+    LinkElement.href = url;
+    LinkElement.target = "_blank";
+    LinkElement.appendChild(document.createTextNode(text));
+
+    itemElement.appendChild(LinkElement);
     return itemElement;
 }
