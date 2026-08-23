@@ -52,6 +52,8 @@ function lookup() {
 }
 
 function assemblePage(pageMeta, pageElement) {
+    if (pageMeta.is_error) pageElement.className = "error";  // Handle the error thrown by dictionary source.
+
     const titleElement = document.createElement("h1");
     titleElement.appendChild(document.createTextNode(pageMeta.word));
     pageElement.appendChild(titleElement);
@@ -61,7 +63,10 @@ function assemblePage(pageMeta, pageElement) {
     }
 }
 
+// Handle the error thrown by `pywebview.api.lookup()`.
 function assembleErrorPage(error, word, pageElement) {
+    pageElement.id = "error";
+
     const titleElement = document.createElement("h1");
     titleElement.appendChild(document.createTextNode(word));
     pageElement.appendChild(titleElement);
@@ -106,13 +111,9 @@ function assembleItem(itemMeta) {
     }
 }
 
-function assembleText(text, isError = false) {
+function assembleText(text) {
     const itemElement = document.createElement("li");
-    if (isError) {
-        itemElement.className = "error";
-    } else {
-        itemElement.className = "text";
-    }
+    itemElement.className = "text";
     itemElement.appendChild(document.createTextNode(text));
     return itemElement;
 }

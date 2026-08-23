@@ -4,6 +4,7 @@ Data format:
 ```
 {
     "is_found": bool,
+    "is_error": bool,
     "word": str,
     "sections": [
         {
@@ -39,11 +40,12 @@ class _Meta:
 class PageMeta(_Meta):
     """Single page metadata builder -> {is_found, word, sections}."""
 
-    def __init__(self, word: str, is_found: bool):
+    def __init__(self, word: str, is_found: bool, is_error: bool = False):
         """Start a new page metadata for `word`, marking whether it was found via `is_found`."""
         super().__init__()
 
         self.meta["is_found"] = is_found
+        self.meta["is_error"] = is_error
         self.meta["word"] = word
         self.meta["sections"] = []
 
@@ -87,7 +89,7 @@ class ErrorPageMeta(PageMeta):
 
     def __init__(self, error: Exception, word: str):
         """Start an error page metadata."""
-        super().__init__(word, is_found=False)
+        super().__init__(word, is_found=False, is_error=True)
 
         section = SectionMeta(title="错误")
         section.add_text(f"{type(error).__name__}: {error}")
