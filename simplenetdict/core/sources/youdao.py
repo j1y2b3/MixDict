@@ -98,7 +98,7 @@ def parse_json(data: dict) -> dict:
         raise APIError("Lost US phonetic.")
     if us_audio_url is not None:
         us_audio_url = AUDIO_URL_BASE + us_audio_url
-    section.add_phonetic("美式发音", f"/{us_phonetic}/", us_audio_url)
+    section.add_phonetic(f"/{us_phonetic}/", "美式发音", us_audio_url)
 
     uk_phonetic = safe_get(data, EC_UK_PHONETIC_PATH)
     uk_audio_url = safe_get(data, EC_UK_SPEECH_PATH)
@@ -106,7 +106,7 @@ def parse_json(data: dict) -> dict:
         raise APIError("Lost UK phonetic.")
     if uk_audio_url is not None:
         uk_audio_url = AUDIO_URL_BASE + uk_audio_url
-    section.add_phonetic("英式发音", f"/{uk_phonetic}/", uk_audio_url)
+    section.add_phonetic(f"/{uk_phonetic}/", "英式发音", uk_audio_url)
 
     for tr in safe_get(data, EC_TRS_PATH, default=[]):  # This `safe_get()` must return a list.
         section.add_text(safe_get(tr, EC_TRANSLATION_REL_PATH))

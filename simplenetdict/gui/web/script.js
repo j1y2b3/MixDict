@@ -100,7 +100,7 @@ function assembleItem(itemMeta) {
         case "text":
             return assembleText(itemMeta.text);
         case "phonetic":
-            return assemblePhonetic(itemMeta.name, itemMeta.phonetic, itemMeta.audio_url);
+            return assemblePhonetic(itemMeta.phonetic, itemMeta.name, itemMeta.audio_url);
         default:
             return assembleText("Unknown type: " + JSON.stringify(itemMeta), true);
     }
@@ -117,10 +117,11 @@ function assembleText(text, isError = false) {
     return itemElement;
 }
 
-function assemblePhonetic(name, phonetic, audioUrl) {
+function assemblePhonetic(phonetic, name, audioUrl) {
     const itemElement = document.createElement("li");
     itemElement.className = "phonetic";
-    itemElement.appendChild(document.createTextNode(`${name} ${phonetic}`));
+    const text = name ? `${name} /${phonetic}/` : `/${phonetic}/`;
+    itemElement.appendChild(document.createTextNode(text));
 
     if (audioUrl) {
         const playButton = document.createElement("button");
