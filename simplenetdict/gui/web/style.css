@@ -13,6 +13,7 @@ body {
     display: grid;
     grid-template-areas: "sidebar main";
     grid-template-columns: 200px 1fr;
+    grid-template-rows: 1fr;
 }
 
 aside {
@@ -29,6 +30,7 @@ main {
     display: flex;
     flex-direction: column;
     background-color: #ff0;
+    min-height: 0;
 }
 
 main>nav {
