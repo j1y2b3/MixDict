@@ -121,7 +121,7 @@ function assembleText(text) {
 function assemblePhonetic(phonetic, name, audioUrl) {
     const itemElement = document.createElement("li");
     itemElement.classList.add("phonetic");
-    const text = name ? `${name} /${phonetic}/` : `/${phonetic}/`;
+    const text = name ? `${name} ${phonetic}` : `${phonetic}`;
     itemElement.appendChild(document.createTextNode(text));
 
     if (audioUrl) {
