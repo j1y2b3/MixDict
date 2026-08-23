@@ -4,6 +4,7 @@ All sources produce the same GUI-ready schema page through `lookup()`.
 """
 
 from abc import ABC, abstractmethod
+from sys import flags
 
 from typing import Any
 from collections.abc import Iterable
@@ -41,6 +42,8 @@ class DictionarySource(ABC):
         try:
             return self._lookup(word)
         except Exception as error:
+            if flags.dev_mode:
+                raise error
             return schema.ErrorPageMeta(error, word).get()
 
     @abstractmethod
