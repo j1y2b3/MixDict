@@ -21,13 +21,13 @@ async function displayDictSourcesList() {
 
         sourceName = await pywebview.api.get_source_name(sourceRegName);
         const sourceNameElement = document.createElement("span");
-        sourceNameElement.className = "source-name";
+        sourceNameElement.classList.add("source-name");
         sourceNameElement.appendChild(document.createTextNode(sourceName));
         sourceElement.appendChild(sourceNameElement);
 
         sourceDescription = await pywebview.api.get_source_description(sourceRegName);
         const sourceDescriptionElement = document.createElement("span");
-        sourceDescriptionElement.className = "source-desc";
+        sourceDescriptionElement.classList.add("source-desc");
         sourceDescriptionElement.appendChild(document.createTextNode(sourceDescription));
         sourceElement.appendChild(sourceDescriptionElement);
 
@@ -52,7 +52,7 @@ function lookup() {
 }
 
 function assemblePage(pageMeta, pageElement) {
-    if (pageMeta.is_error) pageElement.className = "error";  // Handle the error thrown by dictionary source.
+    if (pageMeta.is_error) pageElement.classList.add("error");  // Handle the error thrown by dictionary source.
 
     const titleElement = document.createElement("h1");
     titleElement.appendChild(document.createTextNode(pageMeta.word));
@@ -113,14 +113,14 @@ function assembleItem(itemMeta) {
 
 function assembleText(text) {
     const itemElement = document.createElement("li");
-    itemElement.className = "text";
+    itemElement.classList.add("text");
     itemElement.appendChild(document.createTextNode(text));
     return itemElement;
 }
 
 function assemblePhonetic(phonetic, name, audioUrl) {
     const itemElement = document.createElement("li");
-    itemElement.className = "phonetic";
+    itemElement.classList.add("phonetic");
     const text = name ? `${name} /${phonetic}/` : `/${phonetic}/`;
     itemElement.appendChild(document.createTextNode(text));
 
