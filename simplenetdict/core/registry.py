@@ -4,7 +4,7 @@ Sources are keyed by their ASCII `reg_name`.
 """
 
 from simplenetdict import config
-from simplenetdict.core.sources import youdao
+from simplenetdict.core.sources import youdao, freedict
 from simplenetdict.core.sources.base import DictionarySource
 
 
@@ -30,6 +30,7 @@ class SourcesRegistry:
     def _register_builtins(self):
         """Register the built-in dictionary sources."""
         self.register(youdao.Youdao())
+        self.register(freedict.FreeDict())
 
         # Prevent the default source from being not registered
         if self.default_source_reg_name not in self.sources:
