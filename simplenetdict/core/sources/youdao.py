@@ -69,7 +69,7 @@ def parse_json(data: dict) -> dict:
         TYPO_WORD_REL_PATH = ("word", )
         TYPO_TRANSLATION_REL_PATH = ("trans", )
         section = schema.SectionMeta("未找到")
-        typos = safe_get(data, TYPOS_PATH, default=[])  # This `safe_get()` must return a list.
+        typos = safe_get(data, TYPOS_PATH, default=[])  # This `safe_get()` must return a iterable.
         if typos:
             section.add_text("您要找的是不是：")
             for typo in typos:
@@ -108,7 +108,7 @@ def parse_json(data: dict) -> dict:
         uk_audio_url = AUDIO_URL_BASE + uk_audio_url
     section.add_phonetic(f"/{uk_phonetic}/", "英式发音", uk_audio_url)
 
-    for tr in safe_get(data, EC_TRS_PATH, default=[]):  # This `safe_get()` must return a list.
+    for tr in safe_get(data, EC_TRS_PATH, default=[]):  # This `safe_get()` must return a iterable.
         section.add_text(safe_get(tr, EC_TRANSLATION_REL_PATH))
 
     page.add_section(section)
