@@ -8,6 +8,7 @@ async function displayCurrentSource() {
     const currentSourceElement = document.getElementById("cur-source");
     const currentSourceRegName = await pywebview.api.current_source_reg_name();
     const currentSourceName = await pywebview.api.get_source_name(currentSourceRegName);
+    currentSourceElement.replaceChildren();  // Clear the previously dispalyed source.
     currentSourceElement.appendChild(document.createTextNode(currentSourceName));
 }
 
@@ -15,24 +16,37 @@ async function displayDictSourcesList() {
     const sourcesList = await pywebview.api.list_sources_reg_name();
     const sourcesListElement = document.getElementById("sources-list");
 
-    let sourceElement, sourceName;
+    let sourceElement, sourceButton;
+    let sourceName, sourceNameElement;
+    let sourceDescription, sourceDescriptionElement;
     for (const sourceRegName of sourcesList) {
         sourceElement = document.createElement("li");
 
+        sourceButton = document.createElement("button");
+        sourceButton.type = "button";
+        sourceButton.onclick = () => setSource(sourceRegName);
+
         sourceName = await pywebview.api.get_source_name(sourceRegName);
-        const sourceNameElement = document.createElement("span");
+        sourceNameElement = document.createElement("strong");
         sourceNameElement.classList.add("source-name");
         sourceNameElement.appendChild(document.createTextNode(sourceName));
-        sourceElement.appendChild(sourceNameElement);
+        sourceButton.appendChild(sourceNameElement);
 
         sourceDescription = await pywebview.api.get_source_description(sourceRegName);
-        const sourceDescriptionElement = document.createElement("span");
+        sourceDescriptionElement = document.createElement("small");
         sourceDescriptionElement.classList.add("source-desc");
         sourceDescriptionElement.appendChild(document.createTextNode(sourceDescription));
-        sourceElement.appendChild(sourceDescriptionElement);
+        sourceButton.appendChild(sourceDescriptionElement);
 
+        sourceElement.appendChild(sourceButton);
         sourcesListElement.appendChild(sourceElement);
     }
+}
+
+async function setSource(regName) {
+    console.log(regName);
+    await pywebview.api.set_source(regName);
+    displayCurrentSource();
 }
 
 function lookup() {
@@ -65,7 +79,7 @@ function assemblePage(pageMeta, pageElement) {
 
 // Handle the error thrown by `pywebview.api.lookup()`.
 function assembleErrorPage(error, word, pageElement) {
-    pageElement.id = "error";
+    pageElement.classList.add("error");
 
     const titleElement = document.createElement("h1");
     titleElement.appendChild(document.createTextNode(word));
@@ -144,6 +158,7 @@ function assembleLink(itemElement, text, url) {
     const linkElement = document.createElement("a");
     linkElement.href = url;
     linkElement.target = "_blank";
+    linkElement.rel = "noopener noreferrer";
     linkElement.appendChild(document.createTextNode(text));
     itemElement.appendChild(linkElement);
 }

@@ -52,6 +52,7 @@ class DictApi:
         if source is None:
             raise ValueError(f"Unknown source: {reg_name!r}")
         self.source = source
+        self.source_reg_name = source.reg_name
 
     def lookup(self, word: str) -> dict:
         """Use current source looking up `word`, return data format according to simplenetdict/schema.py."""
