@@ -21,22 +21,22 @@ class TestDictApi:
         reg.change_default("Fake")
         return DictApi(reg)
 
-    def test_list_sources(self):
+    def test_list_sources_reg_name(self):
         api = self._make_api()
-        assert "假源" in api.list_sources()
-        assert "有道" in api.list_sources()
+        assert "Fake" in api.list_sources_reg_name()
+        assert "Youdao" in api.list_sources_reg_name()
 
     def test_lookup(self):
         api = self._make_api()
         assert api.lookup("w") == {"fake": "w"}
 
-    def test_change_source_valid(self):
+    def test_set_source_valid(self):
         api = self._make_api()
-        api.change_source("Youdao")
+        api.set_source("Youdao")
         assert api.source.reg_name == "Youdao"
-        assert api.source_name == "有道"
+        assert api.source.name == "有道"
 
-    def test_change_source_unknown_raises(self):
+    def test_set_source_unknown_raises(self):
         api = self._make_api()
         with pytest.raises(ValueError):
-            api.change_source("Nope")
+            api.set_source("Nope")

@@ -5,11 +5,12 @@ from simplenetdict import schema
 class TestSchema:
     def test_page_meta_basic(self):
         page = schema.PageMeta("apple", True)
-        assert page.get() == {"is_found": True, "word": "apple", "sections": []}
+        assert page.get() == {"is_found": True, "is_error": False, "word": "apple", "sections": []}
 
     def test_page_not_found(self):
         page = schema.PageMeta("qwiruqe", False)
         assert page.get()["is_found"] is False
+        assert page.get()["is_error"] is False
         assert page.get()["word"] == "qwiruqe"
 
     def test_section_text_items(self):
@@ -25,7 +26,7 @@ class TestSchema:
 
     def test_add_phonetic(self):
         sec = schema.SectionMeta("发音")
-        sec.add_phonetic("美", "ˈæp(ə)l", "https://example/a.mp3")
+        sec.add_phonetic("ˈæp(ə)l", "美", "https://example/a.mp3")
         assert sec.get()["items"][0] == {
             "type": "phonetic",
             "name": "美",
@@ -35,8 +36,27 @@ class TestSchema:
 
     def test_add_phonetic_no_audio(self):
         sec = schema.SectionMeta("发音")
-        sec.add_phonetic("美", "ˈæp(ə)l")
+        sec.add_phonetic("ˈæp(ə)l", "美")
         assert sec.get()["items"][0]["audio_url"] is None
+
+    def test_add_phonetic_no_name(self):
+        sec = schema.SectionMeta("发音")
+        sec.add_phonetic("/ˈæp(ə)l/")
+        assert sec.get()["items"][0] == {
+            "type": "phonetic",
+            "phonetic": "/ˈæp(ə)l/",
+            "name": None,
+            "audio_url": None,
+        }
+
+    def test_add_link(self):
+        sec = schema.SectionMeta("来源")
+        sec.add_link("维基词典", "https://en.wiktionary.org/wiki/apple")
+        assert sec.get()["items"][0] == {
+            "type": "link",
+            "text": "维基词典",
+            "url": "https://en.wiktionary.org/wiki/apple",
+        }
 
     def test_page_add_section(self):
         page = schema.PageMeta("apple", True)
@@ -50,6 +70,7 @@ class TestErrorPageMeta:
         page = schema.ErrorPageMeta(ValueError("bad word"), "word")
         d = page.get()
         assert d["is_found"] is False
+        assert d["is_error"] is True
         assert d["word"] == "word"
         assert d["sections"][0]["title"] == "错误"
         assert "ValueError: bad word" in d["sections"][0]["items"][0]["text"]

@@ -19,21 +19,20 @@ class FakeSource(DictionarySource):
 class TestSourcesRegistry:
     def test_builtin_registered(self):
         reg = SourcesRegistry()
-        source, name = reg.get("Youdao")
+        source = reg.get("Youdao")
         assert source is not None
-        assert name == "有道"
+        assert source.name == "有道"
 
-    def test_default_is_youdao(self):
+    def test_default_matches_config(self):
         reg = SourcesRegistry()
-        source, name = reg.get_default()
-        assert source.reg_name == "Youdao"
-        assert name == "有道"
+        source = reg.get(reg.default_source_reg_name)
+        assert source.reg_name == config.DEFAULT_DICTIONARY_SOURCE
 
     def test_register_and_get(self):
         reg = SourcesRegistry()
         reg.register(FakeSource())
-        source, name = reg.get("Fake")
-        assert name == "假源"
+        source = reg.get("Fake")
+        assert source.name == "假源"
         assert source.lookup("x") == {"fake": "x"}
 
     def test_duplicate_register_raises(self):
@@ -44,29 +43,29 @@ class TestSourcesRegistry:
     def test_force_overwrites(self):
         reg = SourcesRegistry()
         reg.register(FakeSource(reg_name="Youdao", name="覆盖"), force=True)
-        _, name = reg.get("Youdao")
-        assert name == "覆盖"
+        source = reg.get("Youdao")
+        assert source.name == "覆盖"
 
-    def test_get_unknown_returns_none_none(self):
+    def test_get_unknown_returns_none(self):
         reg = SourcesRegistry()
-        assert reg.get("Nope") == (None, None)
+        assert reg.get("Nope") is None
 
     def test_get_all_returns_copy(self):
         reg = SourcesRegistry()
         all_ = reg.get_all()
-        all_["mutated"] = (None, None)
+        all_["mutated"] = None
         assert "mutated" not in reg.sources
 
-    def test_list_returns_display_names(self):
+    def test_list_returns_reg_names(self):
         reg = SourcesRegistry()
         reg.register(FakeSource())
-        assert set(reg.list()) == {"有道", "假源"}
+        assert set(reg.list()) == {"Youdao", "FreeDict", "Fake"}
 
     def test_change_default(self):
         reg = SourcesRegistry()
         reg.register(FakeSource())
         reg.change_default("Fake")
-        source, _ = reg.get_default()
+        source = reg.get(reg.default_source_reg_name)
         assert source.reg_name == "Fake"
 
     def test_change_default_unknown_raises(self):

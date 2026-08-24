@@ -94,7 +94,7 @@ class TestParseJson:
         items = d["sections"][0]["items"]
         assert items[0]["type"] == "phonetic"
         assert items[0]["name"] == "美式发音"
-        assert items[0]["phonetic"] == "ˈæp(ə)l"
+        assert items[0]["phonetic"] == "/ˈæp(ə)l/"
         assert items[0]["audio_url"] == "https://dict.youdao.com/dictvoice?audio=apple&type=2"
         texts = [it["text"] for it in items if it["type"] == "text"]
         assert texts == ["n. 苹果", "n. 苹果树"]

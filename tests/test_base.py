@@ -44,3 +44,43 @@ class TestDictionarySource:
         text = page["sections"][0]["items"][0]["text"]
         assert "RuntimeError" in text
         assert "boom" in text
+
+    def test_description_defaults_empty(self):
+        assert GoodSource().description == ""
+
+    def test_description_custom(self):
+        class DescSource(DictionarySource):
+            def __init__(self):
+                super().__init__(reg_name="Desc", name="描述源", description="自定义描述")
+
+            def _lookup(self, word: str) -> dict:
+                return {}
+
+        assert DescSource().description == "自定义描述"
+
+    def test_dev_mode_error_hook(self, monkeypatch):
+        import types
+        from simplenetdict.core.sources import base as base_module
+
+        monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
+        page = GoodSource().lookup("$test-error-display")
+        assert page["is_error"] is True
+        assert page["sections"][0]["title"] == "错误"
+
+    def test_dev_mode_hook_only_for_test_word(self, monkeypatch):
+        import types
+        from simplenetdict.core.sources import base as base_module
+
+        monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
+        assert GoodSource().lookup("w") == {"ok": "w"}
+
+    def test_safe_get_missing_returns_default(self):
+        from simplenetdict.core.sources.base import safe_get
+
+        assert safe_get({"a": 1}, ("a", "b")) is None
+        assert safe_get({"a": 1}, ("a", "b"), default="X") == "X"
+
+    def test_safe_get_nested(self):
+        from simplenetdict.core.sources.base import safe_get
+
+        assert safe_get({"a": {"b": [1, 2]}}, ("a", "b", 1)) == 2
