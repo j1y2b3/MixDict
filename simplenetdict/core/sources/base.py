@@ -10,7 +10,6 @@ from typing import Any
 from collections.abc import Iterable
 
 from simplenetdict import schema
-from sys import flags
 
 
 class APIError(Exception):
