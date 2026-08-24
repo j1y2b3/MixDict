@@ -139,9 +139,10 @@ function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
 }
 
 function assembleLink(itemElement, text, url) {
-    const LinkElement = document.createElement("a");
-    LinkElement.href = url;
-    LinkElement.target = "_blank";
-    LinkElement.appendChild(document.createTextNode(text));
-    itemElement.appendChild(LinkElement);
+    itemElement.classList.add("link");
+    const linkElement = document.createElement("a");
+    linkElement.href = url;
+    linkElement.target = "_blank";
+    linkElement.appendChild(document.createTextNode(text));
+    itemElement.appendChild(linkElement);
 }
