@@ -101,27 +101,31 @@ function assembleSection(sectionMeta) {
 }
 
 function assembleItem(itemMeta) {
+    const itemElement = document.createElement("li");
     switch (itemMeta.type) {
         case "text":
-            return assembleText(itemMeta.text);
+            assembleText(itemElement, itemMeta.text);
+            break;
         case "phonetic":
-            return assemblePhonetic(itemMeta.phonetic, itemMeta.name, itemMeta.audio_url);
+            assemblePhonetic(itemElement, itemMeta.phonetic, itemMeta.name, itemMeta.audio_url);
+            break;
         case "link":
-            return assembleLink(itemMeta.text, itemMeta.url);
+            assembleLink(itemElement, itemMeta.text, itemMeta.url);
+            break;
         default:
-            return assembleText("Unknown type: " + JSON.stringify(itemMeta), true);
+            itemElement.classList.add("error");
+            assembleText(itemElement, "Unknown type: " + JSON.stringify(itemMeta), true);
+            break;
     }
-}
-
-function assembleText(text) {
-    const itemElement = document.createElement("li");
-    itemElement.classList.add("text");
-    itemElement.appendChild(document.createTextNode(text));
     return itemElement;
 }
 
-function assemblePhonetic(phonetic, name, audioUrl) {
-    const itemElement = document.createElement("li");
+function assembleText(itemElement, text) {
+    itemElement.classList.add("text");
+    itemElement.appendChild(document.createTextNode(text));
+}
+
+function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
     itemElement.classList.add("phonetic");
     const text = name ? `${name} ${phonetic}` : `${phonetic}`;
     itemElement.appendChild(document.createTextNode(text));
@@ -132,18 +136,12 @@ function assemblePhonetic(phonetic, name, audioUrl) {
         playButton.onclick = () => new Audio(audioUrl).play();
         itemElement.appendChild(playButton);
     }
-
-    return itemElement;
 }
 
-function assembleLink(text, url) {
-    const itemElement = document.createElement("li");
-
+function assembleLink(itemElement, text, url) {
     const LinkElement = document.createElement("a");
     LinkElement.href = url;
     LinkElement.target = "_blank";
     LinkElement.appendChild(document.createTextNode(text));
-
     itemElement.appendChild(LinkElement);
-    return itemElement;
 }
