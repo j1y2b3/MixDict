@@ -104,7 +104,7 @@ function assembleItem(itemMeta) {
     const itemElement = document.createElement("li");
     switch (itemMeta.type) {
         case "text":
-            assembleText(itemElement, itemMeta.text);
+            assembleText(itemElement, itemMeta.text, itemMeta.font_size);
             break;
         case "phonetic":
             assemblePhonetic(itemElement, itemMeta.phonetic, itemMeta.name, itemMeta.audio_url);
@@ -120,8 +120,9 @@ function assembleItem(itemMeta) {
     return itemElement;
 }
 
-function assembleText(itemElement, text) {
+function assembleText(itemElement, text, fontSize) {
     itemElement.classList.add("text");
+    itemElement.classList.add(fontSize);
     itemElement.appendChild(document.createTextNode(text));
 }
 

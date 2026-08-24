@@ -129,7 +129,7 @@ def parse_json(data: dict) -> dict:
 
     for meaning_data in safe_get(data, MEANINGS_PATH, default=[]):  # This `safe_get()` must return a iterable.
         section.add_text("")
-        section.add_text(safe_get(meaning_data, MEANINGS_PART_OF_SPEECH_REL_PATH))
+        section.add_text(safe_get(meaning_data, MEANINGS_PART_OF_SPEECH_REL_PATH), font_size="big")
         synonyms = safe_get(meaning_data, MEANINGS_SYNONYMS_REL_PATH)
         antonyms = safe_get(meaning_data, MEANINGS_ANTONYMS_REL_PATH)
         if synonyms:  # Exclude both `None` and `[]`.

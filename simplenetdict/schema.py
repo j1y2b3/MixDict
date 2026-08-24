@@ -22,6 +22,8 @@ Data format:
 ```
 """
 
+from typing import Literal
+
 
 class _Meta:
     """A base class holding the underlying dict for metadata builders.
@@ -77,9 +79,9 @@ class SectionMeta(_Meta):
             self.meta["items"].append(item)
         return self  # Support chained calls.
 
-    def add_text(self, text: str) -> "SectionMeta":
+    def add_text(self, text: str, font_size: Literal["big", "normal", "small"] = "normal") -> "SectionMeta":
         """Append a plain-text item."""
-        return self._add_item("text", text=text)
+        return self._add_item("text", text=text, font_size=font_size)
 
     def add_phonetic(self, phonetic: str, name: str | None = None,
                      audio_url: str | None = None, check_exist: bool = False) -> "SectionMeta":
