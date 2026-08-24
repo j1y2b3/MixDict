@@ -55,12 +55,20 @@ def fetch_json(word: str, user_agent: str | None = None, timeout: float | None =
     # Open URL
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            data = json.loads(response.read().decode("utf-8"))[0]  # Raw JSON's top level is a list.
+            data = json.loads(response.read().decode("utf-8"))  # Raw JSON's top level should be a list.
+            if not isinstance(data, list) or not data:
+                raise APIError("Unexpected JSON root: expected a non-empty list.")
+            data = data[0]
             data[IS_FOUND_KEY] = True
             return data
     except urllib.error.HTTPError as http_error:
         if http_error.code == 404:
-            data = json.loads(http_error.read().decode("utf-8", "replace"))
+            try:
+                data = json.loads(http_error.read().decode("utf-8", "replace"))
+            except json.JSONDecodeError:
+                raise APIError("Free Dictionary API returned HTTP 404 with non-JSON body.")
+            if not isinstance(data, dict):
+                raise APIError("Free Dictionary API returned HTTP 404 with unexpected body.")
             data[IS_FOUND_KEY] = False
             data[WORD_KEY] = word
             return data
@@ -70,11 +78,11 @@ def parse_json(data: dict) -> dict:
     """Parse raw JSON getted by `fetch_json` into data which can be used by GUI."""
 
     QUERY_WORD_PATH = (WORD_KEY, )
-    IS_FPUND_PATH = (IS_FOUND_KEY, )
+    IS_FOUND_PATH = (IS_FOUND_KEY, )
     word = safe_get(data, QUERY_WORD_PATH)
 
     # Deal with the situation where no translation for the word is found.
-    if not safe_get(data, IS_FPUND_PATH):
+    if not safe_get(data, IS_FOUND_PATH):
         TITLE_PATH = ("title", )
         MESSAGE_PATH = ("message", )
         RESOLUTION_PATH = ("resolution", )
