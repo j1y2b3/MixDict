@@ -19,10 +19,23 @@ class TestSchema:
         assert sec.get() == {
             "title": "英汉",
             "items": [
-                {"type": "text", "text": "n. 苹果"},
-                {"type": "text", "text": "n. 苹果树"},
+                {"type": "text", "text": "n. 苹果", "font_size": "normal"},
+                {"type": "text", "text": "n. 苹果树", "font_size": "normal"},
             ],
         }
+
+    def test_add_text_font_size(self):
+        sec = schema.SectionMeta("英汉")
+        sec.add_text("n. 苹果", font_size="big")
+        assert sec.get()["items"][0]["font_size"] == "big"
+
+    def test_add_phonetic_check_exist(self):
+        sec = schema.SectionMeta("发音")
+        sec.add_phonetic("/ˈæp(ə)l/", check_exist=True)
+        sec.add_phonetic("/ˈæp(ə)l/", check_exist=True)
+        sec.add_phonetic("/bænənə/", check_exist=True)
+        phonetics = [it["phonetic"] for it in sec.get()["items"]]
+        assert phonetics == ["/ˈæp(ə)l/", "/bænənə/"]
 
     def test_add_phonetic(self):
         sec = schema.SectionMeta("发音")

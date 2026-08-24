@@ -61,6 +61,38 @@ class TestFetchJson:
             with pytest.raises(APIError, match="502"):
                 fetch_json("apple")
 
+    def test_empty_list_root_raises_api_error(self):
+        # 成功分支根是空列表:转成可读的 APIError
+        with mock.patch("urllib.request.urlopen", return_value=self._Resp(b"[]")):
+            with pytest.raises(APIError, match="expected a non-empty list"):
+                fetch_json("apple")
+
+    def test_dict_root_raises_api_error(self):
+        # 成功分支根是 dict 而非 list:转成可读的 APIError
+        with mock.patch("urllib.request.urlopen", return_value=self._Resp(b'{"word": "apple"}')):
+            with pytest.raises(APIError, match="expected a non-empty list"):
+                fetch_json("apple")
+
+    def test_404_non_json_body_raises_api_error(self):
+        # 404 响应体不是 JSON:转成可读的 APIError
+        with mock.patch("urllib.request.urlopen",
+                        side_effect=self._http_error(404, b"<html>not found</html>")):
+            with pytest.raises(APIError, match="404 with non-JSON body"):
+                fetch_json("apple")
+
+    def test_404_non_dict_body_raises_api_error(self):
+        # 404 响应体是合法 JSON 但不是 dict:转成可读的 APIError
+        with mock.patch("urllib.request.urlopen",
+                        side_effect=self._http_error(404, b"[1, 2]")):
+            with pytest.raises(APIError, match="404 with unexpected body"):
+                fetch_json("apple")
+
+    def test_multi_item_list_takes_first(self):
+        # 成功分支取列表第一个元素
+        with mock.patch("urllib.request.urlopen",
+                        return_value=self._Resp(b'[{"word": "a"}, {"word": "b"}]')):
+            assert fetch_json("apple")["word"] == "a"
+
 
 class TestParseJson:
     def test_not_found_page(self):
@@ -82,6 +114,45 @@ class TestParseJson:
         assert "phonetic" in types
         assert "link" in types
         assert any(it["type"] == "text" and it.get("text") for it in items)
+
+    def test_empty_data_not_found(self):
+        # 空响应:is_found=False,word/title 为 None,不崩(锁当前行为)
+        d = parse_json({})
+        assert d["is_found"] is False
+        assert d["is_error"] is False
+        assert d["word"] is None
+        assert d["sections"][0]["title"] is None
+
+    def test_found_minimal(self):
+        # 只有 isfound/word:is_found=True,至少有一个空 text 项,不崩
+        d = parse_json({"isfound": True, "word": "x"})
+        assert d["is_found"] is True
+        assert d["word"] == "x"
+        assert d["sections"][0]["title"] == "Result"
+        assert d["sections"][0]["items"]
+
+    def test_found_no_meanings_has_phonetic(self):
+        # 有 phonetic 无 meanings:正常输出音标,不崩
+        d = parse_json({"isfound": True, "word": "x",
+                        "phonetics": [{"text": "/x/"}], "meanings": []})
+        types = [it["type"] for it in d["sections"][0]["items"]]
+        assert "phonetic" in types
+
+    def test_synonyms_none_does_not_crash(self):
+        # synonyms/antonyms 为 None 时跳过,释义正常输出,不崩
+        data = {"isfound": True, "word": "x", "meanings": [{
+            "partOfSpeech": "n", "synonyms": None, "antonyms": None,
+            "definitions": [{"definition": "d"}],
+        }]}
+        d = parse_json(data)
+        texts = [it["text"] for it in d["sections"][0]["items"] if it["type"] == "text"]
+        assert "d" in texts
+
+    def test_no_word_key_word_none(self):
+        # 缺 word 键:word 为 None,is_found=True,不崩(锁当前行为)
+        d = parse_json({"isfound": True})
+        assert d["is_found"] is True
+        assert d["word"] is None
 
 
 class TestFreeDictSource:

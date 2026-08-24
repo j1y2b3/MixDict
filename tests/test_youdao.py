@@ -140,6 +140,76 @@ class TestParseJson:
         with pytest.raises(APIError, match="Lost UK phonetic"):
             parse_json(data)
 
+    def test_empty_data_raises(self):
+        # 空响应:无 input/ec,当前行为是走 found 分支后因缺音标抛 APIError
+        with pytest.raises(APIError, match="Lost US phonetic"):
+            parse_json({})
+
+    def test_ec_empty_raises(self):
+        # 缺 ec 结构时同样因缺音标抛 APIError
+        data = {"input": "x", "meta": {"isHasSimpleDict": "1"}, "ec": {}}
+        with pytest.raises(APIError, match="Lost US phonetic"):
+            parse_json(data)
+
+    def test_ec_word_empty_list_raises(self):
+        data = {"input": "x", "meta": {"isHasSimpleDict": "1"}, "ec": {"word": []}}
+        with pytest.raises(APIError, match="Lost US phonetic"):
+            parse_json(data)
+
+    def test_non_dict_root_raises(self):
+        # 非 dict 结构(如 list 根):当前行为是抛 APIError(因 ec 缺失)
+        with pytest.raises(APIError, match="Lost US phonetic"):
+            parse_json([1, 2])
+
+    def test_not_found_without_input_word_is_none(self):
+        # 查无此词但缺 input:is_found=False,word 为 None,不崩
+        d = parse_json({"meta": {"isHasSimpleDict": "0"}})
+        assert d["is_found"] is False
+        assert d["word"] is None
+
+    def test_trs_not_list_does_not_crash(self):
+        # trs 结构异常(是 dict 而非 list)时:不崩,释义输出 None(锁当前行为)
+        data = {
+            "input": "x",
+            "meta": {"isHasSimpleDict": "1"},
+            "ec": {"word": [{
+                "usphone": "u", "usspeech": "u&type=2",
+                "ukphone": "k", "ukspeech": "k&type=1",
+                "trs": {"oops": 1},
+            }]},
+        }
+        d = parse_json(data)
+        assert d["is_found"] is True
+        texts = [it["text"] for it in d["sections"][0]["items"] if it["type"] == "text"]
+        assert texts == [None]
+
+    def test_tr_missing_l_does_not_crash(self):
+        # tr 里缺 l/i 结构时:输出 None 而非崩溃(锁当前行为)
+        data = {
+            "input": "x",
+            "meta": {"isHasSimpleDict": "1"},
+            "ec": {"word": [{
+                "usphone": "u", "usspeech": "u&type=2",
+                "ukphone": "k", "ukspeech": "k&type=1",
+                "trs": [{"tr": [{"l": {"i": []}}]}],
+            }]},
+        }
+        d = parse_json(data)
+        texts = [it["text"] for it in d["sections"][0]["items"] if it["type"] == "text"]
+        assert texts == [None]
+
+    def test_empty_string_phonetic_locked_behavior(self):
+        # 空字符串音标:当前行为是 "//" 和拼坏的 audio_url(待改进,先锁行为)
+        data = {
+            "input": "x",
+            "meta": {"isHasSimpleDict": "1"},
+            "ec": {"word": [{"usphone": "", "usspeech": "", "ukphone": "", "ukspeech": ""}]},
+        }
+        d = parse_json(data)
+        phonetics = [it for it in d["sections"][0]["items"] if it["type"] == "phonetic"]
+        assert all(it["phonetic"] == "//" for it in phonetics)
+        assert all(it["audio_url"] == "https://dict.youdao.com/dictvoice?audio=" for it in phonetics)
+
 
 class TestFetchJson:
     class _Resp:
@@ -164,6 +234,12 @@ class TestFetchJson:
         payload = json.dumps([1, 2]).encode("utf-8")
         with mock.patch("urllib.request.urlopen", return_value=self._Resp(payload)):
             with pytest.raises(APIError, match="Unexpected JSON root type"):
+                fetch_json("apple")
+
+    def test_invalid_json_raises(self):
+        # 响应体不是合法 JSON:json.loads 抛 JSONDecodeError(被 lookup() 吞掉)
+        with mock.patch("urllib.request.urlopen", return_value=self._Resp(b"<html>oops</html>")):
+            with pytest.raises(json.JSONDecodeError):
                 fetch_json("apple")
 
 

@@ -74,6 +74,14 @@ class TestDictionarySource:
         monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
         assert GoodSource().lookup("w") == {"ok": "w"}
 
+    def test_dev_mode_re_raises_error(self, monkeypatch):
+        import types
+        from simplenetdict.core.sources import base as base_module
+
+        monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
+        with pytest.raises(RuntimeError, match="boom"):
+            BadSource().lookup("w")
+
     def test_safe_get_missing_returns_default(self):
         from simplenetdict.core.sources.base import safe_get
 
