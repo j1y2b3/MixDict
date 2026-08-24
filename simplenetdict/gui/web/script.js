@@ -58,6 +58,7 @@ function lookup() {
 
     const pageElement = document.getElementById("result");
     pageElement.replaceChildren();  // Clear the previous query results.
+    pageElement.classList.remove("error");
 
     pywebview.api.lookup(word)
         .then(response => assemblePage(response, pageElement))
@@ -92,7 +93,9 @@ function assembleErrorPage(error, word, pageElement) {
     sectionElement.appendChild(subtitleElement);
 
     const listElement = document.createElement("ul");
-    listElement.appendChild(assembleText(String(error), true));
+    const itemElement = document.createElement("li");
+    assembleText(itemElement, String(error));
+    listElement.appendChild(itemElement);
     sectionElement.appendChild(listElement);
 
     pageElement.appendChild(sectionElement);
