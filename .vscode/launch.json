@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Debug SimpleNetDict",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "env": { "PYTHONDEVMODE": "1" },   // Equals to `-X dev`.
+            "justMyCode": true,
+        }
+    ]
+}
