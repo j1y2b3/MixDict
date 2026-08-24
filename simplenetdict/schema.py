@@ -64,24 +64,31 @@ class SectionMeta(_Meta):
         self.meta["title"] = title
         self.meta["items"] = []
 
-    def _add_item(self, type: str, **fields) -> "SectionMeta":
+    def _add_item(self, type: str, check_exist: bool = False, **fields) -> "SectionMeta":
         """Append an item dict `{type, **fields}.`
         
         Returns self for chaining.
         """
-        self.meta["items"].append({"type": type, **fields})
+        item = {"type": type, **fields}
+        if check_exist:
+            if item not in self.meta["items"]:
+                self.meta["items"].append(item)
+        else:
+            self.meta["items"].append(item)
         return self  # Support chained calls.
 
     def add_text(self, text: str) -> "SectionMeta":
         """Append a plain-text item."""
         return self._add_item("text", text=text)
 
-    def add_phonetic(self, phonetic: str, name: str | None = None, audio_url: str | None = None) -> "SectionMeta":
+    def add_phonetic(self, phonetic: str, name: str | None = None,
+                     audio_url: str | None = None, check_exist: bool = False) -> "SectionMeta":
         """Append a phonetic item (pronunciation), with optional `audio_url`.
         
         `phonetic` must be the style like "/fəˈnɛtɪk/".
         """
-        return self._add_item("phonetic", phonetic=phonetic, name=name, audio_url=audio_url)
+        return self._add_item("phonetic", phonetic=phonetic, name=name,
+                              audio_url=audio_url, check_exist=check_exist)
 
     def add_link(self, text: str, url: str):
         """Append a web link item."""

@@ -106,9 +106,10 @@ def parse_json(data: dict) -> dict:
             continue
 
         audio_url = safe_get(phonetic_data, PHONETICS_AUDIO_REL_PATH)
-        section.add_phonetic(phonetic, audio_url=audio_url)
-        if audio_url is None:
+        if not audio_url:  # `audio_url` could be `''`.
+            section.add_phonetic(phonetic, check_exist=True)
             continue
+        section.add_phonetic(phonetic, audio_url=audio_url, check_exist=True)
 
         source_url = safe_get(phonetic_data, PHONETICS_SOURCE_REL_PATH)
         if source_url is None:
