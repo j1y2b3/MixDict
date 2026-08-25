@@ -12,3 +12,5 @@ DEFAULT_USER_AGENT = (
     "Safari/537.36"
 )
 DEFAULT_DICTIONARY_SOURCE = "Youdao"
+
+DEBUG = False

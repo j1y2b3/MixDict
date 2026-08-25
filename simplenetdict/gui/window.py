@@ -1,7 +1,5 @@
 """SimpleNetDict GUI (pywebview)."""
 
-from sys import flags
-
 import webview
 
 from simplenetdict.core.sources.base import DictionarySource
@@ -59,7 +57,7 @@ class DictApi:
         return self.source.lookup(word)
 
 
-def run(sources_registry: SourcesRegistry, debug: bool = False):
+def run(sources_registry: SourcesRegistry):
     """Start pywebview window."""
 
     screen = webview.screens[0]
@@ -78,9 +76,7 @@ def run(sources_registry: SourcesRegistry, debug: bool = False):
         screen=screen,  # pywebview automatically centers the window.
         text_select=True
     )
-    if flags.dev_mode:  # Start with `-X dev`.
-        debug = True
-    webview.start(debug=debug)
+    webview.start(debug=config.DEBUG)
 
 if __name__ == "__main__":
     run(SourcesRegistry())
