@@ -1,11 +1,15 @@
 """SimpleNetDict GUI (pywebview)."""
 
+import logging
+
 import webview
 
 from simplenetdict.core.sources.base import DictionarySource
 
 from simplenetdict.core.registry import SourcesRegistry
 from simplenetdict import resources, config
+
+logger = logging.getLogger(__name__)
 
 
 class DictApi:
@@ -54,6 +58,7 @@ class DictApi:
 
     def lookup(self, word: str) -> dict:
         """Use current source looking up `word`, return data format according to simplenetdict/schema.py."""
+        logger.debug("Look up %r via %s", word, self.source.reg_name)
         return self.source.lookup(word)
 
 

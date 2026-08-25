@@ -4,11 +4,14 @@ All sources produce the same GUI-ready schema page through `lookup()`.
 """
 
 from abc import ABC, abstractmethod
+import logging
 
 from typing import Any
 from collections.abc import Iterable
 
 from simplenetdict import schema, config
+
+logger = logging.getLogger(__name__)
 
 
 class APIError(Exception):
@@ -34,7 +37,10 @@ class DictionarySource(ABC):
         self.description = description
 
     def lookup(self, word: str) -> dict:
-        """Return the schema page for `word`; never raises."""
+        """Return the schema page for `word`.
+        
+        Never raises under user mode; raises under debug mode.
+        """
         if config.DEBUG and word == "$test-error-display":
             return schema.ErrorPageMeta(Exception("This is an error."), word).get()
         try:
@@ -42,6 +48,7 @@ class DictionarySource(ABC):
         except Exception as error:
             if config.DEBUG:
                 raise error
+            logger.exception("lookup() failed for %r using %s", word, self.reg_name)
             return schema.ErrorPageMeta(error, word).get()
 
     @abstractmethod

@@ -4,11 +4,14 @@ URL:
 https://dict.youdao.com/jsonapi
 """
 
+import logging
 import urllib.request, json
 from urllib.parse import quote
 
 from simplenetdict import config, schema
 from simplenetdict.core.sources.base import DictionarySource, APIError, safe_get
+
+logger = logging.getLogger(__name__)
 
 
 class Youdao(DictionarySource):
@@ -49,7 +52,8 @@ def fetch_json(word: str, user_agent: str | None = None, timeout: float | None =
         data = json.loads(response.read().decode("utf-8"))
 
     if not isinstance(data, dict):
-        raise APIError(f"Unexpected JSON root type: {type(data).__name__}, API may be changed.")
+        logger.error("Youdao API returned non-dict root: %s, url=%s", type(data).__name__, url)
+        raise APIError(f"Unexpected JSON root type: {type(data).__name__}, API may have changed.")
     return data
 
 def parse_json(data: dict) -> dict:
@@ -95,6 +99,7 @@ def parse_json(data: dict) -> dict:
     us_phonetic = safe_get(data, EC_US_PHONETIC_PATH)
     us_audio_url = safe_get(data, EC_US_SPEECH_PATH)
     if us_phonetic is None:
+        logger.error("Youdao API lost US phonetic for %r", word)
         raise APIError("Lost US phonetic.")
     if us_audio_url is not None:
         us_audio_url = AUDIO_URL_BASE + us_audio_url
@@ -103,6 +108,7 @@ def parse_json(data: dict) -> dict:
     uk_phonetic = safe_get(data, EC_UK_PHONETIC_PATH)
     uk_audio_url = safe_get(data, EC_UK_SPEECH_PATH)
     if uk_phonetic is None:
+        logger.error("Youdao API lost UK phonetic for %r", word)
         raise APIError("Lost UK phonetic.")
     if uk_audio_url is not None:
         uk_audio_url = AUDIO_URL_BASE + uk_audio_url

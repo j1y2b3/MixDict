@@ -10,6 +10,7 @@ License:
 GNU General Public License v3.0
 """
 
+import logging
 import urllib.request, urllib.error, json
 
 from simplenetdict import config, schema
@@ -17,6 +18,8 @@ from simplenetdict.core.sources.base import DictionarySource, APIError, safe_get
 
 IS_FOUND_KEY = "isfound"
 WORD_KEY = "word"
+
+logger = logging.getLogger(__name__)
 
 
 class FreeDict(DictionarySource):
@@ -56,22 +59,37 @@ def fetch_json(word: str, user_agent: str | None = None, timeout: float | None =
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             data = json.loads(response.read().decode("utf-8"))  # Raw JSON's top level should be a list.
+
             if not isinstance(data, list) or not data:
-                raise APIError("Unexpected JSON root: expected a non-empty list.")
+                logger.error("Unexpected JSON root type: %s (expected non-empty list), url=%s",
+                             type(data).__name__, url)
+                raise APIError(f"Unexpected JSON root type: {type(data).__name__}, expected a non-empty list.")
+            
             data = data[0]
             data[IS_FOUND_KEY] = True
             return data
+        
     except urllib.error.HTTPError as http_error:
         if http_error.code == 404:
             try:
-                data = json.loads(http_error.read().decode("utf-8", "replace"))
+                error_body = http_error.read().decode("utf-8", "replace")
+                data = json.loads(error_body)
+
             except json.JSONDecodeError:
+                logger.error("FreeDict API 404 response not JSON: %s, url=%s",
+                             error_body[:100], url)
                 raise APIError("Free Dictionary API returned HTTP 404 with non-JSON body.")
+            
             if not isinstance(data, dict):
+                logger.error("FreeDict API 404 response JSON root not dict: %s, url=%s",
+                             type(data).__name__, url)
                 raise APIError("Free Dictionary API returned HTTP 404 with unexpected body.")
+            
             data[IS_FOUND_KEY] = False
             data[WORD_KEY] = word
             return data
+        
+        logger.warning("FreeDict API HTTP %s: %s, url=%s", http_error.code, http_error.reason, url)
         raise APIError(f"Free Dictionary API returned HTTP {http_error.code}: {http_error.reason}.")
 
 def parse_json(data: dict) -> dict:
