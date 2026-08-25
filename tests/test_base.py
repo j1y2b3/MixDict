@@ -45,6 +45,13 @@ class TestDictionarySource:
         assert "RuntimeError" in text
         assert "boom" in text
 
+    def test_lookup_error_is_logged(self, caplog):
+        import logging
+
+        with caplog.at_level(logging.ERROR, logger="simplenetdict"):
+            BadSource().lookup("w")
+        assert any("lookup() failed" in record.message for record in caplog.records)
+
     def test_description_defaults_empty(self):
         assert GoodSource().description == ""
 
@@ -59,26 +66,23 @@ class TestDictionarySource:
         assert DescSource().description == "自定义描述"
 
     def test_dev_mode_error_hook(self, monkeypatch):
-        import types
-        from simplenetdict.core.sources import base as base_module
+        from simplenetdict import config
 
-        monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
+        monkeypatch.setattr(config, "DEBUG", True)
         page = GoodSource().lookup("$test-error-display")
         assert page["is_error"] is True
         assert page["sections"][0]["title"] == "错误"
 
     def test_dev_mode_hook_only_for_test_word(self, monkeypatch):
-        import types
-        from simplenetdict.core.sources import base as base_module
+        from simplenetdict import config
 
-        monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
+        monkeypatch.setattr(config, "DEBUG", True)
         assert GoodSource().lookup("w") == {"ok": "w"}
 
     def test_dev_mode_re_raises_error(self, monkeypatch):
-        import types
-        from simplenetdict.core.sources import base as base_module
+        from simplenetdict import config
 
-        monkeypatch.setattr(base_module, "flags", types.SimpleNamespace(dev_mode=True))
+        monkeypatch.setattr(config, "DEBUG", True)
         with pytest.raises(RuntimeError, match="boom"):
             BadSource().lookup("w")
 

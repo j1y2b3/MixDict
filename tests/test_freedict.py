@@ -56,10 +56,14 @@ class TestFetchJson:
         assert data["word"] == "qwiruqe"
         assert data["title"] == "No Definitions Found"
 
-    def test_server_error_raises_api_error(self):
+    def test_server_error_raises_api_error(self, caplog):
+        import logging
+
         with mock.patch("urllib.request.urlopen", side_effect=self._http_error(502)):
-            with pytest.raises(APIError, match="502"):
-                fetch_json("apple")
+            with caplog.at_level(logging.WARNING, logger="simplenetdict"):
+                with pytest.raises(APIError, match="502"):
+                    fetch_json("apple")
+        assert any("FreeDict API HTTP 502" in record.message for record in caplog.records)
 
     def test_empty_list_root_raises_api_error(self):
         # 成功分支根是空列表:转成可读的 APIError
