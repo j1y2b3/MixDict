@@ -5,20 +5,6 @@ function initApp() {
     document.getElementById("query-box").focus();
 }
 
-async function minimizWindow() {
-    await pywebview.api.minimize_window();
-}
-async function toggleMaximizeWindow() {
-    const isMaximized = await pywebview.api.toggle_maximize_window();
-    const button = document.getElementById("max-btn");
-    button.title = isMaximized ? "还原" : "最大化";
-    document.getElementById("max-icon").style.display = isMaximized ? "none" : "block";
-    document.getElementById("rst-icon").style.display = isMaximized ? "block" : "none";
-}
-async function closeWindow() {
-    await pywebview.api.close_window();
-}
-
 async function displayCurrentSource() {
     const currentSourceElement = document.getElementById("cur-source");
     const currentSourceRegName = await pywebview.api.current_source_reg_name();
