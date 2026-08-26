@@ -26,6 +26,9 @@ class DictApi:
         self.source: DictionarySource
         self.set_source(self.source_reg_name)
 
+        self._window: webview.Window  # Must add `_` to prevent recursive scanning by pywebview.
+        self.is_window_maximized = False
+
     def get_source_name(self, reg_name: str) -> str | None:
         """Return the name of the source for `reg_name`."""
         source = self.sources_registry.get(reg_name)
@@ -61,26 +64,52 @@ class DictApi:
         logger.debug("Look up %r via %s", word, self.source.reg_name)
         return self.source.lookup(word)
 
+    def set_window(self, window: webview.Window):
+        self._window = window
+
+    def minimize_window(self):
+        self._window.minimize()
+
+    def toggle_maximize_window(self) -> bool:
+        """Return whether the window is now maximized."""
+        if self.is_window_maximized:
+            self._window.restore()
+        else:
+            self._window.maximize()
+        self.is_window_maximized = not self.is_window_maximized
+        return self.is_window_maximized
+
+    def close_window(self):
+        self._window.destroy()
+
 
 def run(sources_registry: SourcesRegistry):
     """Start pywebview window."""
 
     screen = webview.screens[0]
+    api = DictApi(sources_registry)
 
     # Adapt screen size
     width = max(config.WINDOW_MIN_SIZE[0], int(screen.width * config.WINDOW_SIZE_RATE[0]))
     height = max(config.WINDOW_MIN_SIZE[1], int(screen.height * config.WINDOW_SIZE_RATE[1]))
 
-    webview.create_window(
+    webview.settings['DRAG_REGION_DIRECT_TARGET_ONLY'] = True
+    window = webview.create_window(
         title=config.TITLE,
         url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
-        js_api=DictApi(sources_registry),
+        js_api=api,
         width=width,
         height=height,
         min_size=config.WINDOW_MIN_SIZE,
         screen=screen,  # pywebview automatically centers the window.
-        text_select=True
+        text_select=True,
+        frameless=True,
+        easy_drag=False
     )
+    if window is None:
+        logger.error("Webview window creation was cancelled.")
+        raise RuntimeError("Failed to create webview window.")
+    api.set_window(window)
     webview.start(debug=config.DEBUG)
 
 if __name__ == "__main__":

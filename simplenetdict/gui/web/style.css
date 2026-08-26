@@ -1,5 +1,6 @@
 :root {
     --border: 1px solid #42424280;
+    --title-icon-size: 14px;
 }
 
 * {
@@ -15,11 +16,78 @@ body {
 
 body {
     display: grid;
-    grid-template-areas: "sidebar main";
+    grid-template-areas:
+        "header header"
+        "sidebar main";
     grid-template-columns: 200px 1fr;
-    grid-template-rows: 1fr;
+    grid-template-rows: 30px 1fr;
     background-color: #303030;
     color: #ffffff;
+}
+
+header {
+    grid-area: header;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #303030;
+    border-bottom: var(--border);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.title {
+    padding-left: 10px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.controls>button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    border: none;
+    background: transparent;
+    color: #fff;
+}
+
+.controls>button:hover {
+    border: none;
+    background-color: #ffffff1e;
+}
+
+#cls-btn:hover {
+    background-color: #e00;
+}
+
+.controls .icon {
+    width: var(--title-icon-size);
+    height: var(--title-icon-size);
+    display: block;
+}
+
+#min-icon {
+    transform: translate(0, 0);
+}
+
+#max-icon {
+    transform: translate(0, 1px);
+    display: block;
+}
+
+#rst-icon {
+    transform: translate(0, 0);
+    display: none;
+}
+
+#cls-icon {
+    transform: translate(-1px, 1px);
 }
 
 aside {

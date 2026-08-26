@@ -10,6 +10,48 @@
 </head>
 
 <body>
+    <header class="pywebview-drag-region">
+        <span class="title pywebview-drag-region">简易网络词典</span>
+        <div class="controls">
+            <button type="button" id="min-btn" title="最小化" onclick="minimizWindow()">
+                <svg class="icon" id="min-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-minus">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M5 20l14 0" />
+                </svg>
+            </button>
+            <button type="button" id="max-btn" title="最大化" onclick="toggleMaximizeWindow()">
+                <svg class="icon" id="max-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-maximize">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                    <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                </svg>
+                <svg class="icon" id="rst-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-minimize">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 19v-2a2 2 0 0 1 2 -2h2" />
+                    <path d="M15 5v2a2 2 0 0 0 2 2h2" />
+                    <path d="M5 15h2a2 2 0 0 1 2 2v2" />
+                    <path d="M5 9h2a2 2 0 0 0 2 -2v-2" />
+                </svg>
+            </button>
+            <button type="button" id="cls-btn" title="关闭" onclick="closeWindow()">
+                <svg class="icon" id="cls-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M18 6l-12 12" />
+                    <path d="M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </header>
     <aside>
         <h1></h1>
         <div id="sources">
