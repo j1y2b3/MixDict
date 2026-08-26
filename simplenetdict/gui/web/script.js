@@ -2,6 +2,7 @@ window.addEventListener("pywebviewready", initApp);
 function initApp() {
     displayCurrentSource();
     displayDictSourcesList();
+    document.getElementById("query-box").focus();
 }
 
 async function displayCurrentSource() {
