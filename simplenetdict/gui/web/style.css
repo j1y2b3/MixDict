@@ -1,3 +1,7 @@
+:root {
+    --border: 1px solid #42424280;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -14,12 +18,14 @@ body {
     grid-template-areas: "sidebar main";
     grid-template-columns: 200px 1fr;
     grid-template-rows: 1fr;
+    background-color: #303030;
+    color: #ffffff;
 }
 
 aside {
     grid-area: sidebar;
-    background-color: #6cf;
-    border-right: 1px solid #e00;
+    background-color: #303030;
+    border-right: var(--border);
     padding: 5px;
     overflow-y: auto;
     min-height: 0;
@@ -27,15 +33,16 @@ aside {
 
 main {
     grid-area: main;
+    background-color: #202020;
+    margin: 4px;
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
-    background-color: #ff0;
     min-height: 0;
 }
 
 main>nav {
-    background-color: #99f;
-    border-bottom: 1px solid #e00;
+    border-bottom: var(--border);
 }
 
 #search {
@@ -44,12 +51,20 @@ main>nav {
     height: 30px;
 }
 
+#search>input,
+#search>button {
+    border: none;
+}
+
 #search>input {
     flex: 1;
+    border-right: var(--border);
+    background: transparent;
 }
 
 #search>button {
     flex: 0 0 100px;
+    background: transparent;
 }
 
 #result {
