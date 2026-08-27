@@ -1,7 +1,13 @@
+# Environment
 .venv/
+
+# Cache
 .pytest_cahce/
 __pycache__/
 
+# User files
 user_sources/
+
+# Temporary
 tmp/
 NOTE.md
