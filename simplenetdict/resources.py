@@ -5,6 +5,8 @@ Works in both source code (not packed) and PyInstaller-frozen (packed) modes.
 import sys
 from pathlib import Path
 
+from platformdirs import user_cache_dir
+
 # Not packed: project root (parent of simplenetdict/). Packed: PyInstaller temp dir.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 
@@ -31,3 +33,7 @@ def user_sources_dir() -> Path:
 def user_source_path(name: str) -> Path:
     """Return the absolute path of a user source file under the user sources directory."""
     return user_sources_dir() / name
+
+def webview_storage_path() -> Path:
+    """Return a fixed cross-platform cache dir for pywebview WebView2 data."""
+    return Path(user_cache_dir("SimpleNetDict", appauthor=False))

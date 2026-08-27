@@ -66,6 +66,7 @@ def run(sources_registry: SourcesRegistry):
     """Start pywebview window."""
 
     screen = webview.screens[0]
+    storage_path = str(resources.webview_storage_path())
 
     # Adapt screen size
     width = max(config.WINDOW_MIN_SIZE[0], int(screen.width * config.WINDOW_SIZE_RATE[0]))
@@ -81,7 +82,8 @@ def run(sources_registry: SourcesRegistry):
         screen=screen,  # pywebview automatically centers the window.
         text_select=True
     )
-    webview.start(debug=config.DEBUG)
+    logger.info("Store cache at %s", storage_path)
+    webview.start(debug=config.DEBUG, storage_path=storage_path)
 
 if __name__ == "__main__":
     run(SourcesRegistry())
