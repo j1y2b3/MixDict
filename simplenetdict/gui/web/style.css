@@ -1,5 +1,8 @@
 :root {
-    --border: 1px solid #42424280;
+    --border-default: 1px solid #42424280;
+    --border-strong: 1px solid #5f5f5fa8;
+    --border-focus: 1px solid #66ccffa8;
+    --font-color: #6cf;
 }
 
 * {
@@ -18,14 +21,13 @@ body {
     grid-template-areas: "sidebar main";
     grid-template-columns: 200px 1fr;
     grid-template-rows: 1fr;
-    background-color: #303030;
-    color: #ffffff;
+    background-color: #262b33;
+    color: var(--font-color);
 }
 
 aside {
     grid-area: sidebar;
-    background-color: #303030;
-    border-right: var(--border);
+    border-right: var(--border-default);
     padding: 5px;
     overflow-y: auto;
     min-height: 0;
@@ -33,38 +35,67 @@ aside {
 
 main {
     grid-area: main;
-    background-color: #202020;
+    background-color: #1e2228;
     margin: 4px;
-    border-radius: 5px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
-main>nav {
-    border-bottom: var(--border);
-}
-
 #search {
     display: flex;
     flex-direction: row;
+    border: var(--border-strong);
+    border-radius: 4px;
     height: 30px;
 }
 
-#search>input,
-#search>button {
-    border: none;
+#search:focus-within {
+    border: var(--border-focus);
 }
 
 #search>input {
     flex: 1;
-    border-right: var(--border);
+    caret-color: var(--font-color);
+    color: var(--font-color);
     background: transparent;
 }
 
+#search>input:focus {
+    outline: none;
+}
+
+#search>input::placeholder {
+    color: var(--font-color);
+}
+
 #search>button {
-    flex: 0 0 100px;
+    flex: 0 0 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     background: transparent;
+    margin: 3px;
+    border-radius: 3px;
+    color: var(--font-color);
+    font-size: 15px;
+}
+
+#search>button .icon {
+    width: 15px;
+    height: 15px;
+    transform: translate(1px, 1px);
+}
+
+#search>button:hover {
+    background-color: #ffffff1e;
+}
+
+#search>button,
+#search>input {
+    border: none;
 }
 
 #result {
