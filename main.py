@@ -4,7 +4,8 @@ import logging
 from sys import flags
 
 from simplenetdict.core.registry import SourcesRegistry
-from simplenetdict.gui.window import run
+from simplenetdict.gui.window import Window
+from simplenetdict.hotupdate import Watcher
 from simplenetdict import config
 
 if flags.dev_mode:
@@ -29,4 +30,7 @@ def setup_logger() -> logging.Logger:
 if __name__ == "__main__":
     logger = setup_logger()
     logger.info("Starting SimpleNetDict...")
-    run(SourcesRegistry())
+    
+    window = Window(SourcesRegistry())
+    Watcher(window.get_window())
+    window.run()
