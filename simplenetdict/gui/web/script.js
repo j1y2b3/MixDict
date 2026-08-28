@@ -45,7 +45,6 @@ async function displayDictSourcesList() {
 }
 
 async function setSource(regName) {
-    console.log(regName);
     await pywebview.api.set_source(regName);
     displayCurrentSource();
 }
@@ -132,7 +131,7 @@ function assembleItem(itemMeta) {
             break;
         default:
             itemElement.classList.add("error");
-            assembleText(itemElement, "Unknown type: " + JSON.stringify(itemMeta), true);
+            assembleText(itemElement, "Unknown type: " + JSON.stringify(itemMeta));
             break;
     }
     return itemElement;
@@ -149,7 +148,7 @@ function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
     const text = name ? `${name} ${phonetic}` : `${phonetic}`;
     itemElement.appendChild(document.createTextNode(text));
 
-    const dispalyPlayButton = (itemElement, audio) => {
+    const displayPlayButton = (itemElement, audio) => {
         const playButton = document.createElement("button");
         playButton.type = "button";
         playButton.appendChild(document.createTextNode("🔊"));
@@ -159,7 +158,7 @@ function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
 
     if (!audioUrl) return;
     const audio = new Audio();
-    audio.oncanplay = () => dispalyPlayButton(itemElement, audio);
+    audio.oncanplay = () => displayPlayButton(itemElement, audio);
     audio.onerror = () => console.warn("Cannot play the audio:", audioUrl);
     audio.src = audioUrl;
 }
