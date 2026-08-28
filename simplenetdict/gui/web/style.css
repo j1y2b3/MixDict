@@ -73,14 +73,26 @@ main {
 #search>button {
     flex: 0 0 70px;
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: center;
     gap: 5px;
     background: transparent;
     margin: 3px;
+    padding-bottom: 4px;
     border-radius: 3px;
     color: var(--font-color);
     font-size: 15px;
+}
+
+#search>button::before {
+    content: "";
+    position: absolute;
+    left: -3px;
+    top: 5%;
+    bottom: 5%;
+    width: 1px;
+    background-color: #5f5f5fa8;
 }
 
 #search>button .icon {
