@@ -1,7 +1,6 @@
 """SimpleNetDict GUI (pywebview)."""
 
 import logging
-import time
 
 import webview
 
@@ -11,13 +10,6 @@ from simplenetdict.core.registry import SourcesRegistry
 from simplenetdict import resources, config
 
 logger = logging.getLogger(__name__)
-
-UPDATE_CSS = """
-document.querySelectorAll('link[rel=stylesheet]').forEach(lnk => {
-    const file = lnk.getAttribute('href').split('?')[0];
-    lnk.href = file + '?t=' + Date.now();  // Trigger new request.
-});
-"""
 
 
 class DictApi:
@@ -70,52 +62,35 @@ class DictApi:
         return self.source.lookup(word)
 
 
-def _live_update_gui(window: webview.Window, interval: float = 0.5):
-    """Regularly check and update CSS, JavaScript and HTML (files in `web/`)."""
+class Window:
 
-    web_dir = resources.web_path(".")
-    old_files_state = {f: f.stat().st_mtime for f in web_dir.rglob("*") if f.is_file()}
+    def __init__(self, sources_registry: SourcesRegistry):
 
-    while True:
-        time.sleep(interval)
+        self.screen = webview.screens[0]
+        self.storage_path = str(resources.webview_storage_path())
 
-        new_files_state = {f: f.stat().st_mtime for f in web_dir.rglob("*") if f.is_file()}
-        changed_files = {f for f in new_files_state if new_files_state[f] != old_files_state.get(f)}
+        # Adapt screen size
+        self.width = max(config.WINDOW_MIN_SIZE[0], int(self.screen.width * config.WINDOW_SIZE_RATE[0]))
+        self.height = max(config.WINDOW_MIN_SIZE[1], int(self.screen.height * config.WINDOW_SIZE_RATE[1]))
 
-        if changed_files:
-            old_files_state = new_files_state
-            if any(f.suffix == ".css" for f in changed_files):
-                window.evaluate_js(UPDATE_CSS)
+        self.window = webview.create_window(
+            title=config.TITLE,
+            url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
+            js_api=DictApi(sources_registry),
+            width=self.width,
+            height=self.height,
+            min_size=config.WINDOW_MIN_SIZE,
+            screen=self.screen,  # pywebview automatically centers the window.
+            text_select=True
+        )
 
-        if any(f.suffix in (".html", ".js") for f in changed_files):
-                window.evaluate_js("location.reload()")
+    def get_window(self):
+        if self.window is None:
+            logger.error("Webview window creation was cancelled.")
+            raise RuntimeError("Failed to create webview window.")
+        return self.window
 
-def run(sources_registry: SourcesRegistry):
-    """Start pywebview window."""
-
-    screen = webview.screens[0]
-    storage_path = str(resources.webview_storage_path())
-
-    # Adapt screen size
-    width = max(config.WINDOW_MIN_SIZE[0], int(screen.width * config.WINDOW_SIZE_RATE[0]))
-    height = max(config.WINDOW_MIN_SIZE[1], int(screen.height * config.WINDOW_SIZE_RATE[1]))
-
-    window = webview.create_window(
-        title=config.TITLE,
-        url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
-        js_api=DictApi(sources_registry),
-        width=width,
-        height=height,
-        min_size=config.WINDOW_MIN_SIZE,
-        screen=screen,  # pywebview automatically centers the window.
-        text_select=True
-    )
-
-    if config.DEBUG:
-        import threading
-        threading.Thread(target=_live_update_gui, args=(window,), daemon=True).start()
-    logger.info("Store cache at %s", storage_path)
-    webview.start(debug=config.DEBUG, storage_path=storage_path)
-
-if __name__ == "__main__":
-    run(SourcesRegistry())
+    def run(self):
+        """Start pywebview window."""
+        logger.info("Store cache at %s", self.storage_path)
+        webview.start(debug=config.DEBUG, storage_path=self.storage_path)
