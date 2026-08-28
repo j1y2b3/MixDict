@@ -113,7 +113,7 @@ def parse_json(data: dict) -> dict:
         return page.get()
 
     page = schema.PageMeta(word, is_found=True)
-    section = schema.SectionMeta("Result")
+    section = schema.SectionMeta("结果")
 
     # Add phonetics.
     PHONETIC_PATH = ("phonetic", )
