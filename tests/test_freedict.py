@@ -112,7 +112,7 @@ class TestParseJson:
         d = parse_json(fixture_data("freedict-apple"))
         assert d["is_found"] is True
         assert d["word"] == "apple"
-        assert d["sections"][0]["title"] == "Result"
+        assert d["sections"][0]["title"] == "结果"
         items = d["sections"][0]["items"]
         types = [it["type"] for it in items]
         assert "phonetic" in types
@@ -132,7 +132,7 @@ class TestParseJson:
         d = parse_json({"isfound": True, "word": "x"})
         assert d["is_found"] is True
         assert d["word"] == "x"
-        assert d["sections"][0]["title"] == "Result"
+        assert d["sections"][0]["title"] == "结果"
         assert d["sections"][0]["items"]
 
     def test_found_no_meanings_has_phonetic(self):

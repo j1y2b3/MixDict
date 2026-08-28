@@ -28,3 +28,10 @@ class TestResources:
     def test_user_source_path(self, monkeypatch):
         monkeypatch.delattr(sys, "frozen", raising=False)
         assert resources.user_source_path("x.py") == resources.ROOT_DIR / "user_sources" / "x.py"
+
+    def test_webview_storage_path(self):
+        from platformdirs import user_cache_dir
+
+        p = resources.webview_storage_path()
+        assert p == Path(user_cache_dir("SimpleNetDict", appauthor=False))
+        assert p.is_absolute()
