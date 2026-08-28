@@ -41,6 +41,19 @@ class TestDictApi:
         with pytest.raises(ValueError):
             api.set_source("Nope")
 
+    def test_get_source_name_unknown_returns_none(self):
+        api = self._make_api()
+        assert api.get_source_name("Nope") is None
+
+    def test_get_source_description_unknown_returns_empty(self):
+        api = self._make_api()
+        assert api.get_source_description("Nope") == ""
+
+    def test_get_source_description_known_source(self):
+        api = self._make_api()
+        assert api.get_source_description("FreeDict")  # FreeDict 有描述
+        assert api.get_source_description("Youdao") == ""  # 有道无描述
+
 
 class TestWindow:
     """Window(GUI 窗口)类的测试,通过 mock 避免真实创建窗口。"""

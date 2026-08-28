@@ -1,5 +1,7 @@
 """core.youdao 的单元测试(离线,用固定 fixture,不请求网络)。"""
+import email.message
 import json
+import urllib.error
 from unittest import mock
 
 import pytest
@@ -240,6 +242,14 @@ class TestFetchJson:
         # 响应体不是合法 JSON:json.loads 抛 JSONDecodeError(被 lookup() 吞掉)
         with mock.patch("urllib.request.urlopen", return_value=self._Resp(b"<html>oops</html>")):
             with pytest.raises(json.JSONDecodeError):
+                fetch_json("apple")
+
+    def test_http_error_propagates(self):
+        # 有道未特殊处理 HTTPError:直接向上抛(由 lookup() 吞成错误页,锁当前行为)
+        err = urllib.error.HTTPError(url="x", code=503, msg="Service Unavailable",
+                                     hdrs=email.message.Message(), fp=None)
+        with mock.patch("urllib.request.urlopen", side_effect=err):
+            with pytest.raises(urllib.error.HTTPError):
                 fetch_json("apple")
 
 

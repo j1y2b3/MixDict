@@ -71,6 +71,10 @@ class TestSchema:
             "url": "https://en.wiktionary.org/wiki/apple",
         }
 
+    def test_add_link_returns_self(self):
+        sec = schema.SectionMeta("来源")
+        assert sec.add_link("维基词典", "https://en.wiktionary.org/wiki/apple") is sec
+
     def test_page_add_section(self):
         page = schema.PageMeta("apple", True)
         page.add_section(schema.SectionMeta("英汉").add_text("n. 苹果"))

@@ -65,6 +65,12 @@ class TestFetchJson:
                     fetch_json("apple")
         assert any("FreeDict API HTTP 502" in record.message for record in caplog.records)
 
+    def test_other_http_error_raises_api_error(self):
+        # 非 404 的 4xx(如 429)与 5xx 一样转成可读的 APIError
+        with mock.patch("urllib.request.urlopen", side_effect=self._http_error(429)):
+            with pytest.raises(APIError, match="429"):
+                fetch_json("apple")
+
     def test_empty_list_root_raises_api_error(self):
         # 成功分支根是空列表:转成可读的 APIError
         with mock.patch("urllib.request.urlopen", return_value=self._Resp(b"[]")):

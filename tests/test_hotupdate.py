@@ -80,3 +80,20 @@ class TestWatchGui:
         (tmp_path / "b.html").write_text("<html></html>")
         time.sleep(0.3)
         assert any("location.reload()" in call for call in calls)
+
+    def test_js_change_triggers_full_reload(self, monkeypatch, tmp_path):
+        import time
+
+        from simplenetdict import resources
+        from simplenetdict.hotupdate import UPDATE_STYLE, Watcher
+
+        calls = []
+        fake_window = type("FakeWindow", (), {"evaluate_js": lambda self, js: calls.append(js)})()
+        monkeypatch.setattr(resources, "web_path", lambda name: tmp_path)
+        Watcher(fake_window, interval=0.05)
+
+        # JS 变更触发整页刷新(而非仅样式重载)。
+        (tmp_path / "a.js").write_text("console.log(1)")
+        time.sleep(0.3)
+        assert any("location.reload()" in call for call in calls)
+        assert not any(UPDATE_STYLE in call for call in calls)
