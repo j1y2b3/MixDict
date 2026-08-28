@@ -1,6 +1,7 @@
 """SimpleNetDict GUI (pywebview)."""
 
 import logging
+import time
 
 import webview
 
@@ -10,6 +11,13 @@ from simplenetdict.core.registry import SourcesRegistry
 from simplenetdict import resources, config
 
 logger = logging.getLogger(__name__)
+
+UPDATE_CSS = """
+document.querySelectorAll('link[rel=stylesheet]').forEach(lnk => {
+    const file = lnk.getAttribute('href').split('?')[0];
+    lnk.href = file + '?t=' + Date.now();  // Trigger new request.
+});
+"""
 
 
 class DictApi:
@@ -62,6 +70,26 @@ class DictApi:
         return self.source.lookup(word)
 
 
+def _live_update_gui(window: webview.Window, interval: float = 0.5):
+    """Regularly check and update CSS, JavaScript and HTML (files in `web/`)."""
+
+    web_dir = resources.web_path(".")
+    old_files_state = {f: f.stat().st_mtime for f in web_dir.rglob("*") if f.is_file()}
+
+    while True:
+        time.sleep(interval)
+
+        new_files_state = {f: f.stat().st_mtime for f in web_dir.rglob("*") if f.is_file()}
+        changed_files = {f for f in new_files_state if new_files_state[f] != old_files_state.get(f)}
+
+        if changed_files:
+            old_files_state = new_files_state
+            if any(f.suffix == ".css" for f in changed_files):
+                window.evaluate_js(UPDATE_CSS)
+
+        if any(f.suffix in (".html", ".js") for f in changed_files):
+                window.evaluate_js("location.reload()")
+
 def run(sources_registry: SourcesRegistry):
     """Start pywebview window."""
 
@@ -72,7 +100,7 @@ def run(sources_registry: SourcesRegistry):
     width = max(config.WINDOW_MIN_SIZE[0], int(screen.width * config.WINDOW_SIZE_RATE[0]))
     height = max(config.WINDOW_MIN_SIZE[1], int(screen.height * config.WINDOW_SIZE_RATE[1]))
 
-    webview.create_window(
+    window = webview.create_window(
         title=config.TITLE,
         url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
         js_api=DictApi(sources_registry),
@@ -82,6 +110,10 @@ def run(sources_registry: SourcesRegistry):
         screen=screen,  # pywebview automatically centers the window.
         text_select=True
     )
+
+    if config.DEBUG:
+        import threading
+        threading.Thread(target=_live_update_gui, args=(window,), daemon=True).start()
     logger.info("Store cache at %s", storage_path)
     webview.start(debug=config.DEBUG, storage_path=storage_path)
 
