@@ -2,11 +2,11 @@ window.addEventListener("pywebviewready", initApp);
 function initApp() {
     displayCurrentSource();
     displayDictSourcesList();
-    document.getElementById("query-box").focus();
+    document.getElementById("query-input").focus();
 }
 
 async function displayCurrentSource() {
-    const currentSourceElement = document.getElementById("cur-source");
+    const currentSourceElement = document.getElementById("source-current");
     const currentSourceRegName = await pywebview.api.current_source_reg_name();
     const currentSourceName = await pywebview.api.get_source_name(currentSourceRegName);
     currentSourceElement.replaceChildren();  // Clear the previously dispalyed source.
@@ -15,7 +15,7 @@ async function displayCurrentSource() {
 
 async function displayDictSourcesList() {
     const sourcesList = await pywebview.api.list_sources_reg_name();
-    const sourcesListElement = document.getElementById("sources-list");
+    const sourcesListElement = document.getElementById("source-list");
 
     let sourceElement, sourceButton;
     let sourceName, sourceNameElement;
@@ -50,13 +50,13 @@ async function setSource(regName) {
 }
 
 function lookup() {
-    const word = document.getElementById("query-box").value.trim();
+    const word = document.getElementById("query-input").value.trim();
     if (!word) return;
 
-    const button = document.getElementById("query-btn");
+    const button = document.getElementById("query-button");
     button.disabled = true;  // Remember to enable the button.
 
-    const pageElement = document.getElementById("result");
+    const pageElement = document.getElementById("query-result");
     pageElement.replaceChildren();  // Clear the previous query results.
     pageElement.classList.remove("error");
 
