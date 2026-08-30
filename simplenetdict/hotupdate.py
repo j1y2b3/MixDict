@@ -71,6 +71,7 @@ class Watcher:
                     self.window.evaluate_js(UPDATE_STYLE)
                 if any(f.suffix in (".html", ".js") for f in changed_files):
                     self.window.evaluate_js("location.reload()")
+                    self.window.evaluate_js(UPDATE_STYLE)
 
     def watch_user_sources(self):
         """Regularly check and reload user dictionary sources (files in `uer_sources/`)."""
