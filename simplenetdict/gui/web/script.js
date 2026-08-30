@@ -5,6 +5,15 @@ function initApp() {
     document.getElementById("query-input").focus();
 }
 
+// The CSS selector `*:hover::-webkit-scrollbar-thumb` does not work properly in pywebview.
+function initScrollbarToggle() {
+    let scrollContainers = ".sidebar__main, .query__result";
+    document.querySelectorAll(scrollContainers).forEach((element) => {
+        element.addEventListener("mouseenter", () => element.classList.add("is-scrolling"));
+        element.addEventListener("mouseleave", () => element.classList.remove("is-scrolling"));
+    });
+}
+
 async function displayCurrentSource() {
     const currentSourceElement = document.getElementById("source-current");
     const currentSourceRegName = await pywebview.api.current_source_reg_name();
@@ -80,7 +89,7 @@ function assemblePage(pageMeta, pageElement) {
 
 // Handle the error thrown by `pywebview.api.lookup()`.
 function assembleErrorPage(error, word, pageElement) {
-    pageElement.classList.add("error");
+    pageElement.classList.add("is-error");
 
     const titleElement = document.createElement("h1");
     titleElement.appendChild(document.createTextNode(word));
@@ -167,7 +176,7 @@ function assembleLink(itemElement, text, url) {
     itemElement.classList.add("link");
     const linkElement = document.createElement("a");
     linkElement.href = url;
-    linkElement.target = "_blank";
+    linkElement.target = "_blank";  // Open via default browser.
     linkElement.rel = "noopener noreferrer";
     linkElement.appendChild(document.createTextNode(text));
     itemElement.appendChild(linkElement);
