@@ -6,6 +6,9 @@
         /* color */
         --bg-base: #1e2228;
         --bg-surface: #262b33;
+        --bg-overlay: #8e8e8e3f;
+        --fg-stress: #6cf;
+        --fg-muted: #9db1c4;
 
         /* border */
         --border-style: 1px solid;
@@ -15,6 +18,11 @@
         --border-default: var(--border-style) var(--border-default-color);
         --border-strong: var(--border-style) var(--border-strong-color);
         --border-focus: var(--border-style) var(--border-focus-color);
+
+        /* rounded corner */
+        --radius-small: 3px;
+        --radius-medium: 5px;
+        --radius-large: 8px;
     }
 }
 
@@ -62,7 +70,7 @@
     }
 
     button:hover {
-        background: #8e8e8e3f;
+        background: var(--bg-overlay);
         cursor: pointer;
     }
 
@@ -134,9 +142,6 @@
     .query__button {
         flex: 0 0 70px;
         display: flex;
-        position: relative;
-        align-items: center;
-        justify-content: center;
     }
 }
 
@@ -160,8 +165,65 @@
 
     /* main */
     .main {
+        margin: 8px;
+        margin-bottom: 0;
+        background: var(--bg-surface);
+        border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+
         /* open scrollbar */
         min-height: 0;
+    }
+
+    .query {
+        margin: 4px;
+        border: var(--border-strong);
+        border-radius: var(--radius-medium);
+    }
+
+    .query:focus-within {
+        border: var(--border-focus);
+    }
+
+    .query__input {
+        padding-left: 5px;
+        color: var(--fg-stress)
+    }
+
+    .query__input::placeholder {
+        color: var(--fg-muted);
+        opacity: 0.5;
+    }
+
+    .query__button {
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        margin: 4px;
+        padding-bottom: 2px;
+        border-radius: var(--radius-small);
+        color: var(--fg-stress);
+    }
+
+    .query__button:active,
+    .query__button:disabled {
+        background: var(--bg-overlay);
+        color: var(--fg-muted)
+    }
+
+    .query__button .icon {
+        width: 15px;
+        height: 15px;
+        transform: translate(1px, 1px);
+    }
+
+    .query__button::before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        top: 10%;
+        bottom: 10%;
+        width: 1px;
+        background: var(--border-strong-color);
     }
 
     .query__result {
