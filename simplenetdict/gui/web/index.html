@@ -10,9 +10,9 @@
 </head>
 
 <body>
-    <aside>
-        <header>
-            <button id="sidebar-toggle" type="button" data-title="收起侧边栏">
+    <aside class="sidebar">
+        <header class="sidebar__header">
+            <button class="sidebar__toggle" id="sidebar-toggle" type="button" data-title="收起侧边栏">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left">
@@ -22,18 +22,18 @@
                 </svg>
             </button>
         </header>
-        <div>
-            <section>
+        <div class="sidebar__main">
+            <section class="source">
                 <h2>字典源</h2>
                 <p>当前已选择<strong id="source-current"></strong></p>
                 <ul id="source-list"></ul>
             </section>
         </div>
     </aside>
-    <main>
-        <form onsubmit="lookup(); return false;">
-            <input type="text" id="query-input" name="q" placeholder="输入单词">
-            <button type="submit" id="query-button">
+    <main class="main">
+        <form class="query" onsubmit="lookup(); return false;">
+            <input class="query__input" id="query-input" type="text" name="q" placeholder="输入单词">
+            <button class="query__button" id="query-button" type="submit">
                 查词
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -44,7 +44,8 @@
                 </svg>
             </button>
         </form>
-        <article id="query-result"></article>
+        <article class="query__result" id="query-result">
+        </article>
     </main>
 </body>
 

@@ -1,27 +1,176 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+@layer theme, reset, base, layout, components, utilities;
+
+/* theme variables */
+@layer theme {
+    :root {
+        /* color */
+        --bg-base: #1e2228;
+        --bg-surface: #262b33;
+
+        /* border */
+        --border-style: 1px solid;
+        --border-default-color: #42424280;
+        --border-strong-color: #5f5f5fa8;
+        --border-focus-color: #66ccffa8;
+        --border-default: var(--border-style) var(--border-default-color);
+        --border-strong: var(--border-style) var(--border-strong-color);
+        --border-focus: var(--border-style) var(--border-focus-color);
+    }
 }
 
-ul {
-    list-style-type: none;
+/* reset Webview default behaviours to align with intuition */
+@layer reset {
+
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: none;
+    }
+
+    input {
+        background: transparent;
+        border: none;
+    }
+
+    input:focus {
+        outline: none;
+    }
 }
 
-html,
-body {
-    height: 100%;
-    overflow: hidden;
+/* element default behaviours for this app */
+@layer base {
+
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        background: var(--bg-base);
+    }
+
+    button:hover {
+        background: #8e8e8e3f;
+        cursor: pointer;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #5f5f5f5f;
+        border-radius: 2px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #7a7a7a96;
+    }
 }
 
-button {
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    border: none;
+/* page and elemant layout */
+@layer layout {
+
+    body {
+        display: grid;
+        grid-template-areas: "sidebar main";
+        grid-template-rows: 1fr;
+        grid-template-columns: 230px 1fr;
+    }
+
+    /* sidebar */
+    .sidebar {
+        grid-area: sidebar;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar__header {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .sidebar__toggle {
+        display: flex;
+    }
+
+    .sidebar__main {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* main */
+    .main {
+        grid-area: main;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .query {
+        display: flex;
+    }
+
+    .query__input {
+        flex: 1;
+    }
+
+    .query__button {
+        flex: 0 0 70px;
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
-button:hover {
-    cursor: pointer;
-    background: #8e8e8e3f;;
+/* component styles */
+@layer components {
+
+    /*sidebar */
+    .sidebar {
+        border-right: var(--border-default);
+
+        /* open scrollbar */
+        min-height: 0;
+    }
+
+    .sidebar__main {
+        /* open scrollbar */
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+    }
+
+    /* main */
+    .main {
+        /* open scrollbar */
+        min-height: 0;
+    }
+
+    .query__result {
+        /* open scrollbar */
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+    }
 }
+
+/* element special behaviours */
+@layer utilities {}
