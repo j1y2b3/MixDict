@@ -275,6 +275,7 @@
         width: 100%;
         padding: 4px;
         background: var(--bg-raised);
+        border: var(--border-style) var(--bg-raised);
         border-radius: var(--radius-small);
         color: var(--fg-stress);
         text-align: left;
