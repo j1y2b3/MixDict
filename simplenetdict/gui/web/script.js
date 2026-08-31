@@ -179,19 +179,19 @@ function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
     const text = name ? `${name} ${phonetic}` : `${phonetic}`;
     itemElement.appendChild(document.createTextNode(text));
 
-    const displayPlayButton = (itemElement, audio) => {
-        const playButton = document.createElement("button");
-        playButton.type = "button";
-        playButton.appendChild(document.createTextNode("🔊"));
-        playButton.onclick = () => audio.play();
-        itemElement.appendChild(playButton);
-    }
+    const playButton = document.createElement("button");
+    playButton.disabled = true;
+    playButton.type = "button";
+    playButton.appendChild(document.createTextNode("🔊"));
 
     if (!audioUrl) return;
     const audio = new Audio();
-    audio.oncanplay = () => displayPlayButton(itemElement, audio);
+    audio.oncanplay = () => playButton.disabled = false;
     audio.onerror = () => console.warn("Cannot play the audio:", audioUrl);
     audio.src = audioUrl;
+
+    playButton.onclick = () => audio.play();
+    itemElement.appendChild(playButton);
 }
 
 function assembleLink(itemElement, text, url) {
