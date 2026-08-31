@@ -78,7 +78,8 @@ function lookup() {
 }
 
 function assemblePage(pageMeta, pageElement) {
-    if (pageMeta.is_error) pageElement.classList.add("error");  // Handle the error thrown by dictionary source.
+    pageElement.classList.remove("is-error");
+    if (pageMeta.is_error) pageElement.classList.add("is-error");  // Handle the error thrown by dictionary source.
 
     const titleElement = document.createElement("h1");
     titleElement.appendChild(document.createTextNode(pageMeta.word));
