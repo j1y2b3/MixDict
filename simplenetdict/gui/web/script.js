@@ -189,8 +189,11 @@ function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
     audio.oncanplay = () => playButton.disabled = false;
     audio.onerror = () => console.warn("Cannot play the audio:", audioUrl);
     audio.src = audioUrl;
-
-    playButton.onclick = () => audio.play();
+    
+    playButton.onclick = () => {
+        if (audio.paused) { audio.play(); }
+        else { audio.currentTime = 0; audio.pause(); }
+    };
     itemElement.appendChild(playButton);
 }
 
