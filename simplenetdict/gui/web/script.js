@@ -26,6 +26,7 @@ async function displayCurrentSource() {
 async function displayDictSourcesList() {
     const sourcesList = await pywebview.api.list_sources_reg_name();
     const sourcesListElement = document.getElementById("source-list");
+    const currentSourceRegName = await pywebview.api.current_source_reg_name();
 
     let sourceElement, sourceButton;
     let sourceName, sourceNameElement;
@@ -36,6 +37,8 @@ async function displayDictSourcesList() {
         sourceButton = document.createElement("button");
         sourceButton.classList.add("u-button-feedback");
         sourceButton.type = "button";
+        sourceButton.dataset.source = sourceRegName;
+        if (sourceRegName === currentSourceRegName) sourceButton.classList.add("is-selected");
         sourceButton.onclick = () => setSource(sourceRegName);
 
         sourceName = await pywebview.api.get_source_name(sourceRegName);
@@ -57,6 +60,12 @@ async function displayDictSourcesList() {
 
 async function setSource(regName) {
     await pywebview.api.set_source(regName);
+
+    document.querySelectorAll(".source__list button.is-selected")
+        .forEach((sourceButton) => sourceButton.classList.remove("is-selected"));
+    const currentSourceButton = document.querySelector(`.source__list button[data-source="${regName}"]`);
+    if (currentSourceButton) currentSourceButton.classList.add("is-selected");
+
     displayCurrentSource();
 }
 
