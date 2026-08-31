@@ -39,13 +39,13 @@ async function displayDictSourcesList() {
 
         sourceName = await pywebview.api.get_source_name(sourceRegName);
         sourceNameElement = document.createElement("strong");
-        sourceNameElement.classList.add("source-name");
+        sourceNameElement.classList.add("source__name");
         sourceNameElement.appendChild(document.createTextNode(sourceName));
         sourceButton.appendChild(sourceNameElement);
 
         sourceDescription = await pywebview.api.get_source_description(sourceRegName);
         sourceDescriptionElement = document.createElement("small");
-        sourceDescriptionElement.classList.add("source-desc");
+        sourceDescriptionElement.classList.add("source__desc");
         sourceDescriptionElement.appendChild(document.createTextNode(sourceDescription));
         sourceButton.appendChild(sourceDescriptionElement);
 
