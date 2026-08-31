@@ -33,6 +33,7 @@ async function displayDictSourcesList() {
         sourceElement = document.createElement("li");
 
         sourceButton = document.createElement("button");
+        sourceButton.classList.add("u-button-feedback");
         sourceButton.type = "button";
         sourceButton.onclick = () => setSource(sourceRegName);
 

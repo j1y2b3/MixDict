@@ -25,15 +25,15 @@
         <div class="sidebar__main">
             <section class="source">
                 <h2>字典源</h2>
-                <p>当前已选择<strong id="source-current"></strong></p>
-                <ul id="source-list"></ul>
+                <p class="source__current u-truncate">当前已选择<strong id="source-current"></strong></p>
+                <ul class="source__list" id="source-list"></ul>
             </section>
         </div>
     </aside>
     <main class="main">
         <form class="query" onsubmit="lookup(); return false;">
             <input class="query__input" id="query-input" type="text" name="q" placeholder="输入单词">
-            <button class="query__button" id="query-button" type="submit">
+            <button class="query__button u-button-feedback" id="query-button" type="submit">
                 查词
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -44,8 +44,7 @@
                 </svg>
             </button>
         </form>
-        <article class="query__result" id="query-result">
-        </article>
+        <article class="query__result" id="query-result"></article>
     </main>
 </body>
 
