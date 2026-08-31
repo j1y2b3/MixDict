@@ -150,6 +150,7 @@
 
     .sidebar__toggle {
         display: flex;
+        justify-content: center;
     }
 
     .sidebar__main {
@@ -185,6 +186,8 @@
     .query__button {
         flex: 0 0 70px;
         display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .query__result {
@@ -194,6 +197,7 @@
 
     .phonetic {
         display: flex;
+        align-items: center;
     }
 
     .phonetic__play-icons {
@@ -218,7 +222,6 @@
 
     .sidebar__toggle {
         position: relative;
-        justify-content: center;
         color: var(--fg-stress);
         border-radius: var(--radius-large);
     }
@@ -249,7 +252,7 @@
         transition: grid-template-columns 0.6s ease;
     }
 
-    body.is-collapsed .sidebar__toggle svg {
+    body.is-collapsed .sidebar__toggle .icon {
         transform: rotate(180deg);
     }
 
@@ -280,7 +283,7 @@
         font-size: 0.9em;
     }
 
-    .sidebar__main>section>h2 {
+    .sidebar__main>section h2 {
         color: var(--fg-stress);
     }
 
@@ -361,8 +364,6 @@
 
     .query__button {
         position: relative;
-        align-items: center;
-        justify-content: center;
         margin: 4px;
         padding-bottom: 2px;
         border-radius: var(--radius-small);
@@ -412,7 +413,7 @@
         color: var(--fg-stress);
     }
 
-    .query__result>section>h2 {
+    .query__result>section h2 {
         color: var(--fg-stress);
     }
 
@@ -429,7 +430,6 @@
     }
 
     .phonetic {
-        align-items: center;
         gap: 6px;
     }
 
