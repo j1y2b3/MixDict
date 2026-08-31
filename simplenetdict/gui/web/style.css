@@ -132,6 +132,10 @@
         grid-template-columns: 230px 1fr;
     }
 
+    body.is-collapsed {
+        grid-template-columns: 40px 1fr;
+    }
+
     /* sidebar */
     .sidebar {
         grid-area: sidebar;
@@ -233,6 +237,23 @@
         transform: scale(1);
     }
 
+    body {
+        transition: grid-template-columns 0.6s ease;
+    }
+
+    body.is-collapsed .sidebar__toggle svg {
+        transform: rotate(180deg);
+    }
+
+    body.is-collapsed .sidebar__toggle::after {
+        left: 0;
+    }
+
+    body.is-collapsed .sidebar__main {
+        visibility: hidden;
+        transition: visibility 0s 0s;
+    }
+
     .sidebar__main {
         gap: 6px;
 
@@ -240,6 +261,7 @@
         min-height: 0;
         overflow-y: auto;
         scrollbar-gutter: stable;
+        transition: visibility 0s 0.3s;
     }
 
     .sidebar__main>section {
