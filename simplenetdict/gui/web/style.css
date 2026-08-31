@@ -191,6 +191,14 @@
         display: flex;
         flex-direction: column;
     }
+
+    .phonetic {
+        display: flex;
+    }
+
+    .phonetic__play-icons {
+        display: flex;
+    }
 }
 
 /* component styles */
@@ -418,6 +426,40 @@
 
     .query__result.is-error>section {
         color: color-mix(in srgb, var(--fg-error), var(--fg-default) 80%);
+    }
+
+    .phonetic {
+        align-items: center;
+        gap: 6px;
+    }
+
+    .phonetic__player {
+        border-radius: var(--radius-large);
+        color: var(--fg-stress);
+    }
+
+    .phonetic__player:active {
+        color: var(--fg-default);
+    }
+
+    .phonetic__play-icons .icon {
+        display: none;
+    }
+
+    .phonetic__play-icons .volume2 {
+        display: block;
+    }
+
+    .phonetic__player:disabled {
+        color: var(--fg-muted);
+    }
+
+    .phonetic__player:disabled .icon {
+        display: none;
+    }
+
+    .phonetic__player:disabled .volume-1 {
+        display: block;
     }
 }
 
