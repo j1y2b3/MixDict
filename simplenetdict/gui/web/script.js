@@ -1,3 +1,4 @@
+initScrollbarToggle()
 window.addEventListener("pywebviewready", initApp);
 function initApp() {
     displayCurrentSource();
