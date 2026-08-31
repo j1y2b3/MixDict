@@ -9,7 +9,8 @@
         --bg-raised: #2f363f;
         --fg-stress: #6cf;
         --fg-default: #bcc9d4;
-        --fg-muted: #9db1c4;
+        --fg-muted: #8e9ba7;
+        --fg-error: #e00;
 
         /* button background color */
         --btn-bg-active-base: #fff;
@@ -180,6 +181,11 @@
     .query__button {
         flex: 0 0 70px;
         display: flex;
+    }
+
+    .query__result {
+        display: flex;
+        flex-direction: column;
     }
 }
 
@@ -354,10 +360,41 @@
     }
 
     .query__result {
+        padding: 6px;
+        padding-right: 3px;
+        gap: 6px;
+
         /* open scrollbar */
         min-height: 0;
         overflow-y: auto;
         scrollbar-gutter: stable;
+    }
+
+    .query__result>h1,
+    .query__result>section {
+        padding: 3px 6px;
+        border-radius: var(--radius-medium);
+        background: var(--bg-raised);
+    }
+
+    .query__result>h1 {
+        color: var(--fg-stress);
+    }
+
+    .query__result>section>h2 {
+        color: var(--fg-stress);
+    }
+
+    .query__result .text {
+        margin: 10px 0;
+    }
+
+    .query__result.is-error>section>h2 {
+        color: var(--fg-error);
+    }
+
+    .query__result.is-error>section {
+        color: color-mix(in srgb, var(--fg-error), var(--fg-default) 80%);
     }
 }
 
