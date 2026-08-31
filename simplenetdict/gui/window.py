@@ -81,7 +81,8 @@ class Window:
             height=self.height,
             min_size=config.WINDOW_MIN_SIZE,
             screen=self.screen,  # pywebview automatically centers the window.
-            text_select=True
+            text_select=True,
+            background_color="#000000"
         )
 
     def get_window(self):
