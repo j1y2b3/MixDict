@@ -99,6 +99,10 @@
         }
     }
 
+    .icon {
+        display: block;
+    }
+
     /* scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
@@ -491,12 +495,8 @@
             }
         }
 
-        .icon {
+        .icon:not(.volume2) {
             display: none;
-        }
-
-        .volume2 {
-            display: block;
         }
     }
 }
