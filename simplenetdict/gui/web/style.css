@@ -173,6 +173,14 @@
         }
     }
 
+    .setting__list {
+        display: flex;
+
+        button {
+            display: flex;
+        }
+    }
+
     .source__list {
         display: flex;
         flex-direction: column;
@@ -324,6 +332,24 @@
                 }
             }
         }
+    }
+
+    .setting__list {
+        gap: 4px;
+
+        button {
+            padding: 3px;
+            border-radius: var(--radius-large);
+            background: var(--bg-raised);
+
+            &:hover {
+                background: var(--btn-bg-raised-active);
+            }
+        }
+    }
+
+    .setting__theme .icon:not(.setting__sys-theme) {
+        display: none;
     }
 
     .source__current {
