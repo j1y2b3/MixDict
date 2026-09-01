@@ -237,24 +237,20 @@ function assemblePhonetic(itemElement, phonetic, name, audioUrl) {
     audio.oncanplay = () => playButton.disabled = false;
     audio.onerror = () => console.warn("Cannot play the audio:", audioUrl);
     audio.src = audioUrl;
-
     const icons = playButton.querySelectorAll(".icon");
-    const showIcon = (i) => {
-        icons.forEach((icon, j) => icon.style.display = (j === i ? "block" : "none"));
-    }
 
     let waveTimer;
     const startWave = () => {
         let i = -1;  // Show icons starting from `volume0`.
         waveTimer = setInterval(() => {
             i = (i + 1) % (icons.length - 1);  // Exclude `volume-1` icon.
-            showIcon(i);
+            showIconfromList(icons, i);
         }, 300);
     }
     const stopWave = () => {
         clearInterval(waveTimer);
         waveTimer = null;
-        showIcon(2);
+        showIconfromList(icons, 2);
     }
 
     audio.onplay = startWave;
@@ -277,4 +273,8 @@ function assembleLink(itemElement, text, url) {
     linkElement.rel = "noopener noreferrer";
     linkElement.appendChild(document.createTextNode(text));
     itemElement.appendChild(linkElement);
+}
+
+function showIconfromList(icons, i) {
+    icons.forEach((icon, j) => icon.style.display = (j === i ? "block" : "none"));
 }
