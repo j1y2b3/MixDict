@@ -2,7 +2,133 @@
 
 /* theme variables */
 @layer theme {
+
+    /* default theme */
     :root {
+        color-scheme: light;
+
+        /* color */
+        --bg-base: #d7dde4;
+        --bg-surface: #eff2f4;
+        --bg-raised: #fafafa;
+        --fg-stress: #3b5183;
+        --fg-default: #22303e;
+        --fg-muted: #5c6b7a;
+        --fg-error: #e00;
+
+        /* button background color */
+        --btn-bg-active-base: #000;
+        --btn-bg-default-active: color-mix(in srgb,
+                transparent,
+                var(--btn-bg-active-base) 15%);
+        --btn-bg-raised-active: color-mix(in srgb,
+                var(--bg-raised),
+                transparent 60%);
+        --btn-bg-selected: color-mix(in srgb,
+                var(--bg-raised),
+                var(--border-focus-color) 30%);
+        --btn-bg-selected-active: color-mix(in srgb,
+                var(--btn-bg-selected),
+                transparent 30%);
+
+        /* border */
+        --border-style: 1px solid;
+        --border-default-color: #c4c4c480;
+        --border-strong-color: #adadada8;
+        --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
+        --border-default: var(--border-style) var(--border-default-color);
+        --border-strong: var(--border-style) var(--border-strong-color);
+        --border-focus: var(--border-style) var(--border-focus-color);
+
+        /* rounded corner */
+        --radius-small: 3px;
+        --radius-medium: 5px;
+        --radius-large: 8px;
+    }
+
+    /* follow system dark theme */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: dark;
+
+            /* color */
+            --bg-base: #1e2228;
+            --bg-surface: #262b33;
+            --bg-raised: #2f363f;
+            --fg-stress: #6cf;
+            --fg-default: #bcc9d4;
+            --fg-muted: #8e9ba7;
+            --fg-error: #e00;
+
+            /* button background color */
+            --btn-bg-active-base: #fff;
+            --btn-bg-default-active: color-mix(in srgb,
+                    transparent,
+                    var(--btn-bg-active-base) 15%);
+            --btn-bg-raised-active: color-mix(in srgb,
+                    var(--bg-raised),
+                    transparent 60%);
+            --btn-bg-selected: color-mix(in srgb,
+                    var(--bg-raised),
+                    var(--border-focus-color) 30%);
+            --btn-bg-selected-active: color-mix(in srgb,
+                    var(--btn-bg-selected),
+                    transparent 30%);
+
+            /* border */
+            --border-default-color: #42424280;
+            --border-strong-color: #5f5f5fa8;
+            --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
+        }
+    }
+
+    /* light theme */
+    :root[data-theme="light"] {
+        color-scheme: light;
+
+        /* color */
+        --bg-base: #d7dde4;
+        --bg-surface: #eff2f4;
+        --bg-raised: #fafafa;
+        --fg-stress: #3b5183;
+        --fg-default: #22303e;
+        --fg-muted: #5c6b7a;
+        --fg-error: #e00;
+
+        /* button background color */
+        --btn-bg-active-base: #999;
+        --btn-bg-default-active: color-mix(in srgb,
+                transparent,
+                var(--btn-bg-active-base) 15%);
+        --btn-bg-raised-active: color-mix(in srgb,
+                var(--bg-raised),
+                var(--border-focus-color) 20%);
+        --btn-bg-selected: color-mix(in srgb,
+                var(--bg-raised),
+                var(--border-focus-color) 30%);
+        --btn-bg-selected-active: color-mix(in srgb,
+                var(--btn-bg-selected),
+                var(--border-focus-color) 10%);
+
+        /* border */
+        --border-style: 1px solid;
+        --border-default-color: #c4c4c480;
+        --border-strong-color: #adadada8;
+        --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
+        --border-default: var(--border-style) var(--border-default-color);
+        --border-strong: var(--border-style) var(--border-strong-color);
+        --border-focus: var(--border-style) var(--border-focus-color);
+
+        /* rounded corner */
+        --radius-small: 3px;
+        --radius-medium: 5px;
+        --radius-large: 8px;
+    }
+
+    /* dark theme */
+    :root[data-theme="dark"] {
+        color-scheme: dark;
+
         /* color */
         --bg-base: #1e2228;
         --bg-surface: #262b33;
@@ -28,18 +154,9 @@
                 transparent 30%);
 
         /* border */
-        --border-style: 1px solid;
         --border-default-color: #42424280;
         --border-strong-color: #5f5f5fa8;
-        --border-focus-color: #66ccffa8;
-        --border-default: var(--border-style) var(--border-default-color);
-        --border-strong: var(--border-style) var(--border-strong-color);
-        --border-focus: var(--border-style) var(--border-focus-color);
-
-        /* rounded corner */
-        --radius-small: 3px;
-        --radius-medium: 5px;
-        --radius-large: 8px;
+        --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
     }
 }
 

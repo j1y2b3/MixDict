@@ -65,14 +65,22 @@ function initSidebarSectionsToggle() {
 }
 
 function initThemeToggle () {
+    const root = document.documentElement;
     const toggle = document.getElementById("theme-toggle");
     if (!toggle) return;
 
     const icons = toggle.querySelectorAll(".icon");
-    let i = 0;
+    const themes = ["system", "light", "dark"];
+    let i = -1;
     toggle.addEventListener("click", () => {
-        showIconfromList(icons, i);
         i = (i + 1) % icons.length;
+        showIconfromList(icons, i);
+
+        if (themes[i] === "system") {
+            root.removeAttribute("data-theme");
+        } else {
+            root.dataset.theme = themes[i];
+        }
     });
 }
 
