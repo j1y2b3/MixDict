@@ -154,8 +154,19 @@
     }
 
     .sidebar__main {
+        flex: 1;
         display: flex;
         flex-direction: column;
+
+        >section>header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            >button {
+                display: flex;
+            }
+        }
     }
 
     .source__list {
@@ -228,6 +239,7 @@
         &::after {
             content: attr(data-title);
             position: absolute;
+            z-index: 1;
             top: calc(100% + 6px);
             padding: 4px 10px 6px;
             border: var(--border-default);
@@ -283,6 +295,29 @@
 
             h2 {
                 color: var(--fg-stress);
+            }
+
+            >header {
+
+                >button {
+                    border-radius: var(--radius-large);
+                }
+
+                .icon {
+                    transform: rotate(0deg);
+                    transition: transform 0.2s ease;
+                }
+            }
+
+            &.is-collapsed {
+
+                >*:not(header) {
+                    display: none;
+                }
+
+                >header .icon {
+                    transform: rotate(90deg);
+                }
             }
         }
     }

@@ -38,6 +38,7 @@ const PLAY_ICONS_DOM = `
 `;
 
 initSidebarToggle()
+initSidebarSectionsToggle()
 initScrollbarToggle()
 window.addEventListener("pywebviewready", initApp);
 function initApp() {
@@ -53,6 +54,15 @@ function initSidebarToggle() {
         const collapsed = document.body.classList.toggle("is-collapsed");
         toggle.dataset.title = collapsed ? "展开侧边栏" : "收起侧边栏";
     });
+}
+
+function initSidebarSectionsToggle() {
+    document.querySelectorAll(".sidebar__main>section>header>button")
+        .forEach((toggle) => {
+            toggle.addEventListener("click", () => {
+                toggle.parentElement?.parentElement?.classList.toggle("is-collapsed");
+            });
+        });
 }
 
 // The CSS selector `*:hover::-webkit-scrollbar-thumb` does not work properly in pywebview.
