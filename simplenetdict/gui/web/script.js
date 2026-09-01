@@ -39,6 +39,8 @@ initSidebarToggle()
 initSidebarSectionsToggle()
 initThemeToggle()
 initScrollbarToggle()
+document.addEventListener("dragstart", (e) => e.preventDefault());
+
 window.addEventListener("pywebviewready", initApp);
 function initApp() {
     displayCurrentSource();
