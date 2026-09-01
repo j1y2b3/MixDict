@@ -35,17 +35,49 @@ const PLAY_ICONS_DOM = `
 </svg>
 `;
 
+initSidebarResizer()
 initSidebarToggle()
 initSidebarSectionsToggle()
 initThemeToggle()
 initScrollbarToggle()
-document.addEventListener("dragstart", (e) => e.preventDefault());
+document.addEventListener("dragstart", (event) => event.preventDefault());
 
 window.addEventListener("pywebviewready", initApp);
 function initApp() {
     displayCurrentSource();
     displayDictSourcesList();
     document.getElementById("query-input").focus();
+}
+
+function initSidebarResizer() {
+    const resizer = document.querySelector(".sidebar__resizer");
+    if (!resizer) return;
+    const body = document.body;
+    const bodyStyles = getComputedStyle(body);
+
+    const SIDEBAR_MIN_WIDTH_STR = bodyStyles.getPropertyValue("--sidebar-min-width");
+    const SIDEBAR_MAX_WIDTH_STR = bodyStyles.getPropertyValue("--sidebar-max-width");
+    const SIDEBAR_MIN_WIDTH = parseFloat(SIDEBAR_MIN_WIDTH_STR) ?? 0;
+    const SIDEBAR_MAX_WIDTH = parseFloat(SIDEBAR_MAX_WIDTH_STR) ?? body.getBoundingClientRect().right;
+    const BODY_LEFT_X = body.getBoundingClientRect().left;
+    
+    resizer.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        resizer.setPointerCapture(event.pointerId);  // Capture continues even after dragging out the handle.
+
+        const onMove = (event) => {
+            body.classList.add("u-no-transition");
+            const sidebarWidth = Math.min(Math.max(event.clientX - BODY_LEFT_X, SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH);
+            body.style.setProperty("--sidebar-width", `${sidebarWidth}px`);
+        }
+        const onUp = () => {
+            body.classList.remove("u-no-transition");
+            document.removeEventListener("pointermove", onMove);
+            document.removeEventListener("pointerup", onUp);
+        }
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
+    });
 }
 
 function initSidebarToggle() {
@@ -66,7 +98,7 @@ function initSidebarSectionsToggle() {
         });
 }
 
-function initThemeToggle () {
+function initThemeToggle() {
     const root = document.documentElement;
     const toggle = document.getElementById("theme-toggle");
     if (!toggle) return;
@@ -161,8 +193,8 @@ function lookup() {
     pageElement.classList.remove("error");
 
     pywebview.api.lookup(word)
-        .then(response => assemblePage(response, pageElement))
-        .catch(error => assembleErrorPage(error, word, pageElement))
+        .then((response) => assemblePage(response, pageElement))
+        .catch((error) => assembleErrorPage(error, word, pageElement))
         .finally(() => button.disabled = false);
 }
 
