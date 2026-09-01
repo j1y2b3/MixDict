@@ -211,7 +211,7 @@
         align-items: center;
     }
 
-    .phonetic__play-icons {
+    .phonetic__player {
         display: flex;
     }
 }
@@ -490,9 +490,7 @@
                 display: block;
             }
         }
-    }
 
-    .phonetic__play-icons {
         .icon {
             display: none;
         }
