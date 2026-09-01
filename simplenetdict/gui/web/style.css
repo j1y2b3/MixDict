@@ -269,7 +269,7 @@
     }
 
     body {
-        transition: grid-template-columns 0.6s ease;
+        transition: grid-template-columns 0.2s ease;
     }
 
     .sidebar__main {
@@ -279,7 +279,7 @@
         min-height: 0;
         overflow-y: auto;
         scrollbar-gutter: stable;
-        transition: visibility 0s 0.3s;
+        transition: visibility 0s 0.2s;
 
         body.is-collapsed & {
             visibility: hidden;
