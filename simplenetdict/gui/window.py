@@ -23,11 +23,23 @@ class DictApi:
 
         self.sources_registry = sources_registry
         self.source_reg_name = self.sources_registry.default_source_reg_name
-        self.source: DictionarySource
         self.set_source(self.source_reg_name)
+
+    @property
+    def source(self) -> DictionarySource:
+        """The current source instance (always fetched fresh from the registry)."""
+
+        source = self.sources_registry.get(self.source_reg_name)
+        if source is None:  # Need update `self.source_reg_name`.
+            logger.info("Current source %r removed, reverted to %r",
+                        self.source_reg_name, self.sources_registry.default_source_reg_name)
+            self.source_reg_name = self.sources_registry.default_source_reg_name
+            return self.sources_registry.get(self.source_reg_name)  # type: ignore
+        return source
 
     def get_source_name(self, reg_name: str) -> str | None:
         """Return the name of the source for `reg_name`."""
+
         source = self.sources_registry.get(reg_name)
         if source is None:
             return None
@@ -35,6 +47,7 @@ class DictApi:
 
     def get_source_description(self, reg_name: str) -> str:
         """Return the description of the source for `reg_name`."""
+
         source = self.sources_registry.get(reg_name)
         if source is None:
             return ""
@@ -42,7 +55,7 @@ class DictApi:
 
     def current_source_reg_name(self) -> str:
         """Return the `reg_name` of the current source."""
-        return self.source_reg_name
+        return self.source.reg_name
 
     def list_sources_reg_name(self) -> list[str]:
         """Return the `reg_name`s of all registered sources."""
@@ -50,16 +63,17 @@ class DictApi:
 
     def set_source(self, reg_name: str):
         """Set the current source to `reg_name`."""
-        source = self.sources_registry.get(reg_name)
-        if source is None:
+
+        if self.sources_registry.get(reg_name) is None:
             raise ValueError(f"Unknown source: {reg_name!r}")
-        self.source = source
-        self.source_reg_name = source.reg_name
+        self.source_reg_name = reg_name
 
     def lookup(self, word: str) -> dict:
         """Use current source looking up `word`, return data format according to simplenetdict/schema.py."""
-        logger.debug("Look up %r via %s", word, self.source.reg_name)
-        return self.source.lookup(word)
+
+        source = self.source
+        logger.debug("Look up %r via %s %s", word, source.reg_name, source)
+        return source.lookup(word)
 
 
 class Window:
