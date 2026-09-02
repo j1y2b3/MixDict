@@ -14,7 +14,7 @@ from simplenetdict.core.sources.base import DictionarySource, APIError, safe_get
 logger = logging.getLogger(__name__)
 
 
-class Youdao(DictionarySource):
+class Source(DictionarySource):
     """Youdao dictionary source."""
 
     def __init__(self):

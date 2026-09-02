@@ -22,7 +22,7 @@ WORD_KEY = "word"
 logger = logging.getLogger(__name__)
 
 
-class FreeDict(DictionarySource):
+class Source(DictionarySource):
     """Free Dictionary dictionary source."""
 
     def __init__(self):

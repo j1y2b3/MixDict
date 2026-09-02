@@ -29,8 +29,8 @@ class SourcesRegistry:
 
     def _register_builtins(self):
         """Register the built-in dictionary sources."""
-        self.register(youdao.Youdao())
-        self.register(freedict.FreeDict())
+        self.register(youdao.Source())
+        self.register(freedict.Source())
 
         # Prevent the default source from being not registered
         if self.default_source_reg_name not in self.sources:
