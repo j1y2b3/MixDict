@@ -1,3 +1,4 @@
+console.debug("[init] script.js loading...")
 const PLAY_ICONS_DOM = `
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -47,6 +48,7 @@ function initApp() {
     displayCurrentSource();
     displayDictSourcesList();
     document.getElementById("query-input").focus();
+    console.debug("[init] app initialising finished")
 }
 
 function initSidebarResizer() {
@@ -60,7 +62,7 @@ function initSidebarResizer() {
     const SIDEBAR_MIN_WIDTH = parseFloat(SIDEBAR_MIN_WIDTH_STR) ?? 0;
     const SIDEBAR_MAX_WIDTH = parseFloat(SIDEBAR_MAX_WIDTH_STR) ?? body.getBoundingClientRect().right;
     const BODY_LEFT_X = body.getBoundingClientRect().left;
-    
+
     resizer.addEventListener("pointerdown", (event) => {
         event.preventDefault();
         resizer.setPointerCapture(event.pointerId);  // Capture continues even after dragging out the handle.
@@ -193,12 +195,21 @@ function lookup() {
     pageElement.classList.remove("error");
 
     pywebview.api.lookup(word)
-        .then((response) => assemblePage(response, pageElement))
-        .catch((error) => assembleErrorPage(error, word, pageElement))
+        .then((response) => {
+            console.debug("[lookup]", word, "->", response);
+            assemblePage(response, pageElement);
+        })
+        .catch((error) => {
+            console.error("[lookup] failed:", word, error);
+            assembleErrorPage(error, word, pageElement);
+        })
         .finally(() => button.disabled = false);
 }
 
 function assemblePage(pageMeta, pageElement) {
+    if (!pageMeta || typeof pageMeta !== "object" || pageMeta.is_error === undefined)
+        console.error("[assemblePage] unknown pageMeta:", pageMeta);
+
     pageElement.classList.remove("is-error");
     if (pageMeta.is_error) pageElement.classList.add("is-error");  // Handle the error thrown by dictionary source.
 
