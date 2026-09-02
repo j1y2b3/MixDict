@@ -30,7 +30,9 @@ def setup_logger() -> logging.Logger:
 if __name__ == "__main__":
     logger = setup_logger()
     logger.info("Starting SimpleNetDict...")
-    
-    window = Window(SourcesRegistry())
-    Watcher(window.get_window())
+
+    sources_registry = SourcesRegistry()
+    window = Window(sources_registry)
+    if config.DEBUG:
+        Watcher(window.get_window(), sources_registry)
     window.run()

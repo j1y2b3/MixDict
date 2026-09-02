@@ -3,6 +3,8 @@
 Sources are keyed by their ASCII `reg_name`.
 """
 
+from pathlib import Path
+
 from simplenetdict import config
 from simplenetdict import resources
 from simplenetdict.core.sources import youdao, freedict
@@ -17,6 +19,7 @@ class SourcesRegistry:
 
         self.sources: dict[str, DictionarySource] = {}
         self._builtin_reg_names: set[str] = set()
+        self.user_sources_reg_map: dict[Path, str] = {}  # For hotupdate.
         self.default_source_reg_name: str = config.DEFAULT_DICTIONARY_SOURCE
         self._register_builtins()
         self._register_users()
@@ -70,6 +73,7 @@ class SourcesRegistry:
             if source is None:
                 continue
             self.register(source)
+            self.user_sources_reg_map[file] = source.reg_name
 
     def get(self, reg_name: str) -> DictionarySource | None:
         """Return the dictionary source for `reg_name`, or None."""
