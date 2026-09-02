@@ -5,6 +5,8 @@ from simplenetdict import config
 from simplenetdict.core.registry import SourcesRegistry
 from simplenetdict.core.sources.base import DictionarySource
 
+pytestmark = pytest.mark.usefixtures("isolated_user_sources")
+
 
 class FakeSource(DictionarySource):
     """A minimal source used only in tests."""
@@ -40,11 +42,22 @@ class TestSourcesRegistry:
         with pytest.raises(ValueError):
             reg.register(FakeSource(reg_name="Youdao"))
 
-    def test_force_overwrites(self):
+    def test_force_overwrites_non_builtin(self):
         reg = SourcesRegistry()
-        reg.register(FakeSource(reg_name="Youdao", name="覆盖"), force=True)
-        source = reg.get("Youdao")
+        reg.register(FakeSource(reg_name="Fake"))
+        reg.register(FakeSource(reg_name="Fake", name="覆盖"), force=True)
+        source = reg.get("Fake")
         assert source.name == "覆盖"
+
+    def test_force_cannot_overwrite_builtin(self):
+        reg = SourcesRegistry()
+        with pytest.raises(ValueError):
+            reg.register(FakeSource(reg_name="Youdao", name="覆盖"), force=True)
+
+    def test_cannot_unregister_builtin(self):
+        reg = SourcesRegistry()
+        with pytest.raises(ValueError):
+            reg.unregister("Youdao")
 
     def test_get_unknown_returns_none(self):
         reg = SourcesRegistry()
