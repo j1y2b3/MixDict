@@ -90,3 +90,33 @@ class TestSourcesRegistry:
         monkeypatch.setattr(config, "DEFAULT_DICTIONARY_SOURCE", "Nope")
         with pytest.raises(ValueError):
             SourcesRegistry()
+
+    def test_user_sources_reg_map_always_exists(self):
+        # 无论 DEBUG 与否,registry 总提供热更新账目,避免 watcher 线程 AttributeError。
+        reg = SourcesRegistry()
+        assert reg.user_sources_reg_map == {}
+
+    def test_register_users_records_map(self, monkeypatch, tmp_path):
+        from simplenetdict import resources
+
+        plugin_dir = tmp_path / "plugins"
+        plugin_dir.mkdir()
+        plugin = plugin_dir / "demo.py"
+        plugin.write_text(
+            "from simplenetdict.core.sources.base import DictionarySource\n"
+            "\n"
+            "\n"
+            "class Source(DictionarySource):\n"
+            "    def __init__(self):\n"
+            "        super().__init__(reg_name='Demo', name='演示')\n"
+            "\n"
+            "    def _lookup(self, word: str) -> dict:\n"
+            "        return {'word': word}\n",
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(resources, "user_sources_dir", lambda: plugin_dir)
+
+        reg = SourcesRegistry()
+        assert reg.user_sources_reg_map[plugin] == "Demo"
+        assert reg.get("Demo") is not None
+        assert "Demo" in reg.list()
