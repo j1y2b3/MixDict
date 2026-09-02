@@ -2,13 +2,22 @@
 
 Works in both source code (not packed) and PyInstaller-frozen (packed) modes.
 """
+
+import logging
+import runpy
 import sys
 from pathlib import Path
 
 from platformdirs import user_cache_dir
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from simplenetdict.core.sources.base import DictionarySource
+
 # Not packed: project root (parent of simplenetdict/). Packed: PyInstaller temp dir.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+
+logger = logging.getLogger(__name__)
 
 def web_path(name: str) -> Path:
     """Return the absolute path of a file under simplenetdict/gui/web/."""
@@ -33,6 +42,28 @@ def user_sources_dir() -> Path:
 def user_source_path(name: str) -> Path:
     """Return the absolute path of a user source file under the user sources directory."""
     return user_sources_dir() / name
+
+def load_user_source(file_path: Path | str) -> "DictionarySource | None":
+    """Load a single user dictionary source file and return its dictionary source."""
+    logger.debug("Loading user source %s", file_path)
+
+    try:
+        namespace = runpy.run_path(str(file_path))
+    except Exception:
+        logger.exception("Failed to load user source %s", file_path)
+        return None
+
+    from simplenetdict.core.sources.base import DictionarySource  # For runtime type checking.
+    source = namespace.get("Source")
+    if source is None:
+        logger.error("User source %s: lost `Source` class", file_path)
+        return None
+    if not (isinstance(source, type) and issubclass(source, DictionarySource)):
+        logger.error("User source %s: unknown `Source` type: '%s'", file_path, type(source).__name__)
+        return None
+    
+    logger.debug("Loaded user source %s", file_path)
+    return source()  # type: ignore[call-arg]
 
 def webview_storage_path() -> Path:
     """Return a fixed cross-platform cache dir for pywebview WebView2 data."""

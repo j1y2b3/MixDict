@@ -4,6 +4,7 @@ Sources are keyed by their ASCII `reg_name`.
 """
 
 from simplenetdict import config
+from simplenetdict import resources
 from simplenetdict.core.sources import youdao, freedict
 from simplenetdict.core.sources.base import DictionarySource
 
@@ -16,6 +17,7 @@ class SourcesRegistry:
         self.sources: dict[str, DictionarySource] = {}
         self.default_source_reg_name: str = config.DEFAULT_DICTIONARY_SOURCE
         self._register_builtins()
+        self._register_users()
 
     def register(self, source: DictionarySource, force: bool = False):
         """Register a source instance under its `reg_name`.
@@ -27,6 +29,16 @@ class SourcesRegistry:
             raise ValueError(f"Source {source.reg_name!r} already registered; use force=True to overwrite.")
         self.sources[source.reg_name] = source
 
+    def unregister(self, reg_name: str):
+        """Unregister the source instance with the given `reg_name`.
+
+        Does nothing if `reg_name` is not currently registered.
+        """
+        if self.sources.pop(reg_name, None) is None:
+            return
+        if reg_name == self.default_source_reg_name:
+            self.default_source_reg_name = config.DEFAULT_DICTIONARY_SOURCE
+
     def _register_builtins(self):
         """Register the built-in dictionary sources."""
         self.register(youdao.Source())
@@ -36,6 +48,14 @@ class SourcesRegistry:
         if self.default_source_reg_name not in self.sources:
             raise ValueError(f"Default source {self.default_source_reg_name!r} is not registered; "
                              "check config.DEFAULT_DICTIONARY_SOURCE.")
+
+    def _register_users(self):
+        """Scan and register the user dictionary sources."""
+        for file in sorted(resources.user_sources_dir().glob("*.py")):
+            source = resources.load_user_source(file)
+            if source is None:
+                continue
+            self.register(source)
 
     def get(self, reg_name: str) -> DictionarySource | None:
         """Return the dictionary source for `reg_name`, or None."""
