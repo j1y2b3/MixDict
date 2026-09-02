@@ -8,7 +8,7 @@ from unittest import mock
 import pytest
 
 from simplenetdict.core.sources.base import APIError
-from simplenetdict.core.sources.freedict import FreeDict, fetch_json, parse_json
+from simplenetdict.core.sources.freedict import Source as FreeDict, fetch_json, parse_json
 
 NOT_FOUND = {
     "isfound": False,

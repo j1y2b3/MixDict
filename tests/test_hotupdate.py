@@ -1,6 +1,7 @@
 """hotupdate 模块的单元测试(不依赖 GUI 线程循环)。"""
 from pathlib import Path
 
+from simplenetdict.core.registry import SourcesRegistry
 from simplenetdict.hotupdate import UPDATE_STYLE, Watcher
 
 
@@ -69,7 +70,11 @@ class TestWatchGui:
         calls = []
         fake_window = type("FakeWindow", (), {"evaluate_js": lambda self, js: calls.append(js)})()
         monkeypatch.setattr(resources, "web_path", lambda name: tmp_path)
-        Watcher(fake_window, interval=0.05)
+
+        empty_sources = tmp_path / "empty_user_sources"
+        empty_sources.mkdir()
+        monkeypatch.setattr(resources, "user_sources_dir", lambda: empty_sources)
+        Watcher(fake_window, SourcesRegistry(), interval=0.05)
 
         # CSS 变更只触发样式重载。
         (tmp_path / "a.css").write_text("body {}")
@@ -90,10 +95,14 @@ class TestWatchGui:
         calls = []
         fake_window = type("FakeWindow", (), {"evaluate_js": lambda self, js: calls.append(js)})()
         monkeypatch.setattr(resources, "web_path", lambda name: tmp_path)
-        Watcher(fake_window, interval=0.05)
 
-        # JS 变更触发整页刷新(而非仅样式重载)。
+        empty_sources = tmp_path / "empty_user_sources"
+        empty_sources.mkdir()
+        monkeypatch.setattr(resources, "user_sources_dir", lambda: empty_sources)
+        Watcher(fake_window, SourcesRegistry(), interval=0.05)
+
+        # JS 变更触发整页刷新(并连带补刷样式)。
         (tmp_path / "a.js").write_text("console.log(1)")
         time.sleep(0.3)
         assert any("location.reload()" in call for call in calls)
-        assert not any(UPDATE_STYLE in call for call in calls)
+        assert any(UPDATE_STYLE in call for call in calls)
