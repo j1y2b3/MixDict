@@ -224,6 +224,7 @@ function assemblePage(pageMeta, pageElement) {
 
 // Handle the error thrown by `pywebview.api.lookup()`.
 function assembleErrorPage(error, word, pageElement) {
+    pageElement.replaceChildren();
     pageElement.classList.add("is-error");
 
     const titleElement = document.createElement("h1");
