@@ -122,6 +122,14 @@ class Watcher:
 
                 old_files_state = cur_files_state
 
+                for file in removed_files:
+                    removed_reg_name = source_files_map.pop(file, "")
+                    try:
+                        self.sources_registry.unregister(removed_reg_name)
+                    except Exception:
+                        logger.exception("Failed to unregister user source %s", file)
+                        continue
+
                 for file in changed_files:
                     if file.suffix != ".py":
                         continue
@@ -144,14 +152,6 @@ class Watcher:
                         source_files_map[file] = new_reg_name  # Update local record.
                     except Exception:
                         logger.exception("Failed to register user source %s", file)
-                        continue
-
-                for file in removed_files:
-                    removed_reg_name = source_files_map.pop(file, "")
-                    try:
-                        self.sources_registry.unregister(removed_reg_name)
-                    except Exception:
-                        logger.exception("Failed to unregister user source %s", file)
                         continue
 
                 self.window.evaluate_js(REFRESH_DICT_LIST)
