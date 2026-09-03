@@ -107,7 +107,7 @@ function initThemeToggle() {
 
     const icons = toggle.querySelectorAll(".icon");
     const themes = ["system", "light", "dark"];
-    let i = -1;
+    let i = 0;
     toggle.addEventListener("click", () => {
         i = (i + 1) % icons.length;
         showIconfromList(icons, i);
