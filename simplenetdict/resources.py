@@ -48,7 +48,7 @@ def load_user_source(file_path: Path | str) -> "DictionarySource | None":
     logger.debug("Loading user source %s", file_path)
 
     try:
-        namespace = runpy.run_path(str(file_path))
+        namespace = runpy.run_path(str(file_path), run_name=f"user_sources.{Path(file_path).stem}")
     except Exception:
         logger.exception("Failed to load user source %s", file_path)
         return None
