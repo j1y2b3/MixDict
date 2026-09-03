@@ -1,6 +1,8 @@
 """SimpleNetDict GUI (pywebview)."""
 
 import logging
+import json
+from pathlib import Path
 
 import webview
 
@@ -72,8 +74,15 @@ class DictApi:
         """Use current source looking up `word`, return data format according to simplenetdict/schema.py."""
 
         source = self.source
+        result_page = source.lookup(word)
+
         logger.debug("Look up %r via %s %s", word, source.reg_name, source)
-        return source.lookup(word)
+        if config.DEBUG:
+            dump_path = Path("tmp") / f"page-{word}.json"
+            dump_path.write_text(json.dumps(result_page, ensure_ascii=False, indent=4), encoding="utf-8")
+            logger.debug("Saved result page to %s", dump_path.absolute())
+
+        return result_page
 
 
 class Window:
