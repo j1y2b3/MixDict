@@ -127,7 +127,33 @@ def parse_json(data: dict) -> dict:
 
     # Chinese-English (ce)
     if "ce" in data:
-        ...
+        CE_PHONETIC_PATH = ("ce", "word", 0, "phone")
+        CE_TRS_PATH = ("ce", "word", 0, "trs")
+        CE_ENGLISH_TR_REL_PATH = ("tr", 0, "l", "i")
+        CE_ENGLISH_TR_PART_REL_REL_PATH = ("#text", )
+        CE_CHINESE_TR_REL_PATH = ("tr", 0, "l", "#tran")
+
+        section = schema.SectionMeta(title="汉英")
+
+        phonetic = safe_get(data, CE_PHONETIC_PATH)
+        if phonetic is not None:
+            section.add_phonetic(phonetic, "拼音")
+
+        for tr in safe_get(data, CE_TRS_PATH, default=[]):  # This `safe_get()` must return a iterable.
+            english_translation = ""
+            for tr_part in safe_get(tr, CE_ENGLISH_TR_REL_PATH, default=[]):  # This `safe_get()` must return a iterable.
+                if isinstance(tr_part, str):
+                    english_translation += tr_part
+                elif isinstance(tr_part, dict):
+                    english_translation += safe_get(tr_part, CE_ENGLISH_TR_PART_REL_REL_PATH, default="")
+            if english_translation:
+                section.add_text(english_translation, font_style="stress")
+
+            chinese_translation = safe_get(tr, CE_CHINESE_TR_REL_PATH)
+            if chinese_translation is not None:
+                section.add_text(chinese_translation)
+
+        page.add_section(section)
 
     return page.get()
 
@@ -142,7 +168,7 @@ if __name__ == "__main__":
     with open(file, "w", encoding="utf-8") as f:
         json.dump(dic, f, ensure_ascii=False, indent=2)
 
-    # Record appeared items
+    # Record appeared items.
     file = "./tmp/items.txt"
     new_items = set(dic.keys())
     with open(file, mode="r") as f:
