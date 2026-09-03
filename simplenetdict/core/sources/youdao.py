@@ -87,39 +87,47 @@ def parse_json(data: dict) -> dict:
     page = schema.PageMeta(word, is_found=True)
 
     # English-Chinese (ec)
-    EC_US_PHONETIC_PATH = ("ec", "word", 0, "usphone")
-    EC_US_SPEECH_PATH = ("ec", "word", 0, "usspeech")
-    EC_UK_PHONETIC_PATH = ("ec", "word", 0, "ukphone")
-    EC_UK_SPEECH_PATH = ("ec", "word", 0, "ukspeech")
-    EC_TRS_PATH = ("ec", "word", 0, "trs")  # `trs` is a list.
-    EC_TRANSLATION_REL_PATH = ("tr", 0, "l", "i", 0)
+    if "ec" in data:
+        EC_US_PHONETIC_PATH = ("ec", "word", 0, "usphone")
+        EC_US_SPEECH_PATH = ("ec", "word", 0, "usspeech")
+        EC_UK_PHONETIC_PATH = ("ec", "word", 0, "ukphone")
+        EC_UK_SPEECH_PATH = ("ec", "word", 0, "ukspeech")
+        EC_TRS_PATH = ("ec", "word", 0, "trs")  # `trs` is a list.
+        EC_TRANSLATION_REL_PATH = ("tr", 0, "l", "i", 0)
+        EC_SOURCE_NAME_PATH = ("ec", "source", "name")
+        EC_SOURCE_URL_PATH = ("ec", "source", "url")
 
-    section = schema.SectionMeta(title="英汉")
+        section = schema.SectionMeta(title="英汉")
 
-    us_phonetic = safe_get(data, EC_US_PHONETIC_PATH)
-    us_audio_url = safe_get(data, EC_US_SPEECH_PATH)
-    if us_phonetic is None:
-        logger.error("Youdao API lost US phonetic for %r", word)
-        raise APIError("Lost US phonetic.")
-    if us_audio_url is not None:
-        us_audio_url = AUDIO_URL_BASE + us_audio_url
-    section.add_phonetic(f"/{us_phonetic}/", "美式发音", us_audio_url)
+        us_phonetic = safe_get(data, EC_US_PHONETIC_PATH)
+        us_audio_url = safe_get(data, EC_US_SPEECH_PATH)
+        if us_phonetic is None:
+            logger.error("Youdao API lost US phonetic for %r", word)
+            raise APIError("Lost US phonetic.")
+        if us_audio_url is not None:
+            us_audio_url = AUDIO_URL_BASE + us_audio_url
+        section.add_phonetic(f"/{us_phonetic}/", "美式发音", us_audio_url)
 
-    uk_phonetic = safe_get(data, EC_UK_PHONETIC_PATH)
-    uk_audio_url = safe_get(data, EC_UK_SPEECH_PATH)
-    if uk_phonetic is None:
-        logger.error("Youdao API lost UK phonetic for %r", word)
-        raise APIError("Lost UK phonetic.")
-    if uk_audio_url is not None:
-        uk_audio_url = AUDIO_URL_BASE + uk_audio_url
-    section.add_phonetic(f"/{uk_phonetic}/", "英式发音", uk_audio_url)
+        uk_phonetic = safe_get(data, EC_UK_PHONETIC_PATH)
+        uk_audio_url = safe_get(data, EC_UK_SPEECH_PATH)
+        if uk_phonetic is None:
+            logger.error("Youdao API lost UK phonetic for %r", word)
+            raise APIError("Lost UK phonetic.")
+        if uk_audio_url is not None:
+            uk_audio_url = AUDIO_URL_BASE + uk_audio_url
+        section.add_phonetic(f"/{uk_phonetic}/", "英式发音", uk_audio_url)
 
-    for tr in safe_get(data, EC_TRS_PATH, default=[]):  # This `safe_get()` must return a iterable.
-        section.add_text(safe_get(tr, EC_TRANSLATION_REL_PATH))
+        for tr in safe_get(data, EC_TRS_PATH, default=[]):  # This `safe_get()` must return a iterable.
+            section.add_text(safe_get(tr, EC_TRANSLATION_REL_PATH))
 
-    page.add_section(section)
+        section.add_link(safe_get(data, EC_SOURCE_NAME_PATH),
+            safe_get(data, EC_SOURCE_URL_PATH))
 
-    ...
+        page.add_section(section)
+
+    # Chinese-English (ce)
+    if "ce" in data:
+        ...
 
     return page.get()
 
