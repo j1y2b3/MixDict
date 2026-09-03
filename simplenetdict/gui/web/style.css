@@ -632,8 +632,9 @@
         .text {
             margin: 10px 0;
 
-            &.big {
+            &.stress {
                 font-size: 1.3em;
+                color: color-mix(in srgb, var(--fg-default), var(--fg-stress) 40%);
             }
         }
 
