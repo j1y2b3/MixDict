@@ -173,7 +173,7 @@ async function displayDictSourcesList() {
 }
 
 async function setSource(regName) {
-    await pywebview.api.set_source(regName);
+    await pywebview.api.set_current_source(regName);
 
     document.querySelectorAll(".source__list button.is-selected")
         .forEach((sourceButton) => sourceButton.classList.remove("is-selected"));

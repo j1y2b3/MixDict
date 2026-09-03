@@ -32,16 +32,16 @@ class TestDictApi:
         api = self._make_api()
         assert api.lookup("w") == {"fake": "w"}
 
-    def test_set_source_valid(self):
+    def test_set_current_source_valid(self):
         api = self._make_api()
-        api.set_source("Youdao")
+        api.set_current_source("Youdao")
         assert api.source.reg_name == "Youdao"
         assert api.source.name == "有道"
 
-    def test_set_source_unknown_raises(self):
+    def test_set_current_source_unknown_raises(self):
         api = self._make_api()
         with pytest.raises(ValueError):
-            api.set_source("Nope")
+            api.set_current_source("Nope")
 
     def test_get_source_name_unknown_returns_none(self):
         api = self._make_api()

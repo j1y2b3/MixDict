@@ -23,7 +23,7 @@ class DictApi:
 
         self.sources_registry = sources_registry
         self.source_reg_name = self.sources_registry.default_source_reg_name
-        self.set_source(self.source_reg_name)
+        self.set_current_source(self.source_reg_name)
 
     @property
     def source(self) -> DictionarySource:
@@ -61,7 +61,7 @@ class DictApi:
         """Return the `reg_name`s of all registered sources."""
         return self.sources_registry.list()
 
-    def set_source(self, reg_name: str):
+    def set_current_source(self, reg_name: str):
         """Set the current source to `reg_name`."""
 
         if self.sources_registry.get(reg_name) is None:
