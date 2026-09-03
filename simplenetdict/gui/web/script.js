@@ -336,6 +336,7 @@ function assembleLink(itemElement, text, url) {
     itemElement.classList.add("link");
     const linkElement = document.createElement("a");
     linkElement.href = url;
+    linkElement.title = "使用默认浏览器打开：" + url;
     linkElement.target = "_blank";  // Open via default browser.
     linkElement.rel = "noopener noreferrer";
     linkElement.appendChild(document.createTextNode(text));
