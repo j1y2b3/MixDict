@@ -4,8 +4,9 @@ URL:
 https://dict.youdao.com/jsonapi
 """
 
+import json
 import logging
-import urllib.request, json
+import urllib.request
 from urllib.parse import quote
 
 from mixdict import config, schema
