@@ -641,6 +641,8 @@
 
         .phonetic {
             gap: 6px;
+            color: var(--fg-muted);
+            font-size: 0.7em;
         }
 
         .phonetic__player {
