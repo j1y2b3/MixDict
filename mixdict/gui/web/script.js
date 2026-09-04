@@ -85,9 +85,21 @@ function initSidebarResizer() {
 function initSidebarToggle() {
     const toggle = document.getElementById("sidebar-toggle");
     if (!toggle) return;
+
+    let sidebarWidth;
+    const body = document.body;
+
     toggle.addEventListener("click", () => {
         const collapsed = document.body.classList.toggle("is-collapsed");
-        toggle.dataset.title = collapsed ? "展开侧边栏" : "收起侧边栏";
+        if (collapsed) {
+            // `sidebarWidth` will be an empty string if body does not have `--sidebar-width` property.
+            sidebarWidth = body.style.getPropertyValue("--sidebar-width");
+            body.style.removeProperty("--sidebar-width");
+            toggle.dataset.title = "展开侧边栏";
+        } else {
+            if (sidebarWidth) body.style.setProperty("--sidebar-width", sidebarWidth);
+            toggle.dataset.title = "收起侧边栏";
+        }
     });
 }
 
