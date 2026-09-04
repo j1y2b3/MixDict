@@ -698,6 +698,10 @@
             }
         }
 
+        .error {
+            color: color-mix(in srgb, var(--fg-error), var(--fg-default) 80%)
+        }
+
         &.is-error {
 
             >section {

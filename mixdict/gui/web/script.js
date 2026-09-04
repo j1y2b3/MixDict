@@ -282,7 +282,7 @@ function assembleItem(itemMeta) {
     return itemElement;
 }
 
-function assembleText(itemElement, text, fontStyle) {
+function assembleText(itemElement, text, fontStyle = "normal") {
     itemElement.classList.add("text");
     itemElement.classList.add(fontStyle);
     itemElement.appendChild(document.createTextNode(text));
