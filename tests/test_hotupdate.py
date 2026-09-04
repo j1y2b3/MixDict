@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from simplenetdict.core.registry import SourcesRegistry
-from simplenetdict.hotupdate import UPDATE_STYLE, Watcher
+from mixdict.core.registry import SourcesRegistry
+from mixdict.hotupdate import UPDATE_STYLE, Watcher
 
 pytestmark = pytest.mark.usefixtures("isolated_user_sources")
 
@@ -77,7 +77,7 @@ class TestWatchGui:
     """Watcher.watch_gui() 的端到端冒烟(真实 daemon 线程 + 短超时轮询)。"""
 
     def _start_watcher(self, monkeypatch, tmp_path) -> FakeWindow:
-        from simplenetdict import resources
+        from mixdict import resources
 
         fake_window = FakeWindow()
         monkeypatch.setattr(resources, "web_path", lambda name: tmp_path)
@@ -99,10 +99,11 @@ class TestWatchGui:
         self._wait_until(lambda: any(UPDATE_STYLE in call for call in fake_window.calls))
 
     def test_js_change_triggers_full_reload(self, monkeypatch, tmp_path):
+        # dcedb1c 后:html/js 热更新只整页 reload,不再紧跟 UPDATE_STYLE。
         fake_window = self._start_watcher(monkeypatch, tmp_path)
         (tmp_path / "a.js").write_text("console.log(1)")
         self._wait_until(lambda: any("location.reload()" in call for call in fake_window.calls))
-        assert any(UPDATE_STYLE in call for call in fake_window.calls)
+        assert not any(UPDATE_STYLE in call for call in fake_window.calls)
 
 
 def write_plugin(directory: Path, name: str, reg_name: str) -> Path:
@@ -110,7 +111,7 @@ def write_plugin(directory: Path, name: str, reg_name: str) -> Path:
     directory.mkdir(parents=True, exist_ok=True)
     file = directory / name
     content = (
-        "from simplenetdict.core.sources.base import DictionarySource\n"
+        "from mixdict.core.sources.base import DictionarySource\n"
         "\n"
         "\n"
         "class Source(DictionarySource):\n"
@@ -133,7 +134,7 @@ class TestWatchUserSources:
 
     @staticmethod
     def _start_watcher(monkeypatch, tmp_path) -> tuple[SourcesRegistry, Path]:
-        from simplenetdict import resources
+        from mixdict import resources
 
         user_dir = tmp_path / "user_sources"
         user_dir.mkdir()

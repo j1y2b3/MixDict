@@ -1,9 +1,9 @@
 """SourcesRegistry tests (offline, no network)."""
 import pytest
 
-from simplenetdict import config
-from simplenetdict.core.registry import SourcesRegistry
-from simplenetdict.core.sources.base import DictionarySource
+from mixdict import config
+from mixdict.core.registry import SourcesRegistry
+from mixdict.core.sources.base import DictionarySource
 
 pytestmark = pytest.mark.usefixtures("isolated_user_sources")
 
@@ -97,13 +97,13 @@ class TestSourcesRegistry:
         assert reg.user_sources_reg_map == {}
 
     def test_register_users_records_map(self, monkeypatch, tmp_path):
-        from simplenetdict import resources
+        from mixdict import resources
 
         plugin_dir = tmp_path / "plugins"
         plugin_dir.mkdir()
         plugin = plugin_dir / "demo.py"
         plugin.write_text(
-            "from simplenetdict.core.sources.base import DictionarySource\n"
+            "from mixdict.core.sources.base import DictionarySource\n"
             "\n"
             "\n"
             "class Source(DictionarySource):\n"

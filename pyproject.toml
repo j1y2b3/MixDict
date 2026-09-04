@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "simplenetdict"
+name = "mixdict"
 version = "0.1.0"
 description = "A simple network dictionary GUI program built on some network dictionary sources and pywebview."
 readme = "README.md"
@@ -24,7 +24,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["simplenetdict"]
+packages = ["mixdict"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

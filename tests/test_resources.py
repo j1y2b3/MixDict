@@ -2,13 +2,13 @@
 import sys
 from pathlib import Path
 
-from simplenetdict import resources
+from mixdict import resources
 
 
 class TestResources:
     def test_web_path(self):
         p = resources.web_path("index.html")
-        assert p == resources.ROOT_DIR / "simplenetdict" / "gui" / "web" / "index.html"
+        assert p == resources.ROOT_DIR / "mixdict" / "gui" / "web" / "index.html"
         assert p.is_absolute()
 
     def test_assets_path(self):
@@ -33,5 +33,5 @@ class TestResources:
         from platformdirs import user_cache_dir
 
         p = resources.webview_storage_path()
-        assert p == Path(user_cache_dir("SimpleNetDict", appauthor=False))
+        assert p == Path(user_cache_dir("MixDict", appauthor=False))
         assert p.is_absolute()

@@ -1,7 +1,7 @@
 """DictionarySource base tests."""
 import pytest
 
-from simplenetdict.core.sources.base import DictionarySource
+from mixdict.core.sources.base import DictionarySource
 
 
 class GoodSource(DictionarySource):
@@ -48,7 +48,7 @@ class TestDictionarySource:
     def test_lookup_error_is_logged(self, caplog):
         import logging
 
-        with caplog.at_level(logging.ERROR, logger="simplenetdict"):
+        with caplog.at_level(logging.ERROR, logger="mixdict"):
             BadSource().lookup("w")
         assert any("lookup() failed" in record.message for record in caplog.records)
 
@@ -66,7 +66,7 @@ class TestDictionarySource:
         assert DescSource().description == "自定义描述"
 
     def test_dev_mode_error_hook(self, monkeypatch):
-        from simplenetdict import config
+        from mixdict import config
 
         monkeypatch.setattr(config, "DEBUG", True)
         page = GoodSource().lookup("$test-error-display")
@@ -74,25 +74,25 @@ class TestDictionarySource:
         assert page["sections"][0]["title"] == "错误"
 
     def test_dev_mode_hook_only_for_test_word(self, monkeypatch):
-        from simplenetdict import config
+        from mixdict import config
 
         monkeypatch.setattr(config, "DEBUG", True)
         assert GoodSource().lookup("w") == {"ok": "w"}
 
     def test_dev_mode_re_raises_error(self, monkeypatch):
-        from simplenetdict import config
+        from mixdict import config
 
         monkeypatch.setattr(config, "DEBUG", True)
         with pytest.raises(RuntimeError, match="boom"):
             BadSource().lookup("w")
 
     def test_safe_get_missing_returns_default(self):
-        from simplenetdict.core.sources.base import safe_get
+        from mixdict.core.sources.base import safe_get
 
         assert safe_get({"a": 1}, ("a", "b")) is None
         assert safe_get({"a": 1}, ("a", "b"), default="X") == "X"
 
     def test_safe_get_nested(self):
-        from simplenetdict.core.sources.base import safe_get
+        from mixdict.core.sources.base import safe_get
 
         assert safe_get({"a": {"b": [1, 2]}}, ("a", "b", 1)) == 2

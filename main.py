@@ -1,18 +1,18 @@
-"""SimpleNetDict startup entry."""
+"""MixDict startup entry."""
 
 import logging
 from sys import flags
 
-from simplenetdict.core.registry import SourcesRegistry
-from simplenetdict.gui.window import Window
-from simplenetdict.hotupdate import Watcher
-from simplenetdict import config
+from mixdict.core.registry import SourcesRegistry
+from mixdict.gui.window import Window
+from mixdict.hotupdate import Watcher
+from mixdict import config
 
 if flags.dev_mode:
     config.DEBUG = True
 
 def setup_logger() -> logging.Logger:
-    logger = logging.getLogger("simplenetdict")
+    logger = logging.getLogger("mixdict")
     if config.DEBUG:
         logger.setLevel(logging.DEBUG)
 
@@ -29,7 +29,7 @@ def setup_logger() -> logging.Logger:
 
 if __name__ == "__main__":
     logger = setup_logger()
-    logger.info("Starting SimpleNetDict...")
+    logger.info("Starting MixDict...")
 
     sources_registry = SourcesRegistry()
     window = Window(sources_registry)

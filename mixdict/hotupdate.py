@@ -9,9 +9,9 @@ import threading
 import time
 
 from webview import Window
-from simplenetdict.core.registry import SourcesRegistry
+from mixdict.core.registry import SourcesRegistry
 
-from simplenetdict import resources
+from mixdict import resources
 
 UPDATE_STYLE = """
 document.querySelectorAll('link[rel=stylesheet]').forEach(lnk => {

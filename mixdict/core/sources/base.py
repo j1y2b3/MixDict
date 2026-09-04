@@ -9,7 +9,7 @@ import logging
 from typing import Any
 from collections.abc import Iterable
 
-from simplenetdict import schema, config
+from mixdict import schema, config
 
 logger = logging.getLogger(__name__)
 

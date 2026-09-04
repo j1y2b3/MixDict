@@ -12,16 +12,16 @@ from platformdirs import user_cache_dir
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from simplenetdict.core.sources.base import DictionarySource
+    from mixdict.core.sources.base import DictionarySource
 
-# Not packed: project root (parent of simplenetdict/). Packed: PyInstaller temp dir.
+# Not packed: project root (parent of mixdict/). Packed: PyInstaller temp dir.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 
 logger = logging.getLogger(__name__)
 
 def web_path(name: str) -> Path:
-    """Return the absolute path of a file under simplenetdict/gui/web/."""
-    return ROOT_DIR / "simplenetdict" / "gui" / "web" / name
+    """Return the absolute path of a file under mixdict/gui/web/."""
+    return ROOT_DIR / "mixdict" / "gui" / "web" / name
 
 def assets_path(name: str) -> Path:
     """Return the absolute path of a file under assets/."""
@@ -53,7 +53,7 @@ def load_user_source(file_path: Path | str) -> "DictionarySource | None":
         logger.exception("Failed to load user source %s", file_path)
         return None
 
-    from simplenetdict.core.sources.base import DictionarySource  # For runtime type checking.
+    from mixdict.core.sources.base import DictionarySource  # For runtime type checking.
     source = namespace.get("Source")
     if source is None:
         logger.error("User source %s: lost `Source` class", file_path)
@@ -67,4 +67,4 @@ def load_user_source(file_path: Path | str) -> "DictionarySource | None":
 
 def webview_storage_path() -> Path:
     """Return a fixed cross-platform cache dir for pywebview WebView2 data."""
-    return Path(user_cache_dir("SimpleNetDict", appauthor=False))
+    return Path(user_cache_dir("MixDict", appauthor=False))

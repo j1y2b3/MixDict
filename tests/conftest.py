@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from simplenetdict import config, resources
+from mixdict import config, resources
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 

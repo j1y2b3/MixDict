@@ -1,6 +1,6 @@
 """Global settings."""
 
-TITLE = "简易网络词典"
+TITLE = "东拼西凑的词典"
 WINDOW_SIZE_RATE = (0.6, 0.7)  # width, height
 WINDOW_MIN_SIZE = (640, 480)  # width, height
 

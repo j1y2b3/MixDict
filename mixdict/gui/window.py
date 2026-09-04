@@ -1,4 +1,4 @@
-"""SimpleNetDict GUI (pywebview)."""
+"""MixDict GUI (pywebview)."""
 
 import logging
 import json
@@ -6,10 +6,10 @@ from pathlib import Path
 
 import webview
 
-from simplenetdict.core.sources.base import DictionarySource
+from mixdict.core.sources.base import DictionarySource
 
-from simplenetdict.core.registry import SourcesRegistry
-from simplenetdict import resources, config
+from mixdict.core.registry import SourcesRegistry
+from mixdict import resources, config
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class DictApi:
         self.source_reg_name = reg_name
 
     def lookup(self, word: str) -> dict:
-        """Use current source looking up `word`, return data format according to simplenetdict/schema.py."""
+        """Use current source looking up `word`, return data format according to mixdict/schema.py."""
 
         source = self.source
         result_page = source.lookup(word)

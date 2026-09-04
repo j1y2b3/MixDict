@@ -1,9 +1,9 @@
 """DictApi (window bridge) tests, using a fake source (offline)."""
 import pytest
 
-from simplenetdict.core.registry import SourcesRegistry
-from simplenetdict.core.sources.base import DictionarySource
-from simplenetdict.gui.window import DictApi
+from mixdict.core.registry import SourcesRegistry
+from mixdict.core.sources.base import DictionarySource
+from mixdict.gui.window import DictApi
 
 pytestmark = pytest.mark.usefixtures("isolated_user_sources")
 
@@ -62,7 +62,7 @@ class TestWindow:
 
     def _make_window(self, monkeypatch, create_result):
         import webview
-        from simplenetdict.gui.window import Window
+        from mixdict.gui.window import Window
 
         class FakeScreen:
             width = 1920

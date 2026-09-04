@@ -8,8 +8,8 @@ import logging
 import urllib.request, json
 from urllib.parse import quote
 
-from simplenetdict import config, schema
-from simplenetdict.core.sources.base import DictionarySource, APIError, safe_get
+from mixdict import config, schema
+from mixdict.core.sources.base import DictionarySource, APIError, safe_get
 
 logger = logging.getLogger(__name__)
 

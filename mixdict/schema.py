@@ -123,7 +123,7 @@ if __name__ == "__main__":
     test_error_page = ErrorPageMeta(Exception("Test error."), word)
 
     # Wirte into file
-    dir_path = "./simplenetdict/gui/web/samples"
+    dir_path = "./mixdict/gui/web/samples"
     os.makedirs(dir_path, exist_ok=True)
     with open(f"{dir_path}/page.json", mode="w", encoding="utf-8") as f:
         json.dump(test_page.get(), f, ensure_ascii=False, indent=2)

@@ -5,10 +5,10 @@ Sources are keyed by their ASCII `reg_name`.
 
 from pathlib import Path
 
-from simplenetdict import config
-from simplenetdict import resources
-from simplenetdict.core.sources import youdao, freedict
-from simplenetdict.core.sources.base import DictionarySource
+from mixdict import config
+from mixdict import resources
+from mixdict.core.sources import youdao, freedict
+from mixdict.core.sources.base import DictionarySource
 
 
 class SourcesRegistry:

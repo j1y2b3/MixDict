@@ -13,8 +13,8 @@ GNU General Public License v3.0
 import logging
 import urllib.request, urllib.error, json
 
-from simplenetdict import config, schema
-from simplenetdict.core.sources.base import DictionarySource, APIError, safe_get
+from mixdict import config, schema
+from mixdict.core.sources.base import DictionarySource, APIError, safe_get
 
 IS_FOUND_KEY = "isfound"
 WORD_KEY = "word"

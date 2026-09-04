@@ -7,8 +7,8 @@ from unittest import mock
 
 import pytest
 
-from simplenetdict.core.sources.base import APIError
-from simplenetdict.core.sources.freedict import Source as FreeDict, fetch_json, parse_json
+from mixdict.core.sources.base import APIError
+from mixdict.core.sources.freedict import Source as FreeDict, fetch_json, parse_json
 
 NOT_FOUND = {
     "isfound": False,
@@ -60,7 +60,7 @@ class TestFetchJson:
         import logging
 
         with mock.patch("urllib.request.urlopen", side_effect=self._http_error(502)):
-            with caplog.at_level(logging.WARNING, logger="simplenetdict"):
+            with caplog.at_level(logging.WARNING, logger="mixdict"):
                 with pytest.raises(APIError, match="502"):
                     fetch_json("apple")
         assert any("FreeDict API HTTP 502" in record.message for record in caplog.records)
