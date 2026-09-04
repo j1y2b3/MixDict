@@ -637,6 +637,11 @@
                 font-size: 1.3em;
                 color: color-mix(in srgb, var(--fg-default), var(--fg-stress) 40%);
             }
+
+            &.muted {
+                font-size: 0.7em;
+                color: var(--fg-muted);
+            }
         }
 
         .phonetic {
