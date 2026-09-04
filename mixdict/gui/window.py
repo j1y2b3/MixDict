@@ -23,26 +23,26 @@ class DictApi:
     def __init__(self, sources_registry: SourcesRegistry):
         """Store the registry and pick the current default source."""
 
-        self.sources_registry = sources_registry
-        self.source_reg_name = self.sources_registry.default_source_reg_name
-        self.set_current_source(self.source_reg_name)
+        self._sources_registry = sources_registry
+        self._source_reg_name = self._sources_registry.default_source_reg_name
+        self.set_current_source(self._source_reg_name)
 
     @property
     def source(self) -> DictionarySource:
         """The current source instance (always fetched fresh from the registry)."""
 
-        source = self.sources_registry.get(self.source_reg_name)
-        if source is None:  # Need update `self.source_reg_name`.
+        source = self._sources_registry.get(self._source_reg_name)
+        if source is None:  # Need update `self._source_reg_name`.
             logger.info("Current source %r removed, reverted to %r",
-                        self.source_reg_name, self.sources_registry.default_source_reg_name)
-            self.source_reg_name = self.sources_registry.default_source_reg_name
-            return self.sources_registry.get(self.source_reg_name)  # type: ignore
+                        self._source_reg_name, self._sources_registry.default_source_reg_name)
+            self._source_reg_name = self._sources_registry.default_source_reg_name
+            return self._sources_registry.get(self._source_reg_name)  # type: ignore
         return source
 
     def get_source_name(self, reg_name: str) -> str | None:
         """Return the name of the source for `reg_name`."""
 
-        source = self.sources_registry.get(reg_name)
+        source = self._sources_registry.get(reg_name)
         if source is None:
             return None
         return source.name
@@ -50,7 +50,7 @@ class DictApi:
     def get_source_description(self, reg_name: str) -> str:
         """Return the description of the source for `reg_name`."""
 
-        source = self.sources_registry.get(reg_name)
+        source = self._sources_registry.get(reg_name)
         if source is None:
             return ""
         return source.description
@@ -61,14 +61,14 @@ class DictApi:
 
     def list_sources_reg_name(self) -> list[str]:
         """Return the `reg_name`s of all registered sources."""
-        return self.sources_registry.list()
+        return self._sources_registry.list()
 
     def set_current_source(self, reg_name: str):
         """Set the current source to `reg_name`."""
 
-        if self.sources_registry.get(reg_name) is None:
+        if self._sources_registry.get(reg_name) is None:
             raise ValueError(f"Unknown source: {reg_name!r}")
-        self.source_reg_name = reg_name
+        self._source_reg_name = reg_name
 
     def lookup(self, word: str) -> dict:
         """Use current source looking up `word`, return data format according to mixdict/schema.py."""
