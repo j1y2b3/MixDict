@@ -55,15 +55,15 @@ function initSidebarResizer() {
     const resizer = document.querySelector(".sidebar__resizer");
     if (!resizer) return;
     const body = document.body;
-    const bodyStyles = getComputedStyle(body);
-
-    const SIDEBAR_MIN_WIDTH_STR = bodyStyles.getPropertyValue("--sidebar-min-width");
-    const SIDEBAR_MAX_WIDTH_STR = bodyStyles.getPropertyValue("--sidebar-max-width");
-    const SIDEBAR_MIN_WIDTH = parseFloat(SIDEBAR_MIN_WIDTH_STR) ?? 0;
-    const SIDEBAR_MAX_WIDTH = parseFloat(SIDEBAR_MAX_WIDTH_STR) ?? body.getBoundingClientRect().right;
-    const BODY_LEFT_X = body.getBoundingClientRect().left;
 
     resizer.addEventListener("pointerdown", (event) => {
+        const bodyStyles = getComputedStyle(body);
+        const SIDEBAR_MIN_WIDTH_STR = bodyStyles.getPropertyValue("--sidebar-min-width");
+        const SIDEBAR_MAX_WIDTH_STR = bodyStyles.getPropertyValue("--sidebar-max-width");
+        const SIDEBAR_MIN_WIDTH = parseFloat(SIDEBAR_MIN_WIDTH_STR) ?? 0;
+        const SIDEBAR_MAX_WIDTH = parseFloat(SIDEBAR_MAX_WIDTH_STR) ?? body.getBoundingClientRect().right;
+        const BODY_LEFT_X = body.getBoundingClientRect().left;
+
         event.preventDefault();
         resizer.setPointerCapture(event.pointerId);  // Capture continues even after dragging out the handle.
 
