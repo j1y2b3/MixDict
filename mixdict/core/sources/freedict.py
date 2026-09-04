@@ -1,45 +1,58 @@
 """Free Dictionary API
 
-URL:
-https://api.dictionaryapi.dev/api/v2/entries/en/<word>
-Project address:
-https://github.com/meetDeveloper/freeDictionaryAPI
-Author:
-meetDeveloper (https://github.com/meetDeveloper)
-License:
-GNU General Public License v3.0
+Request URL:
+https://freedictionaryapi.com/api/v1/entries/{language}/{word}
+Site:
+https://freedictionaryapi.com/
+Content source:
+English Wiktionary (CC BY-SA 4.0)
+
+Only provides dictionary entries for English words currently.
 """
 
+import json
 import logging
-import urllib.request, urllib.error, json
+import urllib.request, urllib.error
+from urllib.parse import quote
 
 from mixdict import config, schema
-from mixdict.core.sources.base import DictionarySource, APIError, safe_get
-
-IS_FOUND_KEY = "isfound"
-WORD_KEY = "word"
+from mixdict.core.sources.base import DictionarySource
 
 logger = logging.getLogger(__name__)
 
 
 class Source(DictionarySource):
-    """Free Dictionary dictionary source."""
-
+    
     def __init__(self):
         super().__init__(reg_name="FreeDict", name="Free Dictionary API",
-                         description="当 meetDeveloper 想为 ta 的朋友找一个免费的词典 API 时，"
-                                     "网上并没有，所以 ta 创建了一个。\n"
-                                     "提供英文单词的释义、音标、发音和例句。不稳定。")
+                         description="https://freedictionaryapi.com/\n"
+                                     "一个免费的词典API，提供来自维基词典的结构化多语言词典数据，"
+                                     "遵循知识共享许可协议。\n"
+                                     "暂仅支持英文单词。")
 
     def _lookup(self, word: str) -> dict:
-        return parse_json(fetch_json(word))
+        data, is_limited = fetch_json(word)
+        if is_limited:
+            return limited_page(data["error"], word)
+        else:
+            return parse_json(data)
 
 
-def fetch_json(word: str, user_agent: str | None = None, timeout: float | None = None) -> dict:
-    """Call Free Dictionary API to get raw JSON."""
+def fetch_json(word: str, language: str | None = None, user_agent: str | None = None,
+               timeout: float | None = None) -> tuple[dict, bool]:
+    """Call Free Dictionary API to get raw JSON.
+    
+    Return JSON and whether the request limit has been exceeded.
+    If the request limit has been exceeded,
+    the JSON will be `{"error": urllib.error.HTTPError}`.
+    """
+
+    # Set Language.
+    if language is None:
+        language = "en"
 
     # URL
-    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+    url = f"https://freedictionaryapi.com/api/v1/entries/{language}/{quote(word)}"
 
     # User-Agent
     if user_agent is None:
@@ -58,135 +71,91 @@ def fetch_json(word: str, user_agent: str | None = None, timeout: float | None =
     # Open URL
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            data = json.loads(response.read().decode("utf-8"))  # Raw JSON's top level should be a list.
+            data = json.loads(response.read().decode("utf-8"))
 
-            if not isinstance(data, list) or not data:
-                logger.error("Unexpected JSON root type: %s (expected non-empty list), url=%s",
-                             type(data).__name__, url)
-                raise APIError(f"Unexpected JSON root type: {type(data).__name__}, expected a non-empty list.")
-            
-            data = data[0]
-            data[IS_FOUND_KEY] = True
-            return data
-        
     except urllib.error.HTTPError as http_error:
-        if http_error.code == 404:
-            try:
-                error_body = http_error.read().decode("utf-8", "replace")
-                data = json.loads(error_body)
+        if http_error.code == 429:
+            return {"error": http_error}, True
+        else:
+            raise http_error
 
-            except json.JSONDecodeError:
-                logger.error("FreeDict API 404 response not JSON: %s, url=%s",
-                             error_body[:100], url)
-                raise APIError("Free Dictionary API returned HTTP 404 with non-JSON body.")
-            
-            if not isinstance(data, dict):
-                logger.error("FreeDict API 404 response JSON root not dict: %s, url=%s",
-                             type(data).__name__, url)
-                raise APIError("Free Dictionary API returned HTTP 404 with unexpected body.")
-            
-            data[IS_FOUND_KEY] = False
-            data[WORD_KEY] = word
-            return data
-        
-        logger.warning("FreeDict API HTTP %s: %s, url=%s", http_error.code, http_error.reason, url)
-        raise APIError(f"Free Dictionary API returned HTTP {http_error.code}: {http_error.reason}.")
+    return data, False
 
 def parse_json(data: dict) -> dict:
     """Parse raw JSON getted by `fetch_json` into data which can be used by GUI."""
 
-    QUERY_WORD_PATH = (WORD_KEY, )
-    IS_FOUND_PATH = (IS_FOUND_KEY, )
-    word = safe_get(data, QUERY_WORD_PATH)
+    word = data["word"]
 
-    # Deal with the situation where no translation for the word is found.
-    if not safe_get(data, IS_FOUND_PATH):
-        TITLE_PATH = ("title", )
-        MESSAGE_PATH = ("message", )
-        RESOLUTION_PATH = ("resolution", )
-
+    if not data["entries"]:
         page = schema.PageMeta(word, is_found=False)
-        section = schema.SectionMeta(safe_get(data, TITLE_PATH))
-        section.add_text(safe_get(data, MESSAGE_PATH))
-        section.add_text(safe_get(data, RESOLUTION_PATH))
+
+        section = schema.SectionMeta("未找到")
+        section.add_text("没有该词或不是英语")
         page.add_section(section)
-        return page.get()
 
-    page = schema.PageMeta(word, is_found=True)
-    section = schema.SectionMeta("结果")
+    else:
+        page = schema.PageMeta(word, is_found=True)
 
-    # Add phonetics.
-    PHONETIC_PATH = ("phonetic", )
-    PHONETICS_PATH = ("phonetics", )
-    PHONETICS_TEXT_REL_PATH = ("text", )
-    PHONETICS_AUDIO_REL_PATH = ("audio", )
-    PHONETICS_SOURCE_REL_PATH = ("sourceUrl", )
+        for entry in data["entries"]:
+            section = schema.SectionMeta(entry["partOfSpeech"])
 
-    phonetic = safe_get(data, PHONETIC_PATH)  # This variable will be reused multiple times below.
-    if phonetic is not None:
-        section.add_phonetic(phonetic)
+            for pronunciation in entry["pronunciations"]:
+                section.add_phonetic(pronunciation["text"], ", ".join(pronunciation["tags"]))
 
-    for phonetic_data in safe_get(data, PHONETICS_PATH, default=[]):  # This `safe_get()` must return a iterable.
-        phonetic = safe_get(phonetic_data, PHONETICS_TEXT_REL_PATH)
-        if phonetic is None:
-            continue
+            section.add_text("变形", font_style="stress")
+            for form in entry["forms"]:
+                section.add_text(f"({", ".join(form["tags"])}) {form["word"]}")
 
-        audio_url = safe_get(phonetic_data, PHONETICS_AUDIO_REL_PATH)
-        if not audio_url:  # `audio_url` could be `''`.
-            section.add_phonetic(phonetic, check_exist=True)
-            continue
-        section.add_phonetic(phonetic, audio_url=audio_url, check_exist=True)
+            unfold_senses(entry["senses"], section)
 
-        source_url = safe_get(phonetic_data, PHONETICS_SOURCE_REL_PATH)
-        if source_url is None:
-            continue
-        section.add_link(f"此发音来源", source_url)
+            page.add_section(section)
 
-    # Add meanings.
-    MEANINGS_PATH = ("meanings", )
-    MEANINGS_PART_OF_SPEECH_REL_PATH = ("partOfSpeech", )
-    MEANINGS_DEFINITIONS_REL_PATH = ("definitions", )
-    MEANINGS_DEFINITION_REL_REL_PATH = ("definition", )
-    MEANINGS_SYNONYMS_REL_REL_PATH = ("synonyms", )
-    MEANINGS_ANTONYMS_REL_REL_PATH = ("antonyms", )
-    MEANING_EXAMPLE_REL_REL_PATH = ("example", )
-    MEANINGS_SYNONYMS_REL_PATH = ("synonyms", )
-    MEANINGS_ANTONYMS_REL_PATH = ("antonyms", )
-
-    for meaning_data in safe_get(data, MEANINGS_PATH, default=[]):  # This `safe_get()` must return a iterable.
-        section.add_text("")
-        section.add_text(safe_get(meaning_data, MEANINGS_PART_OF_SPEECH_REL_PATH), font_size="big")
-        synonyms = safe_get(meaning_data, MEANINGS_SYNONYMS_REL_PATH)
-        antonyms = safe_get(meaning_data, MEANINGS_ANTONYMS_REL_PATH)
-        if synonyms:  # Exclude both `None` and `[]`.
-            section.add_text(f"同义词：{", ".join(synonyms)}")
-        if antonyms:  # Exclude both `None` and `[]`.
-            section.add_text(f"反义词：{", ".join(antonyms)}")
-
-        # This `safe_get()` must return a iterable.
-        for definition_data in safe_get(meaning_data, MEANINGS_DEFINITIONS_REL_PATH, default=[]):
-            section.add_text("")
-            section.add_text(safe_get(definition_data, MEANINGS_DEFINITION_REL_REL_PATH))
-
-            synonyms = safe_get(definition_data, MEANINGS_SYNONYMS_REL_REL_PATH)
-            antonyms = safe_get(definition_data, MEANINGS_ANTONYMS_REL_REL_PATH)
-            example = safe_get(definition_data, MEANING_EXAMPLE_REL_REL_PATH)
-            if synonyms:  # Exclude both `None` and `[]`.
-                section.add_text(f"同义词：{", ".join(synonyms)}")
-            if antonyms:  # Exclude both `None` and `[]`.
-                section.add_text(f"反义词：{", ".join(antonyms)}")
-            if example is not None:
-                section.add_text(f"例：{example}")
-
-    # Note the source.
-    section.add_text("")
-    SOURCES_PATH = ("sourceUrls", )
-    source_urls = safe_get(data, SOURCES_PATH)
-    if source_urls:  # Exclude both `None` and `[]`.
-        for source_url in source_urls:
-            section.add_link("此页信息来源", source_url)
-
+    section = schema.SectionMeta("来源")
+    section.add_link("Wiktionary", data["source"]["url"])
+    section.add_link(data["source"]["license"]["name"],
+                        data["source"]["license"]["url"])
     page.add_section(section)
+
+    section = schema.SectionMeta("API服务")
+    section.add_link("Free Dictionary API", "https://freedictionaryapi.com/")
+    page.add_section(section)
+
+    return page.get()
+
+def unfold_senses(senses: dict, section: schema.SectionMeta, index: str | None = None):
+    """Expand and add the `senses` and their recursive `subsenses` to the `section`."""
+
+    for i in range(len(senses)):
+        if index is None:
+            _index = str(i + 1)
+        else:
+            _index = f"{index}.{i + 1}"
+        section.add_text(f"义项 {_index}", font_style="stress")
+        section.add_text(senses[i]["definition"])
+        section.add_text(", ".join(senses[i]["tags"]), font_style="muted")
+
+        if senses[i]["examples"]:
+            section.add_text("示例")
+            for example in senses[i]["examples"]:
+                section.add_text(example)
+
+        if senses[i]["quotes"]:
+            section.add_text("引文")
+            for quote in senses[i]["quotes"]:
+                section.add_text(f"{quote["text"]}({quote["reference"]})", font_style="muted")
+
+        if senses[i]["synonyms"]:
+            section.add_text(f"同义词 {", ".join(senses[i]["synonyms"])}")
+        if senses[i]["antonyms"]:
+            section.add_text(f"反义词 {", ".join(senses[i]["antonyms"])}")
+
+        unfold_senses(senses[i]["subsenses"], section, _index)
+
+def limited_page(error: Exception, word: str) -> dict:
+    """Assemble the `PageMeta` used to warn that the API usage has exceeded the limit."""
+
+    page = schema.ErrorPageMeta(error, word)
+    page.add_text("Free Dictionary API 每小时使用次数已达到限制，请稍后再试。")
     return page.get()
 
 if __name__ == "__main__":
@@ -195,7 +164,7 @@ if __name__ == "__main__":
 
     os.makedirs("./tmp", exist_ok=True)
     word = input("Look up word: ")
-    dic = fetch_json(word)
+    dic = fetch_json(word)[0]
     file = f"./tmp/freedict-{word}.json"
     with open(file, "w", encoding="utf-8") as f:
-        json.dump(dic, f, ensure_ascii=False, indent=2)
+        json.dump(dic, f, ensure_ascii=False, indent=4)
