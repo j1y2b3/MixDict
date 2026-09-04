@@ -91,3 +91,10 @@ class TestErrorPageMeta:
         assert d["word"] == "word"
         assert d["sections"][0]["title"] == "错误"
         assert "ValueError: bad word" in d["sections"][0]["items"][0]["text"]
+
+    def test_error_page_add_text(self):
+        page = schema.ErrorPageMeta(ValueError("bad word"), "word")
+        assert page.add_text("请稍后再试") is page
+        d = page.get()
+        texts = [it["text"] for it in d["sections"][0]["items"] if it["type"] == "text"]
+        assert texts == ["ValueError: bad word", "请稍后再试"]

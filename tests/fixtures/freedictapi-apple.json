@@ -1,0 +1,97 @@
+{
+  "word": "apple",
+  "entries": [
+    {
+      "language": {
+        "code": "en",
+        "name": "English"
+      },
+      "partOfSpeech": "noun",
+      "pronunciations": [
+        {
+          "type": "ipa",
+          "text": "/ˈæp.əl/",
+          "tags": []
+        },
+        {
+          "type": "ipa",
+          "text": "/ˈæp.əl/",
+          "tags": [
+            "US"
+          ]
+        }
+      ],
+      "forms": [
+        {
+          "word": "apples",
+          "tags": [
+            "plural"
+          ]
+        }
+      ],
+      "senses": [
+        {
+          "definition": "A common, firm, round fruit produced by a tree of the genus Malus.",
+          "tags": [],
+          "examples": [],
+          "quotes": [],
+          "synonyms": [],
+          "antonyms": [],
+          "subsenses": [
+            {
+              "definition": "The fruit of the tree Malus domestica, chiefly with a green, red, or yellow skin, cultivated in temperate climates for cidermaking, cooking, and eating.",
+              "tags": [],
+              "examples": [
+                "custard apple, rose apple, thorn apple"
+              ],
+              "quotes": [
+                {
+                  "text": "I have so often heard Mr. Woodhouse recommend a baked apple.",
+                  "reference": "1815, Jane Austen, Emma"
+                }
+              ],
+              "synonyms": [],
+              "antonyms": [],
+              "subsenses": []
+            }
+          ]
+        },
+        {
+          "definition": "A tree of the genus Malus; especially Malus domestica which is cultivated for its edible fruit; the apple tree.",
+          "tags": [
+            "obsolete"
+          ],
+          "examples": [],
+          "quotes": [],
+          "synonyms": [
+            "malus"
+          ],
+          "antonyms": [],
+          "subsenses": []
+        },
+        {
+          "definition": "(transitive) To make (something) appear like an apple (noun sense 1.1).",
+          "tags": [
+            "transitive"
+          ],
+          "examples": [
+            "A large smile appled his full cheeks."
+          ],
+          "quotes": [],
+          "synonyms": [],
+          "antonyms": [
+            "unapple"
+          ],
+          "subsenses": []
+        }
+      ]
+    }
+  ],
+  "source": {
+    "url": "https://en.wiktionary.org/wiki/apple",
+    "license": {
+      "name": "CC BY-SA 4.0",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  }
+}
