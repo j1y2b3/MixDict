@@ -122,7 +122,8 @@ class TestParseJson:
         d = parse_json(NO_TRS)
         assert d["is_found"] is True
         types = [it["type"] for it in d["sections"][0]["items"]]
-        assert types == ["phonetic", "phonetic"]  # 只有音标,没有释义,且不崩
+        # ec 分支末尾新增来源链接(7220990),缺 trs 时只剩音标 + 链接,不崩。
+        assert types == ["phonetic", "phonetic", "link"]
 
     def test_missing_us_phonetic_raises(self):
         data = {
@@ -142,10 +143,12 @@ class TestParseJson:
         with pytest.raises(APIError, match="Lost UK phonetic"):
             parse_json(data)
 
-    def test_empty_data_raises(self):
-        # 空响应:无 input/ec,当前行为是走 found 分支后因缺音标抛 APIError
-        with pytest.raises(APIError, match="Lost US phonetic"):
-            parse_json({})
+    def test_empty_data_returns_empty_found_page(self):
+        # ec/ce 条件化后:空响应不再抛,返回空 found 页(锁当前行为)
+        d = parse_json({})
+        assert d["is_found"] is True
+        assert d["word"] is None
+        assert d["sections"] == []
 
     def test_ec_empty_raises(self):
         # 缺 ec 结构时同样因缺音标抛 APIError
@@ -158,10 +161,12 @@ class TestParseJson:
         with pytest.raises(APIError, match="Lost US phonetic"):
             parse_json(data)
 
-    def test_non_dict_root_raises(self):
-        # 非 dict 结构(如 list 根):当前行为是抛 APIError(因 ec 缺失)
-        with pytest.raises(APIError, match="Lost US phonetic"):
-            parse_json([1, 2])
+    def test_non_dict_root_does_not_crash(self):
+        # 非 dict 结构(如 list 根):无 ec/ce → 不抛,返回空 found 页(锁当前行为)
+        d = parse_json([1, 2])
+        assert d["is_found"] is True
+        assert d["word"] is None
+        assert d["sections"] == []
 
     def test_not_found_without_input_word_is_none(self):
         # 查无此词但缺 input:is_found=False,word 为 None,不崩
@@ -211,6 +216,17 @@ class TestParseJson:
         phonetics = [it for it in d["sections"][0]["items"] if it["type"] == "phonetic"]
         assert all(it["phonetic"] == "//" for it in phonetics)
         assert all(it["audio_url"] == "https://dict.youdao.com/dictvoice?audio=" for it in phonetics)
+
+    def test_chinese_ce_branch(self, fixture_data):
+        # 中文词条(pingguo.json 抓包):无 ec 走 ce 分支,输出"汉英"section。
+        d = parse_json(fixture_data("pingguo"))
+        assert d["is_found"] is True
+        assert d["word"] == "苹果"
+        assert d["sections"][0]["title"] == "汉英"
+        assert d["sections"][0]["items"] == [
+            {"type": "text", "text": "apple", "font_style": "stress"},
+            {"type": "text", "text": "苹果；", "font_style": "normal"},
+        ]
 
 
 class TestFetchJson:
