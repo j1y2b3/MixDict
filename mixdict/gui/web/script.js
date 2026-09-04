@@ -36,6 +36,11 @@ const PLAY_ICONS_DOM = `
 </svg>
 `;
 
+const isWebKitGTK = /Linux/.test(navigator.userAgent)
+    && /AppleWebKit/.test(navigator.userAgent)
+    && !/Chrome|Edg/.test(navigator.userAgent);
+if (isWebKitGTK) document.documentElement.classList.add("is-webkitgtk");
+
 initSidebarResizer()
 initSidebarToggle()
 initSidebarSectionsToggle()
@@ -134,6 +139,7 @@ function initThemeToggle() {
 
 // The CSS selector `*:hover::-webkit-scrollbar-thumb` does not work properly in pywebview.
 function initScrollbarToggle() {
+    if (isWebKitGTK) return;
     let scrollContainers = ".sidebar__main, .query__result";
     document.querySelectorAll(scrollContainers).forEach((element) => {
         element.addEventListener("mouseenter", () => element.classList.add("is-scrolling"));
