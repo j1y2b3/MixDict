@@ -104,9 +104,14 @@ class ErrorPageMeta(PageMeta):
         """Start an error page metadata."""
         super().__init__(word, is_found=False, is_error=True)
 
-        section = SectionMeta(title="错误")
-        section.add_text(f"{type(error).__name__}: {error}")
-        self.add_section(section)
+        self.section = SectionMeta(title="错误")
+        self.section.add_text(f"{type(error).__name__}: {error}")
+        self.add_section(self.section)
+
+    def add_text(self, text: str) -> "ErrorPageMeta":
+        """Allow additional text to be added to error page."""
+        self.section.add_text(text)
+        return self
 
 
 if __name__ == "__main__":
