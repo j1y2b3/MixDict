@@ -5,6 +5,7 @@ from sys import flags
 
 from mixdict.core.registry import SourcesRegistry
 from mixdict.gui.window import Window
+from mixdict.gui.tray import Tray
 from mixdict.hotupdate import Watcher
 from mixdict import config
 
@@ -33,6 +34,8 @@ if __name__ == "__main__":
 
     sources_registry = SourcesRegistry()
     window = Window(sources_registry)
+    tray = Tray(window.window)
     if config.DEBUG:
         Watcher(window.window, sources_registry)
+    tray.run()
     window.run()

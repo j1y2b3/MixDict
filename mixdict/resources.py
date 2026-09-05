@@ -9,9 +9,11 @@ import sys
 from pathlib import Path
 
 from platformdirs import user_cache_dir
+from PIL import Image
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from PIL.ImageFile import ImageFile
     from mixdict.core.sources.base import DictionarySource
 
 # Not packed: project root (parent of mixdict/). Packed: PyInstaller temp dir.
@@ -26,6 +28,13 @@ def web_path(name: str) -> Path:
 def assets_path(name: str) -> Path:
     """Return the absolute path of a file under assets/."""
     return ROOT_DIR / "assets" / name
+
+def load_tray_icon() -> "ImageFile":
+    """Return the tray icon instance."""
+    icon_path = assets_path("tray-icon.png")
+    if not icon_path.exists():
+        raise FileNotFoundError(f"Tray icon lost: {icon_path.absolute()}")
+    return Image.open(icon_path)
 
 def user_sources_dir() -> Path:
     """Return the directory that stores user dictionary sources.

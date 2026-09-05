@@ -16,6 +16,8 @@ requires-python = ">=3.12"
 dependencies = [
     "pywebview>=6.0",
     "platformdirs>=4.0",
+    "pystray>=0.19",
+    "pillow>=10.0",
 ]
 
 [project.optional-dependencies]
