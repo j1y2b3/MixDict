@@ -105,8 +105,11 @@ class Window:
             min_size=config.WINDOW_MIN_SIZE,
             screen=self.screen,  # pywebview automatically centers the window.
             text_select=True,
-            background_color="#000000"
+            background_color="#000000",
+            hidden=True
         )
+
+        self.window.events.closing += self._on_closing
 
     @property
     def window(self) -> webview.Window:
@@ -114,6 +117,12 @@ class Window:
             logger.error("Webview window creation was cancelled.")
             raise RuntimeError("Failed to create webview window.")
         return self._window
+
+    def _on_closing(self) -> bool | None:
+        if config.TO_EXIT:
+            return None
+        self.window.hide()
+        return False
 
     def run(self):
         """Start pywebview window."""

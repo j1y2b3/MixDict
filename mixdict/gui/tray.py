@@ -21,6 +21,7 @@ class Tray:
         self.window.show()
 
     def exit(self, icon: "pystray.Icon", item: "pystray.MenuItem"):  # type: ignore
+        config.TO_EXIT = True
         icon.stop()
         self.window.destroy()
 
