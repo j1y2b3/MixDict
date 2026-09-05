@@ -57,6 +57,33 @@ class TestDictApi:
         assert api.get_source_description("Youdao") == ""  # 有道无描述
 
 
+class _FakeClosingEvent:
+    """模拟 pywebview 的 `events.closing`,支持 `+=` 注册 handler。"""
+
+    def __init__(self):
+        self.handlers = []
+
+    def __iadd__(self, handler):
+        self.handlers.append(handler)
+        return self
+
+
+class _Events:
+    def __init__(self):
+        self.closing = _FakeClosingEvent()
+
+
+class _FakeWebviewWindow:
+    """模拟 webview.Window: 记录 hide() 并暴露 events.closing。"""
+
+    def __init__(self):
+        self.events = _Events()
+        self.hide_calls = 0
+
+    def hide(self):
+        self.hide_calls += 1
+
+
 class TestWindow:
     """Window(GUI 窗口)类的测试,通过 mock 避免真实创建窗口。"""
 
@@ -70,14 +97,55 @@ class TestWindow:
 
         monkeypatch.setattr(webview, "screens", [FakeScreen()])
         monkeypatch.setattr(webview, "create_window", lambda **kwargs: create_result)
-        return Window(SourcesRegistry())
+        return Window(SourcesRegistry()), create_result
 
-    def test_get_window_returns_created(self, monkeypatch):
-        fake_window = object()
-        win = self._make_window(monkeypatch, fake_window)
-        assert win.get_window() is fake_window
+    def test_window_property_returns_created(self, monkeypatch):
+        fake = _FakeWebviewWindow()
+        win, returned = self._make_window(monkeypatch, fake)
+        assert returned is fake
+        assert win.window is fake
 
-    def test_get_window_none_raises(self, monkeypatch):
-        win = self._make_window(monkeypatch, None)
+    def test_window_creation_cancelled_raises(self, monkeypatch):
+        # create_window 返回 None(创建被取消)时,__init__ 阶段即抛错。
         with pytest.raises(RuntimeError, match="Failed to create webview window"):
-            win.get_window()
+            self._make_window(monkeypatch, None)
+
+    def test_create_window_starts_hidden(self, monkeypatch):
+        # 后台驻留:窗口应以 hidden=True 启动。
+        import webview
+        from mixdict.gui.window import Window
+
+        class FakeScreen:
+            width = 1920
+            height = 1080
+
+        captured = {}
+        monkeypatch.setattr(webview, "screens", [FakeScreen()])
+        monkeypatch.setattr(webview, "create_window", lambda **kwargs: captured.update(kwargs) or _FakeWebviewWindow())
+        Window(SourcesRegistry())
+        assert captured["hidden"] is True
+
+    def test_closing_handler_registered(self, monkeypatch):
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        assert fake.events.closing.handlers == [win._on_closing]
+
+    def test_on_closing_hides_and_cancels_close(self, monkeypatch):
+        # 点 X 关闭 → 隐藏窗口并取消关闭(除非正在退出)。
+        from mixdict import config
+
+        monkeypatch.setattr(config, "TO_EXIT", False)
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        assert win._on_closing() is False
+        assert fake.hide_calls == 1
+
+    def test_on_closing_allows_exit(self, monkeypatch):
+        # 托盘“退出”已置 TO_EXIT → 放行真正的关闭。
+        from mixdict import config
+
+        monkeypatch.setattr(config, "TO_EXIT", True)
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        assert win._on_closing() is None
+        assert fake.hide_calls == 0

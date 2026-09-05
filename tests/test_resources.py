@@ -2,6 +2,8 @@
 import sys
 from pathlib import Path
 
+import pytest
+
 from mixdict import resources
 
 
@@ -35,3 +37,21 @@ class TestResources:
         p = resources.webview_storage_path()
         assert p == Path(user_cache_dir("MixDict", appauthor=False))
         assert p.is_absolute()
+
+
+class TestLoadTrayIcon:
+    def test_load_tray_icon_returns_image(self, monkeypatch):
+        # 托盘图标已随仓库提交,应能正常打开为 PIL 图像。
+        from PIL import Image
+
+        icon_path = resources.ROOT_DIR / "assets" / "tray-icon.png"
+        monkeypatch.setattr(resources, "assets_path", lambda name: icon_path)
+        icon = resources.load_tray_icon()
+        assert isinstance(icon, Image.Image)
+        assert icon.width > 0 and icon.height > 0
+
+    def test_load_tray_icon_missing_raises(self, monkeypatch, tmp_path):
+        missing = tmp_path / "no-tray-icon.png"
+        monkeypatch.setattr(resources, "assets_path", lambda name: missing)
+        with pytest.raises(FileNotFoundError, match="Tray icon lost"):
+            resources.load_tray_icon()
