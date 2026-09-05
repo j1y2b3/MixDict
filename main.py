@@ -34,5 +34,5 @@ if __name__ == "__main__":
     sources_registry = SourcesRegistry()
     window = Window(sources_registry)
     if config.DEBUG:
-        Watcher(window.get_window(), sources_registry)
+        Watcher(window.window, sources_registry)
     window.run()

@@ -96,7 +96,7 @@ class Window:
         self.width = max(config.WINDOW_MIN_SIZE[0], int(self.screen.width * config.WINDOW_SIZE_RATE[0]))
         self.height = max(config.WINDOW_MIN_SIZE[1], int(self.screen.height * config.WINDOW_SIZE_RATE[1]))
 
-        self.window = webview.create_window(
+        self._window = webview.create_window(
             title=config.TITLE,
             url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
             js_api=DictApi(sources_registry),
@@ -108,11 +108,12 @@ class Window:
             background_color="#000000"
         )
 
-    def get_window(self):
-        if self.window is None:
+    @property
+    def window(self) -> webview.Window:
+        if self._window is None:
             logger.error("Webview window creation was cancelled.")
             raise RuntimeError("Failed to create webview window.")
-        return self.window
+        return self._window
 
     def run(self):
         """Start pywebview window."""
