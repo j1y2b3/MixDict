@@ -53,6 +53,7 @@ function initApp() {
     displayCurrentSource();
     displayDictSourcesList();
     document.getElementById("query-input").focus();
+    window.addEventListener("focus", () => setTimeout(() => document.getElementById("query-input").focus(), 1));
     console.debug("[init] app initialising finished")
 }
 
