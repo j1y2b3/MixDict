@@ -26,4 +26,5 @@ class Tray:
         self.window.destroy()
 
     def run(self):
+        """Will not block thread."""
         self.icon.run_detached()
