@@ -16,6 +16,8 @@ if TYPE_CHECKING:
     from PIL.ImageFile import ImageFile
     from mixdict.core.sources.base import DictionarySource
 
+from mixdict import config
+
 # Not packed: project root (parent of mixdict/). Packed: PyInstaller temp dir.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 
@@ -76,4 +78,6 @@ def load_user_source(file_path: Path | str) -> "DictionarySource | None":
 
 def webview_storage_path() -> Path:
     """Return a fixed cross-platform cache dir for pywebview WebView2 data."""
+    if config.DEBUG:
+        return Path(user_cache_dir("MixDict-dev", appauthor=False))
     return Path(user_cache_dir("MixDict", appauthor=False))
