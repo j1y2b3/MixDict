@@ -102,21 +102,17 @@ def parse_json(data: dict) -> dict:
 
         us_phonetic = safe_get(data, EC_US_PHONETIC_PATH)
         us_audio_url = safe_get(data, EC_US_SPEECH_PATH)
-        if us_phonetic is None:
-            logger.error("Youdao API lost US phonetic for %r", word)
-            raise APIError("Lost US phonetic.")
-        if us_audio_url is not None:
-            us_audio_url = AUDIO_URL_BASE + us_audio_url
-        section.add_phonetic(f"/{us_phonetic}/", "美式发音", us_audio_url)
+        if us_phonetic is not None:
+            if us_audio_url is not None:
+                us_audio_url = AUDIO_URL_BASE + us_audio_url
+            section.add_phonetic(f"/{us_phonetic}/", "美式发音", us_audio_url)
 
         uk_phonetic = safe_get(data, EC_UK_PHONETIC_PATH)
         uk_audio_url = safe_get(data, EC_UK_SPEECH_PATH)
-        if uk_phonetic is None:
-            logger.error("Youdao API lost UK phonetic for %r", word)
-            raise APIError("Lost UK phonetic.")
-        if uk_audio_url is not None:
-            uk_audio_url = AUDIO_URL_BASE + uk_audio_url
-        section.add_phonetic(f"/{uk_phonetic}/", "英式发音", uk_audio_url)
+        if uk_phonetic is not None:
+            if uk_audio_url is not None:
+                uk_audio_url = AUDIO_URL_BASE + uk_audio_url
+            section.add_phonetic(f"/{uk_phonetic}/", "英式发音", uk_audio_url)
 
         for tr in safe_get(data, EC_TRS_PATH, default=[]):  # This `safe_get()` must return a iterable.
             section.add_text(safe_get(tr, EC_TRANSLATION_REL_PATH))
