@@ -8,6 +8,7 @@ from mixdict.gui.window import Window
 from mixdict.gui.tray import Tray
 from mixdict.hotkey import HotKey
 from mixdict.hotupdate import Watcher
+from mixdict.oneinstance import SingleInstance
 from mixdict import config
 
 if flags.dev_mode:
@@ -29,15 +30,21 @@ def setup_logger() -> logging.Logger:
 
     return logger
 
-if __name__ == "__main__":
+def main():
     logger = setup_logger()
     logger.info("Starting MixDict...")
 
     sources_registry = SourcesRegistry()
     window = Window(sources_registry)
+    single_instance = SingleInstance(window.window)
+    if not single_instance.run():
+        return
     tray = Tray(window.window)
     HotKey(window.window)
     if config.DEBUG:
         Watcher(window.window, sources_registry)
     tray.run()
     window.run()
+
+if __name__ == "__main__":
+    main()
