@@ -32,7 +32,7 @@ if sys.platform == "win32":
             self.window = window
 
             # Start listening thread.
-            threading.Thread(target=self._listen, daemon=True).start()
+            threading.Thread(target=self._listen, daemon=True, name="mixdict-hotkey").start()
 
         def _listen(self):
             """Start hotkey listening"""

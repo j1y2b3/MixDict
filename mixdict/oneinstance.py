@@ -128,5 +128,6 @@ class SingleInstance:
         if binded_socket is None:
             return False
 
-        threading.Thread(target=self._listen, args=[binded_socket], daemon=True).start()
+        threading.Thread(target=self._listen, args=[binded_socket],
+                         daemon=True, name="mixdict-single-instance").start()
         return True

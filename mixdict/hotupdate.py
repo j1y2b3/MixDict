@@ -39,8 +39,10 @@ class Watcher:
         self.sources_registry = sources_registry
         self.interval = interval
 
-        threading.Thread(target=self.watch_gui, daemon=True).start()
-        threading.Thread(target=self.watch_user_sources, daemon=True).start()
+        threading.Thread(target=self.watch_gui, daemon=True,
+                         name="mixdict-hotupdate-gui").start()
+        threading.Thread(target=self.watch_user_sources,
+                         daemon=True, name="mixdict-hotupdate-user-sources").start()
 
     def get_files_state(self, directory: Path | str) -> dict[Path, float]:
         """Return the (path, timestamp) pairs of files in the specified directory."""
