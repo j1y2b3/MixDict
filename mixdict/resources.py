@@ -8,7 +8,7 @@ import runpy
 import sys
 from pathlib import Path
 
-from platformdirs import user_cache_dir
+import platformdirs
 from PIL import Image
 
 from typing import TYPE_CHECKING
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 def web_path(name: str) -> Path:
     """Return the absolute path of a file under mixdict/gui/web/."""
-    return ROOT_DIR / "mixdict" / "gui" / "web" / name
+    return ROOT_DIR / config.APP_NAME.lower() / "gui" / "web" / name
 
 def assets_path(name: str) -> Path:
     """Return the absolute path of a file under assets/."""
@@ -77,7 +77,8 @@ def load_user_source(file_path: Path | str) -> "DictionarySource | None":
     return source()  # type: ignore[call-arg]
 
 def webview_storage_path() -> Path:
-    """Return a fixed cross-platform cache dir for pywebview WebView2 data."""
+    """Return a cache dir for pywebview WebView2 data."""
+    app_name = config.APP_NAME
     if config.DEBUG:
-        return Path(user_cache_dir("MixDict-dev", appauthor=False))
-    return Path(user_cache_dir("MixDict", appauthor=False))
+        app_name += "-dev"
+    return platformdirs.user_cache_path(app_name, appauthor=False)
