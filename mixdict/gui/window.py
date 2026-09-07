@@ -32,7 +32,7 @@ class DictApi:
         self._sources_registry = sources_registry
         self._storage = storage
 
-        self._source_reg_name = storage.get("currentSourceRegName")
+        self._source_reg_name = self._storage.get("currentSourceRegName")
         if self._source_reg_name is None:
             self._source_reg_name = self._sources_registry.default_source_reg_name
         self.set_current_source(self._source_reg_name, no_exist_ok=True)
@@ -104,6 +104,12 @@ class DictApi:
 
         return result_page
 
+    def storage_set(self, key: str, value: Any, check_key: bool = False):
+        self._storage.set(key, value, check_key)
+
+    def storage_get(self, key: str, default: Any | None = None) -> Any:
+        return self._storage.get(key, default)
+
 
 class Window:
 
@@ -112,7 +118,7 @@ class Window:
         self.screen = webview.screens[0]
         self.storage_path = str(resources.webview_storage_path())
 
-        # Adapt screen size
+        # Adapt screen size.
         self.width = max(config.WINDOW_MIN_SIZE[0], int(self.screen.width * config.WINDOW_SIZE_RATE[0]))
         self.height = max(config.WINDOW_MIN_SIZE[1], int(self.screen.height * config.WINDOW_SIZE_RATE[1]))
 

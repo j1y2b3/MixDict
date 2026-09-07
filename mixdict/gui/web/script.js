@@ -41,24 +41,29 @@ const isWebKitGTK = /Linux/.test(navigator.userAgent)
     && !/Chrome|Edg/.test(navigator.userAgent);
 if (isWebKitGTK) document.documentElement.classList.add("is-webkitgtk");
 
-initSidebarResizer()
-initSidebarToggle()
-initSidebarSectionsToggle()
-initThemeToggle()
-initScrollbarToggle()
+initSidebarSectionsToggle();
+initThemeToggle();
+initScrollbarToggle();
 document.addEventListener("dragstart", (event) => event.preventDefault());
 
 window.addEventListener("pywebviewready", initApp);
 function initApp() {
+    initSidebarResizer();
+    initSidebarToggle();
     displayCurrentSource();
     displayDictSourcesList();
-    console.debug("[init] app initialising finished")
+    console.debug("[init] app initialising finished");
 }
 
-function initSidebarResizer() {
+async function initSidebarResizer() {
     const resizer = document.querySelector(".sidebar__resizer");
     if (!resizer) return;
     const body = document.body;
+
+    body.classList.add("u-no-transition");
+    const sidebarWidth = await pywebview.api.storage_get("sidebarWidth");
+    if (sidebarWidth) body.style.setProperty("--sidebar-width", `${sidebarWidth}px`);
+    body.classList.remove("u-no-transition");
 
     resizer.addEventListener("pointerdown", (event) => {
         const bodyStyles = getComputedStyle(body);
@@ -67,43 +72,53 @@ function initSidebarResizer() {
         const SIDEBAR_MIN_WIDTH = parseFloat(SIDEBAR_MIN_WIDTH_STR) ?? 0;
         const SIDEBAR_MAX_WIDTH = parseFloat(SIDEBAR_MAX_WIDTH_STR) ?? body.getBoundingClientRect().right;
         const BODY_LEFT_X = body.getBoundingClientRect().left;
+        let sidebarWidth;
 
         event.preventDefault();
         resizer.setPointerCapture(event.pointerId);  // Capture continues even after dragging out the handle.
 
         const onMove = (event) => {
             body.classList.add("u-no-transition");
-            const sidebarWidth = Math.min(Math.max(event.clientX - BODY_LEFT_X, SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH);
+            sidebarWidth = Math.min(Math.max(event.clientX - BODY_LEFT_X, SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH);
             body.style.setProperty("--sidebar-width", `${sidebarWidth}px`);
         }
         const onUp = () => {
             body.classList.remove("u-no-transition");
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerup", onUp);
+            pywebview.api.storage_set("sidebarWidth", sidebarWidth);
         }
         document.addEventListener("pointermove", onMove);
         document.addEventListener("pointerup", onUp);
     });
 }
 
-function initSidebarToggle() {
+async function initSidebarToggle() {
     const toggle = document.getElementById("sidebar-toggle");
     if (!toggle) return;
 
-    let sidebarWidth;
-    const body = document.body;
+    let sidebarWidth = await pywebview.api.storage_get("sidebarWidth");
+    if (sidebarWidth) sidebarWidth += "px";
+    let collapsed = await pywebview.api.storage_get("sidebarIsCollapsed") ?? false;
 
-    toggle.addEventListener("click", () => {
-        const collapsed = document.body.classList.toggle("is-collapsed");
+    const toggleSidebar = () => {
         if (collapsed) {
             // `sidebarWidth` will be an empty string if body does not have `--sidebar-width` property.
-            sidebarWidth = body.style.getPropertyValue("--sidebar-width");
-            body.style.removeProperty("--sidebar-width");
+            sidebarWidth = document.body.style.getPropertyValue("--sidebar-width");
+            document.body.style.removeProperty("--sidebar-width");
             toggle.dataset.title = "展开侧边栏";
         } else {
-            if (sidebarWidth) body.style.setProperty("--sidebar-width", sidebarWidth);
+            if (sidebarWidth) document.body.style.setProperty("--sidebar-width", sidebarWidth);
             toggle.dataset.title = "收起侧边栏";
         }
+    }
+    if (collapsed) document.body.classList.add("is-collapsed");
+    toggleSidebar();
+
+    toggle.addEventListener("click", () => {
+        collapsed = document.body.classList.toggle("is-collapsed");
+        toggleSidebar();
+        pywebview.api.storage_set("sidebarIsCollapsed", collapsed);
     });
 }
 
@@ -189,8 +204,8 @@ async function displayDictSourcesList() {
     }
 }
 
-async function setSource(regName) {
-    await pywebview.api.set_current_source(regName);
+function setSource(regName) {
+    pywebview.api.set_current_source(regName);
 
     document.querySelectorAll(".source__list button.is-selected")
         .forEach((sourceButton) => sourceButton.classList.remove("is-selected"));
