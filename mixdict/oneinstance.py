@@ -9,7 +9,9 @@ import logging
 import socket
 import threading
 
-from webview import Window
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mixdict.gui.window import Window
 
 from mixdict import config
 
@@ -25,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class SingleInstance:
 
-    def __init__(self, window: Window):
+    def __init__(self, window: "Window"):
 
         self.window = window
 

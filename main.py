@@ -36,13 +36,13 @@ def main():
 
     sources_registry = SourcesRegistry()
     window = Window(sources_registry)
-    single_instance = SingleInstance(window.window)
+    single_instance = SingleInstance(window)
     if not single_instance.run():
         return
-    tray = Tray(window.window)
-    HotKey(window.window)
+    tray = Tray(window)
+    HotKey(window)
     if config.DEBUG:
-        Watcher(window.window, sources_registry)
+        Watcher(window, sources_registry)
     tray.run()
     window.run()
 

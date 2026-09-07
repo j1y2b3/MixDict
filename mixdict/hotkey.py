@@ -6,7 +6,9 @@ import logging
 import sys
 import threading
 
-from webview import Window
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mixdict.gui.window import Window
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ if sys.platform == "win32":
     class HotKey:
         """Global hotkey (Windows)"""
 
-        def __init__(self, window: Window):
+        def __init__(self, window: "Window"):
 
             self.window = window
 

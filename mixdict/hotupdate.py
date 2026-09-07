@@ -8,8 +8,10 @@ from pathlib import Path
 import threading
 import time
 
-from webview import Window
-from mixdict.core.registry import SourcesRegistry
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mixdict.gui.window import Window
+    from mixdict.core.registry import SourcesRegistry
 
 from mixdict import resources
 
@@ -31,8 +33,8 @@ logger = logging.getLogger(__name__)
 class Watcher:
     """Regularly check and reload GUI (`web/`) and user dictionary sources (`uer_sources/`)."""
 
-    def __init__(self, window: Window,
-                 sources_registry: SourcesRegistry,
+    def __init__(self, window: "Window",
+                 sources_registry: "SourcesRegistry",
                  interval: float = 0.5):
         """Start the `Watcher`."""
         self.window = window

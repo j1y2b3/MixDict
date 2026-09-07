@@ -6,10 +6,15 @@ from pathlib import Path
 
 import webview
 
+from typing import Callable, Any
 from mixdict.core.sources.base import DictionarySource
 
 from mixdict.core.registry import SourcesRegistry
 from mixdict import resources, config
+
+FOCUS_QUERY_INPUT = """
+setTimeout(() => document.getElementById("query-input").focus(), 1);
+"""
 
 logger = logging.getLogger(__name__)
 
@@ -117,6 +122,16 @@ class Window:
             logger.error("Webview window creation was cancelled.")
             raise RuntimeError("Failed to create webview window.")
         return self._window
+
+    def show(self):
+        self.window.show()
+        self.window.evaluate_js(FOCUS_QUERY_INPUT)
+
+    def destroy(self):
+        self.window.destroy()
+
+    def evaluate_js(self, script: str, callback: Callable[..., Any] | None = None) -> Any:
+        return self.window.evaluate_js(script, callback)
 
     def _on_closing(self) -> bool | None:
         if config.TO_EXIT:
