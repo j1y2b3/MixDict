@@ -43,6 +43,7 @@ class Storage:
         
         If set `check_key` True, skip non-string `key` item,
         Otherwise, convert other type `key` to string.
+        Returns self for chaining.
         """
 
         if not isinstance(key, str):
@@ -53,6 +54,8 @@ class Storage:
                 key = str(key)
 
         self._config[key] = value
+
+        return self
 
     def get(self, key: str, default: Any | None = None) -> Any:
         """Get a value by `key`, returning default if missing."""
