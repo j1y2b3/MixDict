@@ -82,3 +82,26 @@ def webview_storage_path() -> Path:
     if config.DEBUG:
         app_name += "-dev"
     return platformdirs.user_cache_path(app_name, appauthor=False)
+
+def user_config_file_path(is_backup: bool = False, to_create: bool = True) -> Path:
+    """Return the user config file path.
+    
+    If set `to_create` True and directory or file not exists, will create it.
+    If set `is_backup` True, will add ".bak" to file name.
+    """
+    app_name = config.APP_NAME
+    if config.DEBUG:
+        app_name += "-dev"
+
+    user_config_dir = platformdirs.user_config_path(app_name, appauthor=False)
+    user_config_dir.mkdir(exist_ok=True)
+
+    file_name = "config"
+    if is_backup:
+        file_name += ".bak"
+
+    user_config_file = user_config_dir / f"{file_name}.json"
+    if to_create:
+        user_config_file.touch(exist_ok=True)
+
+    return user_config_file

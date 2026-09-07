@@ -9,6 +9,7 @@ from mixdict.gui.tray import Tray
 from mixdict.hotkey import HotKey
 from mixdict.hotupdate import Watcher
 from mixdict.oneinstance import SingleInstance
+from mixdict.storage import Storage
 from mixdict import config
 
 if flags.dev_mode:
@@ -34,9 +35,11 @@ def main():
     logger = setup_logger()
     logger.info("Starting MixDict...")
 
+    storage = Storage()
     sources_registry = SourcesRegistry()
     window = Window(sources_registry)
     single_instance = SingleInstance(window)
+
     if not single_instance.run():
         return
     tray = Tray(window)
@@ -45,6 +48,7 @@ def main():
         Watcher(window, sources_registry)
     tray.run()
     window.run()
+    storage.save()
 
 if __name__ == "__main__":
     main()
