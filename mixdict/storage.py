@@ -2,7 +2,6 @@
 
 import json
 import logging
-import shutil
 
 from typing import Any
 
@@ -54,7 +53,7 @@ class Storage:
                 key = str(key)
 
         self._config[key] = value
-
+        self.save()
         return self
 
     def get(self, key: str, default: Any | None = None) -> Any:
@@ -62,14 +61,9 @@ class Storage:
         return self._config.get(key, default)
 
     def save(self):
-        """Save user data and config file and back up the previous one if exists."""
-
-        if self.config_file_path.exists():
-            config_bak_file_path = resources.user_config_file_path(is_backup=True, to_create=False)
-            shutil.copy(self.config_file_path, config_bak_file_path)
-            logger.info("Backed up config file at %s", config_bak_file_path.absolute())
+        """Save user data and config file."""
 
         self.config_file_path = resources.user_config_file_path()
         with self.config_file_path.open(mode="w", encoding="utf-8") as config_file:
             json.dump(self._config, config_file)
-        logger.info("Saved config at %s", self.config_file_path.absolute())
+        logger.debug("Saved config at %s", self.config_file_path.absolute())
