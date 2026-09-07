@@ -92,8 +92,8 @@ class _FakeWebviewWindow:
     def destroy(self):
         self.destroy_calls += 1
 
-    def evaluate_js(self, script: str):
-        self.evaluate_js_calls.append(script)
+    def evaluate_js(self, script: str, callback=None):
+        self.evaluate_js_calls.append((script, callback))
 
 
 class TestWindow:
@@ -170,7 +170,7 @@ class TestWindow:
         win, _ = self._make_window(monkeypatch, fake)
         win.show()
         assert fake.show_calls == 1
-        assert fake.evaluate_js_calls == [FOCUS_QUERY_INPUT]
+        assert fake.evaluate_js_calls == [(FOCUS_QUERY_INPUT, None)]
 
     def test_destroy_forwards_to_pywebview(self, monkeypatch):
         fake = _FakeWebviewWindow()
@@ -178,14 +178,19 @@ class TestWindow:
         win.destroy()
         assert fake.destroy_calls == 1
 
-    def test_evaluate_js_forwards_to_pywebview(self, monkeypatch):
+    def test_evaluate_js_forwards_script_and_callback(self, monkeypatch):
         fake = _FakeWebviewWindow()
         win, _ = self._make_window(monkeypatch, fake)
-        win.evaluate_js("window.alert(1)")
-        assert fake.evaluate_js_calls == ["window.alert(1)"]
 
-    def test_run_starts_non_private_with_http_port(self, monkeypatch):
-        # e1eb22d:非私有模式 + 固定 http 端口(localStorage 持久化前提)。
+        def cb(result):
+            pass
+
+        win.evaluate_js("window.alert(1)", cb)
+        assert fake.evaluate_js_calls == [("window.alert(1)", cb)]
+
+    def test_run_starts_webview(self, monkeypatch):
+        # 全 JSON 决策(撤销 e1eb22d 的 private_mode/http_port):仅传 debug+storage_path,
+        # 保持 pywebview 默认隐私模式 → http 端口随机 → 无静态资源跨启动缓存问题。
         import webview
 
         fake = _FakeWebviewWindow()
@@ -193,19 +198,7 @@ class TestWindow:
         captured = {}
         monkeypatch.setattr(webview, "start", lambda **kwargs: captured.update(kwargs))
         win.run()
-        assert captured["private_mode"] is False
-        # conftest production_mode 已置 DEBUG=False → 正式端口。
-        assert captured["http_port"] == 51412
-
-    def test_run_http_port_debug_branch(self, monkeypatch):
-        # dev 模式应使用另一个固定端口(与正式版 origin 区分)。
-        from mixdict import config
-        import webview
-
-        monkeypatch.setattr(config, "DEBUG", True)
-        fake = _FakeWebviewWindow()
-        win, _ = self._make_window(monkeypatch, fake)
-        captured = {}
-        monkeypatch.setattr(webview, "start", lambda **kwargs: captured.update(kwargs))
-        win.run()
-        assert captured["http_port"] == 50412
+        assert captured["debug"] is False
+        assert captured["storage_path"] == win.storage_path
+        assert "private_mode" not in captured
+        assert "http_port" not in captured
