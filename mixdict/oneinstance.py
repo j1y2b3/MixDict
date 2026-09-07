@@ -35,6 +35,7 @@ class SingleInstance:
         """Check whether exist another app instance.
         
         If exist, call `self._on_quit()` and return the result, otherwise, return `False`.
+        Will close the passed `_socket`!
         """
 
         if _socket is None:
