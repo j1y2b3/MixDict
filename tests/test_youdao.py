@@ -125,23 +125,31 @@ class TestParseJson:
         # ec 分支末尾新增来源链接(7220990),缺 trs 时只剩音标 + 链接,不崩。
         assert types == ["phonetic", "phonetic", "link"]
 
-    def test_missing_us_phonetic_raises(self):
+    def test_missing_us_phonetic_skipped(self):
+        # e9b01ef:有道 API 可能返回无美式发音的释义,缺 usphone 不再抛错,仅跳过美式音标。
         data = {
             "input": "z",
             "meta": {"isHasSimpleDict": "1"},
             "ec": {"word": [{"ukphone": "z"}]},
         }
-        with pytest.raises(APIError, match="Lost US phonetic"):
-            parse_json(data)
+        d = parse_json(data)
+        assert d["is_found"] is True
+        names = [it["name"] for it in d["sections"][0]["items"] if it["type"] == "phonetic"]
+        assert "英式发音" in names
+        assert "美式发音" not in names
 
-    def test_missing_uk_phonetic_raises(self):
+    def test_missing_uk_phonetic_skipped(self):
+        # 对称:缺 ukphone 时仅保留美式音标。
         data = {
             "input": "z",
             "meta": {"isHasSimpleDict": "1"},
             "ec": {"word": [{"usphone": "z"}]},
         }
-        with pytest.raises(APIError, match="Lost UK phonetic"):
-            parse_json(data)
+        d = parse_json(data)
+        assert d["is_found"] is True
+        names = [it["name"] for it in d["sections"][0]["items"] if it["type"] == "phonetic"]
+        assert "美式发音" in names
+        assert "英式发音" not in names
 
     def test_empty_data_returns_empty_found_page(self):
         # ec/ce 条件化后:空响应不再抛,返回空 found 页(锁当前行为)
@@ -150,16 +158,23 @@ class TestParseJson:
         assert d["word"] is None
         assert d["sections"] == []
 
-    def test_ec_empty_raises(self):
-        # 缺 ec 结构时同样因缺音标抛 APIError
+    def test_ec_empty_no_crash(self):
+        # e9b01ef:ec 结构为空不再因缺音标抛错,返回 found 页且无音标/释义(锁当前行为)。
         data = {"input": "x", "meta": {"isHasSimpleDict": "1"}, "ec": {}}
-        with pytest.raises(APIError, match="Lost US phonetic"):
-            parse_json(data)
+        d = parse_json(data)
+        assert d["is_found"] is True
+        assert d["word"] == "x"
+        content = [it for it in d["sections"][0]["items"] if it["type"] in ("phonetic", "text")]
+        assert content == []
 
-    def test_ec_word_empty_list_raises(self):
+    def test_ec_word_empty_list_no_crash(self):
+        # 对称:word 为空列表时同 ec:{}。
         data = {"input": "x", "meta": {"isHasSimpleDict": "1"}, "ec": {"word": []}}
-        with pytest.raises(APIError, match="Lost US phonetic"):
-            parse_json(data)
+        d = parse_json(data)
+        assert d["is_found"] is True
+        assert d["word"] == "x"
+        content = [it for it in d["sections"][0]["items"] if it["type"] in ("phonetic", "text")]
+        assert content == []
 
     def test_non_dict_root_does_not_crash(self):
         # 非 dict 结构(如 list 根):无 ec/ce → 不抛,返回空 found 页(锁当前行为)

@@ -45,11 +45,15 @@ class FakeUser32:
 
 
 class FakeThread:
-    """替代 threading.Thread: 捕获 target,但不真正启动后台线程。"""
+    """替代 threading.Thread: 捕获 target/name,但不真正启动后台线程。"""
 
-    def __init__(self, target=None, daemon=None):
+    last = None  # 记录最近一次构造的实例,便于断言线程参数。
+
+    def __init__(self, target=None, daemon=None, name=None):
         self.target = target
         self.daemon = daemon
+        self.name = name
+        FakeThread.last = self
 
     def start(self):
         pass  # 测试中手动调用 hk._listen() 以同步执行。
@@ -80,6 +84,14 @@ def _make_hotkey(monkeypatch, window=None):
 
 class TestHotKeyWindows:
     pytestmark = pytest.mark.skipif(sys.platform != "win32", reason="仅 Windows 平台")
+
+    def test_listen_thread_is_daemon_and_named(self, monkeypatch):
+        hk, _ = _make_hotkey(monkeypatch)
+        t = FakeThread.last
+        assert t.daemon is True
+        assert t.name == "mixdict-hotkey"
+        assert t.target.__func__ is hotkey.HotKey._listen
+        assert t.target.__self__ is hk
 
     def test_register_hotkey_args(self, monkeypatch, fake_user32):
         hk, _ = _make_hotkey(monkeypatch)

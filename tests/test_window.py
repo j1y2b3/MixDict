@@ -74,14 +74,26 @@ class _Events:
 
 
 class _FakeWebviewWindow:
-    """模拟 webview.Window: 记录 hide() 并暴露 events.closing。"""
+    """模拟 webview.Window: 记录 hide/show/destroy/evaluate_js 并暴露 events.closing。"""
 
     def __init__(self):
         self.events = _Events()
         self.hide_calls = 0
+        self.show_calls = 0
+        self.destroy_calls = 0
+        self.evaluate_js_calls = []
 
     def hide(self):
         self.hide_calls += 1
+
+    def show(self):
+        self.show_calls += 1
+
+    def destroy(self):
+        self.destroy_calls += 1
+
+    def evaluate_js(self, script: str):
+        self.evaluate_js_calls.append(script)
 
 
 class TestWindow:
@@ -149,3 +161,51 @@ class TestWindow:
         win, _ = self._make_window(monkeypatch, fake)
         assert win._on_closing() is None
         assert fake.hide_calls == 0
+
+    def test_show_shows_and_moves_focus_to_input(self, monkeypatch):
+        # e1eb22d:打开窗口时由后端强制把焦点放到查词输入框。
+        from mixdict.gui.window import FOCUS_QUERY_INPUT
+
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        win.show()
+        assert fake.show_calls == 1
+        assert fake.evaluate_js_calls == [FOCUS_QUERY_INPUT]
+
+    def test_destroy_forwards_to_pywebview(self, monkeypatch):
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        win.destroy()
+        assert fake.destroy_calls == 1
+
+    def test_evaluate_js_forwards_to_pywebview(self, monkeypatch):
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        win.evaluate_js("window.alert(1)")
+        assert fake.evaluate_js_calls == ["window.alert(1)"]
+
+    def test_run_starts_non_private_with_http_port(self, monkeypatch):
+        # e1eb22d:非私有模式 + 固定 http 端口(localStorage 持久化前提)。
+        import webview
+
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        captured = {}
+        monkeypatch.setattr(webview, "start", lambda **kwargs: captured.update(kwargs))
+        win.run()
+        assert captured["private_mode"] is False
+        # conftest production_mode 已置 DEBUG=False → 正式端口。
+        assert captured["http_port"] == 51412
+
+    def test_run_http_port_debug_branch(self, monkeypatch):
+        # dev 模式应使用另一个固定端口(与正式版 origin 区分)。
+        from mixdict import config
+        import webview
+
+        monkeypatch.setattr(config, "DEBUG", True)
+        fake = _FakeWebviewWindow()
+        win, _ = self._make_window(monkeypatch, fake)
+        captured = {}
+        monkeypatch.setattr(webview, "start", lambda **kwargs: captured.update(kwargs))
+        win.run()
+        assert captured["http_port"] == 50412

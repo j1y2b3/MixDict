@@ -38,6 +38,14 @@ class TestResources:
         assert p == Path(user_cache_dir("MixDict", appauthor=False))
         assert p.is_absolute()
 
+    def test_webview_storage_path_dev_mode(self, monkeypatch):
+        # 538b211:开发缓存与用户缓存隔离(DEBUG → MixDict-dev)。
+        from mixdict import config
+        from platformdirs import user_cache_dir
+
+        monkeypatch.setattr(config, "DEBUG", True)
+        assert resources.webview_storage_path() == Path(user_cache_dir("MixDict-dev", appauthor=False))
+
 
 class TestLoadTrayIcon:
     def test_load_tray_icon_returns_image(self, monkeypatch):
