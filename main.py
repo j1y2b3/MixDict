@@ -37,7 +37,7 @@ def main():
 
     storage = Storage()
     sources_registry = SourcesRegistry()
-    window = Window(sources_registry)
+    window = Window(sources_registry, storage)
     single_instance = SingleInstance(window)
 
     if not single_instance.run():

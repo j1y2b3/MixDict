@@ -8,6 +8,7 @@ import webview
 
 from typing import Callable, Any
 from mixdict.core.sources.base import DictionarySource
+from mixdict.storage import Storage
 
 from mixdict.core.registry import SourcesRegistry
 from mixdict import resources, config
@@ -25,12 +26,16 @@ class DictApi:
     For details, see: https://pywebview.flowrl.com/guide/interdomain.html
     """
 
-    def __init__(self, sources_registry: SourcesRegistry):
+    def __init__(self, sources_registry: SourcesRegistry, storage: Storage):
         """Store the registry and pick the current default source."""
 
         self._sources_registry = sources_registry
-        self._source_reg_name = self._sources_registry.default_source_reg_name
-        self.set_current_source(self._source_reg_name)
+        self._storage = storage
+
+        self._source_reg_name = storage.get("currentSourceRegName")
+        if self._source_reg_name is None:
+            self._source_reg_name = self._sources_registry.default_source_reg_name
+        self.set_current_source(self._source_reg_name, no_exist_ok=True)
 
     @property
     def source(self) -> DictionarySource:
@@ -68,12 +73,22 @@ class DictApi:
         """Return the `reg_name`s of all registered sources."""
         return self._sources_registry.list()
 
-    def set_current_source(self, reg_name: str):
-        """Set the current source to `reg_name`."""
+    def set_current_source(self, reg_name: str, no_exist_ok: bool = False):
+        """Set the current source to `reg_name`.
+        
+        If set `no_exist_ok` True and source `reg_name` not exists,
+        revert to default source `reg_name`.
+        """
 
         if self._sources_registry.get(reg_name) is None:
-            raise ValueError(f"Unknown source: {reg_name!r}")
+            if no_exist_ok:
+                logger.warning("Dictionary source %r not exists, revert to %r",
+                               reg_name, config.DEFAULT_DICTIONARY_SOURCE)
+                reg_name = config.DEFAULT_DICTIONARY_SOURCE
+            else:
+                raise ValueError(f"Unknown source: {reg_name!r}")
         self._source_reg_name = reg_name
+        self._storage.set("currentSourceRegName", reg_name)
 
     def lookup(self, word: str) -> dict:
         """Use current source looking up `word`, return data format according to mixdict/schema.py."""
@@ -92,7 +107,7 @@ class DictApi:
 
 class Window:
 
-    def __init__(self, sources_registry: SourcesRegistry):
+    def __init__(self, sources_registry: SourcesRegistry, storage: Storage):
 
         self.screen = webview.screens[0]
         self.storage_path = str(resources.webview_storage_path())
@@ -104,7 +119,7 @@ class Window:
         self._window = webview.create_window(
             title=config.TITLE,
             url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
-            js_api=DictApi(sources_registry),
+            js_api=DictApi(sources_registry, storage),
             width=self.width,
             height=self.height,
             min_size=config.WINDOW_MIN_SIZE,
