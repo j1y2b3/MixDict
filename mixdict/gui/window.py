@@ -150,8 +150,10 @@ class Window:
         return self._window
 
     def show(self):
+        self.window.on_top = True
         self.window.show()
         self.window.evaluate_js(FOCUS_QUERY_INPUT)
+        self.window.on_top = False
 
     def destroy(self):
         self.window.destroy()
