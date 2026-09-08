@@ -168,4 +168,5 @@ class Window:
     def run(self):
         """Start pywebview window."""
         logger.info("Store cache at %s", self.storage_path)
-        webview.start(debug=config.DEBUG, storage_path=self.storage_path)
+        webview.start(debug=config.DEBUG, storage_path=self.storage_path,
+                      icon=str(resources.assets_path("icon.ico")))
