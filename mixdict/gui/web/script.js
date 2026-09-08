@@ -122,11 +122,21 @@ async function initSidebarToggle() {
     });
 }
 
-function initSidebarSectionsToggle() {
+async function initSidebarSectionsToggle() {
+    let sidebarEachSectionIsCollapsed = await pywebview.api.storage_get("sidebarEachSectionIsCollapsed");
+    if (!sidebarEachSectionIsCollapsed || typeof sidebarEachSectionIsCollapsed !== 'object')
+        sidebarEachSectionIsCollapsed = {};
+
     document.querySelectorAll(".sidebar__main>section>header>button")
         .forEach((toggle) => {
+            const section = toggle.parentElement?.parentElement;
+            if (section.id && sidebarEachSectionIsCollapsed[section.id]) section.classList.add("is-collapsed");
+
             toggle.addEventListener("click", () => {
-                toggle.parentElement?.parentElement?.classList.toggle("is-collapsed");
+                if (!section) return;
+                const collapsed = section.classList.toggle("is-collapsed");
+                if (section.id) sidebarEachSectionIsCollapsed[section.id] = collapsed;
+                pywebview.api.storage_set("sidebarEachSectionIsCollapsed", sidebarEachSectionIsCollapsed);
             });
         });
 }
