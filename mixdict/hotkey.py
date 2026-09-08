@@ -27,7 +27,7 @@ if sys.platform == "win32":
 
 
     class HotKey:
-        """Global hotkey (Windows)"""
+        """Global hotkey (Windows)."""
 
         def __init__(self, window: "Window"):
 
@@ -61,4 +61,8 @@ if sys.platform == "win32":
 
 
 else:
+    class HotKey:
+        """Global hotkey (unsupported platform)."""
+        def __init__(self, window: "Window"):
+            pass
     logger.warning("Currently not supported platform: %r", sys.platform)
