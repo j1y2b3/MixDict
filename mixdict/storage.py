@@ -35,7 +35,7 @@ class Storage:
 
             for key in _config:
                 self.set(key, _config[key], check_key=True, save=False)
-            logger.info("Loaded confid file at %s", self.config_file_path.absolute())
+            logger.info("Loaded config file at %s", self.config_file_path.absolute())
 
     def set(self, key: str, value: Any, check_key: bool = False, save: bool = True):
         """Set an storage item.
@@ -67,5 +67,8 @@ class Storage:
 
         self.config_file_path = resources.user_config_file_path()
         with self.config_file_path.open(mode="w", encoding="utf-8") as config_file:
-            json.dump(self._config, config_file)
+            try:
+                json.dump(self._config, config_file)
+            except Exception as error:
+                logger.error("Failed to save config file: %s", error)
             logger.debug("Saved config at %s", self.config_file_path.absolute())

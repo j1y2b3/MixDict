@@ -47,6 +47,7 @@ class SingleInstance:
                 s.connect((LOCALHOST, PORT))
 
             except (ConnectionRefusedError, TimeoutError):  # Not exist app instance.
+                logger.debug("Port %s no listening", PORT)
                 return False
 
             else:  # Exist app instance.
@@ -85,9 +86,12 @@ class SingleInstance:
             _socket.bind((LOCALHOST, PORT))
         except OSError as os_error:
             if os_error.errno != errno.EADDRINUSE:  # Not be occupied.
-                raise os_error
+                logger.exception("Failed to bind lock port %s", PORT)
+                raise
             if max_depth <= 1:  # Prevent Excessive Recursion.
-                raise os_error
+                logger.error("Port %s occupied but not detected anothor activatable inetance "
+                             "(may occupied by an unrelated program)", PORT)
+                raise
 
             # Exist app instance.
             if self._check_exist(_socket):  # This will close the `_socket`.
@@ -105,16 +109,20 @@ class SingleInstance:
             while True:  # Listening loop.
                 try:
                     conn, _ = s.accept()
+                except OSError:
+                    logger.critical("Single instance listening socket failed, unlocked", exc_info=True)
+                    break
+
+                try:
                     with conn:
-                        recv = conn.recv(1024)
+                        recv = conn.recv(BUFSIZE)
                         if not recv:
                             continue
                         conn.sendall(QUIT)
                         if recv == SHOW:
                             self.window.show()
-
                 except OSError:
-                    logger.exception("OSError when connecting new instance")
+                    logger.warning("OSError when connecting new instance", exc_info=True)
                     continue
 
     def run(self) -> bool:
@@ -125,12 +133,15 @@ class SingleInstance:
         """
 
         if self._check_exist():
+            logger.info("Exist another instance, exit after showing its window")
             return False
 
         binded_socket = self._get_lock()
         if binded_socket is None:
+            logger.info("Exist another instance, exit after showing its window")
             return False
 
         threading.Thread(target=self._listen, args=[binded_socket],
                          daemon=True, name="mixdict-single-instance").start()
+        logger.debug("Single instance lock start successfully, listening port %s", PORT)
         return True

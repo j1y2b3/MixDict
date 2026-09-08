@@ -32,9 +32,6 @@ def setup_logger() -> logging.Logger:
     return logger
 
 def main():
-    logger = setup_logger()
-    logger.info("Starting MixDict...")
-
     storage = Storage()
     sources_registry = SourcesRegistry()
     window = Window(sources_registry, storage)
@@ -50,4 +47,10 @@ def main():
     window.run()
 
 if __name__ == "__main__":
-    main()
+    logger = setup_logger()
+    logger.info("Starting MixDict...")
+
+    try:
+        main()
+    except Exception:
+        logger.exception("Failed to start app")

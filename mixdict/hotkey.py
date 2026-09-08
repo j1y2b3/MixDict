@@ -37,12 +37,18 @@ if sys.platform == "win32":
             threading.Thread(target=self._listen, daemon=True, name="mixdict-hotkey").start()
 
         def _listen(self):
-            """Start hotkey listening"""
+            """Start hotkey listening."""
             msg = wintypes.MSG()
 
             # Register hotkeys (must in listening thread).
-            if not user32.RegisterHotKey(None, ON_SHOW_WINDOW, MOD_CONTROL | MOD_WIN | MOD_NOREPEAT, ord('T')):
-                raise ctypes.WinError()
+            if not user32.RegisterHotKey(None, ON_SHOW_WINDOW,
+                                         MOD_CONTROL | MOD_WIN | MOD_NOREPEAT, ord('T')):
+                try:
+                    raise ctypes.WinError()
+                except:
+                    logger.exception("Failed to register the global hotkey (may occupied); "
+                                     "the hotkey function is unavailable")
+                return
 
             try:
                 while True:
