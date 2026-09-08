@@ -34,14 +34,15 @@ class Storage:
                 logger.warning("Unknown config JSON root type: %s, deprecated", type(_config).__name__)
 
             for key in _config:
-                self.set(key, _config[key], check_key=True)
+                self.set(key, _config[key], check_key=True, save=False)
             logger.info("Loaded confid file at %s", self.config_file_path.absolute())
 
-    def set(self, key: str, value: Any, check_key: bool = False):
+    def set(self, key: str, value: Any, check_key: bool = False, save: bool = True):
         """Set an storage item.
         
         If set `check_key` True, skip non-string `key` item,
         Otherwise, convert other type `key` to string.
+        Will save config each set otherwise set `save` False.
         Returns self for chaining.
         """
 
@@ -53,7 +54,8 @@ class Storage:
                 key = str(key)
 
         self._config[key] = value
-        self.save()
+        if save:
+            self.save()
         return self
 
     def get(self, key: str, default: Any | None = None) -> Any:
@@ -66,4 +68,4 @@ class Storage:
         self.config_file_path = resources.user_config_file_path()
         with self.config_file_path.open(mode="w", encoding="utf-8") as config_file:
             json.dump(self._config, config_file)
-        logger.debug("Saved config at %s", self.config_file_path.absolute())
+            logger.debug("Saved config at %s", self.config_file_path.absolute())

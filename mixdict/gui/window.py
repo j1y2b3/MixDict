@@ -104,8 +104,8 @@ class DictApi:
 
         return result_page
 
-    def storage_set(self, key: str, value: Any, check_key: bool = False):
-        self._storage.set(key, value, check_key)
+    def storage_set(self, key: str, value: Any, check_key: bool = False, save: bool = True):
+        self._storage.set(key, value, check_key, save)
 
     def storage_get(self, key: str, default: Any | None = None) -> Any:
         return self._storage.get(key, default)
