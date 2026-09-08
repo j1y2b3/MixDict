@@ -41,8 +41,6 @@ const isWebKitGTK = /Linux/.test(navigator.userAgent)
     && !/Chrome|Edg/.test(navigator.userAgent);
 if (isWebKitGTK) document.documentElement.classList.add("is-webkitgtk");
 
-initSidebarSectionsToggle();
-initThemeToggle();
 initScrollbarToggle();
 document.addEventListener("dragstart", (event) => event.preventDefault());
 
@@ -50,6 +48,8 @@ window.addEventListener("pywebviewready", initApp);
 function initApp() {
     initSidebarResizer();
     initSidebarToggle();
+    initSidebarSectionsToggle();
+    initThemeToggle();
     displayCurrentSource();
     displayDictSourcesList();
     console.debug("[init] app initialising finished");
@@ -131,23 +131,29 @@ function initSidebarSectionsToggle() {
         });
 }
 
-function initThemeToggle() {
+async function initThemeToggle() {
     const root = document.documentElement;
     const toggle = document.getElementById("theme-toggle");
     if (!toggle) return;
 
     const icons = toggle.querySelectorAll(".icon");
     const themes = ["system", "light", "dark"];
-    let i = 0;
-    toggle.addEventListener("click", () => {
-        i = (i + 1) % icons.length;
-        showIconfromList(icons, i);
+    let themeIndex = await pywebview.api.storage_get("themeIndex") ?? 0;
 
-        if (themes[i] === "system") {
+    const setTheme = (themeIndex) => {
+        showIconfromList(icons, themeIndex);
+        if (themes[themeIndex] === "system") {
             root.removeAttribute("data-theme");
         } else {
-            root.dataset.theme = themes[i];
+            root.dataset.theme = themes[themeIndex];
         }
+    }
+    setTheme(themeIndex);
+
+    toggle.addEventListener("click", () => {
+        themeIndex = (themeIndex + 1) % icons.length;
+        setTheme(themeIndex);
+        pywebview.api.storage_set("themeIndex", themeIndex);
     });
 }
 
