@@ -16,7 +16,7 @@ from mixdict.oneinstance import SingleInstance
 from mixdict.storage import Storage
 
 def setup_logger() -> logging.Logger:
-    logger = logging.getLogger("mixdict")
+    logger = logging.getLogger(config.APP_NAME.lower())
     if config.DEBUG:
         logger.setLevel(logging.DEBUG)
 
@@ -28,7 +28,6 @@ def setup_logger() -> logging.Logger:
     handler.setFormatter(formatter)
 
     logger.addHandler(handler)
-
     return logger
 
 def main():
