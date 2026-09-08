@@ -15,12 +15,19 @@ class SourcesRegistry:
     """Hold registered sources, keyed by `reg_name`, with a default source."""
 
     def __init__(self):
-        """Create an empty registry and register the built-in sources."""
+        """Create an empty registry."""
 
         self.sources: dict[str, DictionarySource] = {}
         self._builtin_reg_names: set[str] = set()
         self.user_sources_reg_map: dict[Path, str] = {}  # For hotupdate.
         self.default_source_reg_name: str = config.DEFAULT_DICTIONARY_SOURCE
+
+    def init(self):
+        """Initialise registry.
+        
+        Register the built-in and user sources.
+        """
+
         self._register_builtins()
         self._register_users()
 

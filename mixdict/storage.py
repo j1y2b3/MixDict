@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 class Storage:
 
     def __init__(self):
+        pass
+
+    def init(self):
         """Read storage file and initialise."""
 
         self.config_file_path = resources.user_config_file_path()

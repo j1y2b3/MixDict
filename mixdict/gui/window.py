@@ -115,6 +115,11 @@ class Window:
 
     def __init__(self, sources_registry: SourcesRegistry, storage: Storage):
 
+        self.sources_registry = sources_registry
+        self.storage = storage
+
+    def init(self):
+
         self.screen = webview.screens[0]
         self.storage_path = str(resources.webview_storage_path())
 
@@ -125,7 +130,7 @@ class Window:
         self._window = webview.create_window(
             title=config.TITLE,
             url=str(resources.web_path("index.html")),  # pywebview will start a built-in HTTP server automatically.
-            js_api=DictApi(sources_registry, storage),
+            js_api=DictApi(self.sources_registry, self.storage),
             width=self.width,
             height=self.height,
             min_size=config.WINDOW_MIN_SIZE,

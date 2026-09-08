@@ -3,6 +3,10 @@
 import logging
 from sys import flags
 
+from mixdict import config
+if flags.dev_mode:
+    config.DEBUG = True
+
 from mixdict.core.registry import SourcesRegistry
 from mixdict.gui.window import Window
 from mixdict.gui.tray import Tray
@@ -10,10 +14,6 @@ from mixdict.hotkey import HotKey
 from mixdict.hotupdate import Watcher
 from mixdict.oneinstance import SingleInstance
 from mixdict.storage import Storage
-from mixdict import config
-
-if flags.dev_mode:
-    config.DEBUG = True
 
 def setup_logger() -> logging.Logger:
     logger = logging.getLogger("mixdict")
@@ -36,9 +36,13 @@ def main():
     sources_registry = SourcesRegistry()
     window = Window(sources_registry, storage)
     single_instance = SingleInstance(window)
-
     if not single_instance.run():
         return
+
+    storage.init()
+    sources_registry.init()
+    window.init()
+
     tray = Tray(window)
     HotKey(window)
     if config.DEBUG:
