@@ -1,4 +1,9 @@
-"""MixDict startup entry."""
+"""MixDict v0.1.0
+
+A simple network dictionary GUI program built on some network dictionary sources and pywebview.
+Copyright © 2026 Jin Yubin
+License: The MIT License (MIT)
+"""
 
 import argparse
 import logging
