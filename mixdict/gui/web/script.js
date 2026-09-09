@@ -52,6 +52,7 @@ function initApp() {
     initThemeToggle();
     displayCurrentSource();
     displayDictSourcesList();
+    document.getElementById("query-input").focus();
     console.debug("[init] app initialising finished");
 }
 
