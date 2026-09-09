@@ -1,5 +1,6 @@
 """MixDict startup entry."""
 
+import argparse
 import logging
 from sys import flags
 
@@ -30,7 +31,36 @@ def setup_logger() -> logging.Logger:
     logger.addHandler(handler)
     return logger
 
-def main():
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+
+    parser = argparse.ArgumentParser(
+        prog=config.APP_NAME,
+        description=config.DESCRIPTION
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {config.VERSION}"
+    )
+    parser.add_argument(
+        "-d", "--debug",
+        action="store_true",
+        help="debug mod"
+    )
+    parser.add_argument(
+        "--hidden",
+        action="store_true",
+        help="hide the window at startup"
+    )
+    args = parser.parse_args()
+
+    if args.debug:
+        config.DEBUG = True
+
+    return args
+
+def main(args: argparse.Namespace):
     storage = Storage()
     sources_registry = SourcesRegistry()
     window = Window(sources_registry, storage)
@@ -40,7 +70,7 @@ def main():
 
     storage.init()
     sources_registry.init()
-    window.init()
+    window.init(args.hidden)
 
     tray = Tray(window)
     HotKey(window)
@@ -50,10 +80,11 @@ def main():
     window.run()
 
 if __name__ == "__main__":
+    args = parse_args()
     logger = setup_logger()
     logger.info("Starting MixDict...")
 
     try:
-        main()
+        main(args)
     except Exception:
         logger.exception("Failed to start app")

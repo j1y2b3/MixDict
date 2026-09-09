@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 from mixdict import config
 
+DEBUG = config.DEBUG
 # Not packed: project root (parent of mixdict/). Packed: PyInstaller temp dir.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 
@@ -79,7 +80,7 @@ def load_user_source(file_path: Path | str) -> "DictionarySource | None":
 def webview_storage_path() -> Path:
     """Return a cache dir for pywebview WebView2 data."""
     app_name = config.APP_NAME
-    if config.DEBUG:
+    if DEBUG:
         app_name += "-dev"
     return platformdirs.user_cache_path(app_name, appauthor=False)
 
@@ -90,7 +91,7 @@ def user_config_file_path(is_backup: bool = False, to_create: bool = True) -> Pa
     If set `is_backup` True, will add ".bak" to file name.
     """
     app_name = config.APP_NAME
-    if config.DEBUG:
+    if DEBUG:
         app_name += "-dev"
 
     user_config_dir = platformdirs.user_config_path(app_name, appauthor=False)

@@ -118,7 +118,7 @@ class Window:
         self.sources_registry = sources_registry
         self.storage = storage
 
-    def init(self):
+    def init(self, hidden: bool = False):
 
         self.screen = webview.screens[0]
         self.storage_path = str(resources.webview_storage_path())
@@ -137,7 +137,7 @@ class Window:
             screen=self.screen,  # pywebview automatically centers the window.
             text_select=True,
             background_color="#000000",
-            hidden=True
+            hidden=hidden
         )
 
         self.window.events.closing += self._on_closing
