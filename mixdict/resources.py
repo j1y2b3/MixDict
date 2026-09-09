@@ -36,7 +36,7 @@ def load_tray_icon() -> "ImageFile":
     """Return the tray icon instance."""
     icon_path = assets_path("tray-icon.png")
     if not icon_path.exists():
-        raise FileNotFoundError(f"Tray icon lost: {icon_path.absolute()}")
+        raise FileNotFoundError(f"Tray icon lost: {icon_path.resolve()}")
     return Image.open(icon_path)
 
 def user_sources_dir() -> Path:

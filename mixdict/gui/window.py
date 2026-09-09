@@ -100,7 +100,7 @@ class DictApi:
         if config.DEBUG:
             dump_path = Path("tmp") / f"page-{word}.json"
             dump_path.write_text(json.dumps(result_page, ensure_ascii=False, indent=4), encoding="utf-8")
-            logger.debug("Saved result page to %s", dump_path.absolute())
+            logger.debug("Saved result page to %s", dump_path.resolve())
 
         return result_page
 
