@@ -19,7 +19,8 @@ if TYPE_CHECKING:
 from mixdict import config
 
 DEBUG = config.DEBUG
-# Not packed: project root (parent of mixdict/). Packed: PyInstaller temp dir.
+# Not packed: project root (parent of mixdict/).
+# Packed: PyInstaller `_internal` directory or temporary directory.
 ROOT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
 
 logger = logging.getLogger(__name__)
@@ -45,11 +46,15 @@ def user_sources_dir() -> Path:
     Not packed: <project root>/user_sources.
     Packed: <app dir>/user_sources, next to the executable file, so it stays
     user-writable (bundled data under `_internal` is not suitable).
+    If directory not exist, will create one.
     """
     if getattr(sys, "frozen", False):
         # Packed: writable, in the same directory as the executable file
-        return Path(sys.executable).parent / "user_sources"
-    return ROOT_DIR / "user_sources"  # Not packed: user_sources/ in the project root
+        path = Path(sys.executable).parent / "user_sources"
+    path = ROOT_DIR / "user_sources"  # Not packed: user_sources/ in the project root
+
+    path.mkdir(exist_ok=True)
+    return path
 
 def user_source_path(name: str) -> Path:
     """Return the absolute path of a user source file under the user sources directory."""
