@@ -131,6 +131,7 @@ class SingleInstance:
         If start successfully, return `True`;
         If exist another instance, return `False`.
         """
+        logger.info("Single instance checking...")
 
         if self._check_exist():
             logger.info("Exist another instance, exit after showing its window")

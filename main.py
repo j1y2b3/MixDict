@@ -25,7 +25,7 @@ def setup_logger() -> logging.Logger:
     if config.DEBUG:
         handler.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter("[%(name)s][%(levelname)s] %(message)s")
+    formatter = logging.Formatter("[%(asctime)s][%(name)s][%(threadName)s][%(levelname)s] %(message)s")
     handler.setFormatter(formatter)
 
     logger.addHandler(handler)
