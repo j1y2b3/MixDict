@@ -7,10 +7,10 @@ License: The MIT License (MIT)
 
 import argparse
 import logging
-from sys import flags
+import sys
 
 from mixdict import config
-if flags.dev_mode:
+if sys.flags.dev_mode:
     config.DEBUG = True
 
 from mixdict.core.registry import SourcesRegistry
@@ -20,6 +20,20 @@ from mixdict.hotkey import HotKey
 from mixdict.hotupdate import Watcher
 from mixdict.oneinstance import SingleInstance
 from mixdict.storage import Storage
+
+def attach_parent_console():
+    """Attach stdout and stderr to the parent console on Windows.
+    
+    Only work at frozen mode and Windows platform.
+    """
+
+    if sys.platform != "win32" or not getattr(sys, "frozen", False):
+        return
+    import ctypes
+    ATTACH_PARENT_PROCESS = -1
+    if ctypes.windll.kernel32.AttachConsole(ATTACH_PARENT_PROCESS):
+        sys.stdout = open("CONOUT$", "w", encoding="utf-8")
+        sys.stderr = open("CONOUT$", "w", encoding="utf-8")
 
 def setup_logger() -> logging.Logger:
     logger = logging.getLogger(config.APP_NAME.lower())
