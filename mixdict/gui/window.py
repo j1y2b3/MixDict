@@ -11,7 +11,7 @@ from mixdict.core.sources.base import DictionarySource
 from mixdict.storage import Storage
 
 from mixdict.core.registry import SourcesRegistry
-from mixdict import resources, config
+from mixdict import autostart, config, resources
 
 FOCUS_QUERY_INPUT = """
 setTimeout(() => document.getElementById("query-input").focus(), 1);
@@ -37,6 +37,7 @@ class DictApi:
             self._source_reg_name = self._sources_registry.default_source_reg_name
         self.set_current_source(self._source_reg_name, no_exist_ok=True)
 
+    # Dictionary sources
     @property
     def source(self) -> DictionarySource:
         """The current source instance (always fetched fresh from the registry)."""
@@ -104,11 +105,25 @@ class DictApi:
 
         return result_page
 
+    # Storage
     def storage_set(self, key: str, value: Any, check_key: bool = False, save: bool = True):
         self._storage.set(key, value, check_key, save)
 
     def storage_get(self, key: str, default: Any | None = None) -> Any:
         return self._storage.get(key, default)
+
+    # Stratup run
+    def is_startup_run_supported(self) -> bool:
+        return autostart.SUPPORTED
+
+    def is_startup_run(self) -> bool | None:
+        return autostart.is_enabled()
+
+    def enable_startup_run(self) -> bool:
+        return autostart.enable()
+
+    def disable_startup_run(self) -> bool:
+        return autostart.disable()
 
 
 class Window:

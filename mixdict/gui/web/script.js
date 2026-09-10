@@ -51,6 +51,7 @@ function initApp() {
     initSidebarToggle();
     initSidebarSectionsToggle();
     initThemeToggle();
+    initStartupSetting();
     displayCurrentSource();
     displayDictSourcesList();
     document.getElementById("query-input").focus();
@@ -138,6 +139,30 @@ function initSettingPanelsTrigger() {
         const panel = SettingSection.querySelector(`.setting__panel[data-panel="${trigger.dataset.panel}"]`);
         openPanel(panel.hidden ? trigger.dataset.panel : null);
     }));
+}
+
+async function initStartupSetting() {
+    const checkbox = document.getElementById("startup-run-checkbox");
+    if (!checkbox) return;
+
+    if (!await pywebview.api.is_startup_run_supported()) {
+        checkbox.disabled = true;
+        return;
+    }
+
+    const status = await pywebview.api.is_startup_run();
+    if (status === null) checkbox.indeterminate = true;
+    else checkbox.checkbox = status;
+
+    checkbox.addEventListener("change", async () => {
+        checkbox.disabled = true;
+        const isWantEnabled = checkbox.checked;
+        const isSucceeded = isWantEnabled
+            ? await pywebview.api.enable_startup_run()
+            : await pywebview.api.disable_startup_run();
+        if (!isSucceeded) checkbox.checked = (await pywebview.api.is_startup_run()) ?? !isWantEnabled;
+        checkbox.disabled = false;
+    });
 }
 
 async function initSidebarSectionsToggle() {
