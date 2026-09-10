@@ -13,6 +13,7 @@ from mixdict import config
 if sys.flags.dev_mode:
     config.DEBUG = True
 
+from mixdict import resources
 from mixdict.core.registry import SourcesRegistry
 from mixdict.gui.window import Window
 from mixdict.gui.tray import Tray
@@ -39,15 +40,24 @@ def setup_logger() -> logging.Logger:
     logger = logging.getLogger(config.APP_NAME.lower())
     if config.DEBUG:
         logger.setLevel(logging.DEBUG)
-
-    handler = logging.StreamHandler()
-    if config.DEBUG:
-        handler.setLevel(logging.DEBUG)
-
+    else:
+        logger.setLevel(logging.INFO)
     formatter = logging.Formatter("[%(asctime)s][%(name)s][%(threadName)s][%(levelname)s] %(message)s")
-    handler.setFormatter(formatter)
 
-    logger.addHandler(handler)
+    console_handler = logging.StreamHandler()
+    if config.DEBUG:
+        console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    file_handler = logging.FileHandler(resources.log_file_path(), encoding="utf-8")
+    if config.DEBUG:
+        file_handler.setLevel(logging.DEBUG)
+    else:
+        file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
     return logger
 
 def parse_args() -> argparse.Namespace:

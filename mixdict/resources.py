@@ -107,3 +107,21 @@ def user_config_file_path(to_create: bool = True) -> Path:
         user_config_file.touch(exist_ok=True)
 
     return user_config_file
+
+def log_file_path(to_create: bool = True) -> Path:
+    """Return the log file path.
+ 
+    If set `to_create` True and directory or file not exists, will create it.
+    """
+    app_name = config.APP_NAME
+    if DEBUG:
+        app_name += "-dev"
+
+    log_dir = platformdirs.user_log_path(app_name, appauthor=False)
+    log_dir.mkdir(exist_ok=True)
+
+    log_file = log_dir / f"{app_name.lower()}.log"
+    if to_create:
+        log_file.touch(exist_ok=True)
+
+    return log_file
