@@ -42,6 +42,7 @@ const isWebKitGTK = /Linux/.test(navigator.userAgent)
 if (isWebKitGTK) document.documentElement.classList.add("is-webkitgtk");
 
 initScrollbarToggle();
+initSettingPanelsTrigger();
 document.addEventListener("dragstart", (event) => event.preventDefault());
 
 window.addEventListener("pywebviewready", initApp);
@@ -121,6 +122,22 @@ async function initSidebarToggle() {
         toggleSidebar();
         pywebview.api.storage_set("sidebarIsCollapsed", collapsed);
     });
+}
+
+function initSettingPanelsTrigger() {
+    const SettingSection = document.getElementById("sidebar-setting");
+    const triggers = SettingSection.querySelectorAll(".setting__list button[data-panel]");
+    const panels = SettingSection.querySelectorAll(".setting__panel");
+
+    const openPanel = (name) => {
+        panels.forEach((panel) => (panel.hidden = panel.dataset.panel !== name));
+        triggers.forEach((trigger) => trigger.setAttribute("aria-expanded", String(trigger.dataset.panel === name)));
+    };
+
+    triggers.forEach((trigger) => trigger.addEventListener("click", () => {
+        const panel = SettingSection.querySelector(`.setting__panel[data-panel="${trigger.dataset.panel}"]`);
+        openPanel(panel.hidden ? trigger.dataset.panel : null);
+    }));
 }
 
 async function initSidebarSectionsToggle() {
