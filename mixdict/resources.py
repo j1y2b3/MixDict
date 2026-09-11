@@ -100,7 +100,7 @@ def user_config_file_path(to_create: bool = True) -> Path:
         app_name += "-dev"
 
     user_config_dir = platformdirs.user_config_path(app_name, appauthor=False)
-    user_config_dir.mkdir(exist_ok=True)
+    user_config_dir.mkdir(parents=True, exist_ok=True)
 
     user_config_file = user_config_dir / "config.json"
     if to_create:
@@ -118,7 +118,7 @@ def log_file_path(to_create: bool = True) -> Path:
         app_name += "-dev"
 
     log_dir = platformdirs.user_log_path(app_name, appauthor=False)
-    log_dir.mkdir(exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     log_file = log_dir / f"{app_name.lower()}.log"
     if to_create:
