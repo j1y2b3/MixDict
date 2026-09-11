@@ -75,17 +75,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-d", "--debug",
         action="store_true",
-        help="debug mod"
+        help="user debug mod"
     )
     parser.add_argument(
         "--hidden",
         action="store_true",
         help="hide the window at startup"
     )
+    parser.add_argument(
+        "-q", "--quit",
+        action="store_true",
+        help="request the current application instance to exit"
+    )
     args = parser.parse_args()
 
     if args.debug:
         config.DEBUG = True
+
+    if args.quit:
+        print("Not yet implemented.")
 
     return args
 
