@@ -117,6 +117,7 @@ def main(args: argparse.Namespace):
     window.run()
 
 if __name__ == "__main__":
+    attach_parent_console()
     args = parse_args()
     logger = setup_logger()
     logger.info("Starting MixDict...")
