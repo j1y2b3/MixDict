@@ -27,6 +27,8 @@ logger = logging.getLogger(__name__)
 
 def web_path(name: str) -> Path:
     """Return the absolute path of a file under mixdict/gui/web/."""
+    if getattr(sys, "frozen", False):
+        return ROOT_DIR / "web" / name
     return ROOT_DIR / config.APP_NAME.lower() / "gui" / "web" / name
 
 def assets_path(name: str) -> Path:

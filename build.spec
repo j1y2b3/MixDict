@@ -71,7 +71,7 @@ analysis = Analysis(
     binaries=[],
     datas=[
         ('assets', 'assets'),
-        ('mixdict/gui/web', 'mixdict/gui/web'),
+        ('mixdict/gui/web', 'web'),
     ],
     hiddenimports=[],
     hookspath=[],
