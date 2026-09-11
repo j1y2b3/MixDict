@@ -58,6 +58,7 @@ class Storage:
 
         self._config[key] = value
         if save:
+            logger.debug("Save config: {%s: %s}", key, value)
             self.save()
         return self
 
