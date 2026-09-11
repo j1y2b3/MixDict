@@ -101,10 +101,11 @@
                         <input id="startup-run-checkbox" type="checkbox">
                     </label>
                 </fieldset>
-                <fieldset class="setting__panel" data-panel="hotkey" hidden>
+                <fieldset class="setting__panel" data-panel="hotkey" hidden disabled>
                     <legend>快捷键</legend>
-                    <label>
-                        前面的区域以后再来探索吧
+                    <label onmousedown="return false">
+                        随手查词
+                        <input type="text" readonly value="Ctrl+Win+T">
                     </label>
                 </fieldset>
             </section>

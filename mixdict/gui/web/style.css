@@ -534,6 +534,15 @@
                 opacity: 0.5;
             }
         }
+
+        input[type="text"] {
+            padding: 1px 4px;
+            border-radius: var(--radius-small);
+            width: 7em;
+            min-width: 0;
+            background: var(--bg-surface);
+            color: var(--fg-muted);
+        }
     }
 
     .source__current {
