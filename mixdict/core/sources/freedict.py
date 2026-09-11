@@ -28,7 +28,7 @@ class Source(DictionarySource):
                          description="https://freedictionaryapi.com/\n"
                                      "一个免费的词典API，提供来自维基词典的结构化多语言词典数据，"
                                      "遵循知识共享许可协议。\n"
-                                     "暂仅支持英文单词。")
+                                     "暂仅支持英文单词。限1000次每小时每IP。")
 
     def _lookup(self, word: str) -> dict:
         data, is_limited = fetch_json(word)
