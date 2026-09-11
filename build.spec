@@ -16,7 +16,8 @@ from mixdict import config
 EXCLUDES = [
     'tkinter', '_tkinter', 'Tkinter',
     'unittest', 'pdb', 'doctest', 'lib2to3', 'test', 'idlelib',
-    'PIL.ImageTk', 'PIL.ImageQt', 'PIL.ImageGrab', 'PIL.ImageShow', 'PIL.ImageWin',
+    'PIL.ImageTk', 'PIL.ImageQt', 'PIL.ImageGrab',
+    'PIL.ImageShow', 'PIL.ImageWin', 'PIL._avif',
     'pytest', '_pytest', 'pluggy', 'iniconfig', 'pygments',
     'pip', 'PyInstaller', 'cryptography',
 ]
