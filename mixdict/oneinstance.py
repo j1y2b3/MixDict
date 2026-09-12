@@ -12,12 +12,14 @@ import threading
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from mixdict.gui.window import Window
+    from mixdict.gui.tray import Tray
 
 from mixdict import config
 
 LOCALHOST = "127.0.0.1"
 PORT = 50712 if config.DEBUG else 51712
 BUFSIZE = 1024
+TIMEOUT = 0.3
 
 SHOW = b"show"
 QUIT = b"quit"
@@ -27,9 +29,10 @@ logger = logging.getLogger(__name__)
 
 class SingleInstance:
 
-    def __init__(self, window: "Window"):
+    def __init__(self, window: "Window", tray: "Tray"):
 
         self.window = window
+        self.tray = tray
 
     def _check_exist(self, _socket: socket.socket | None = None) -> bool:
         """Check whether exist another app instance.
@@ -42,7 +45,7 @@ class SingleInstance:
             _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         with _socket as s:
-            s.settimeout(0.3)
+            s.settimeout(TIMEOUT)
             try:
                 s.connect((LOCALHOST, PORT))
 
@@ -118,6 +121,9 @@ class SingleInstance:
                         recv = conn.recv(BUFSIZE)
                         if not recv:
                             continue
+                        if recv == QUIT:
+                            self.tray.exit()
+                            break
                         conn.sendall(QUIT)
                         if recv == SHOW:
                             self.window.show()

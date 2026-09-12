@@ -14,6 +14,9 @@ class Tray:
     def __init__(self, window: "Window"):
 
         self.window = window
+
+    def init(self):
+
         self.image = resources.load_tray_icon()
         self.menu = pystray.Menu(pystray.MenuItem("打开", self.open, default=True),
                                  pystray.MenuItem("退出", self.exit))
@@ -22,9 +25,13 @@ class Tray:
     def open(self, icon: "pystray.Icon", item: "pystray.MenuItem"):  # type: ignore
         self.window.show()
 
-    def exit(self, icon: "pystray.Icon", item: "pystray.MenuItem"):  # type: ignore
+    def exit(self, icon: "pystray.Icon | None" = None, item: "pystray.MenuItem | None" = None):  # type: ignore
+
         config.TO_EXIT = True
-        icon.stop()
+        if icon is None:
+            self.icon.stop()
+        else:
+            icon.stop()
         self.window.destroy()
 
     def run(self):

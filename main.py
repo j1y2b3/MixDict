@@ -79,7 +79,22 @@ def parse_args() -> argparse.Namespace:
         config.DEBUG = True
 
     if args.quit:
-        print("Not yet implemented.")
+        import socket
+        from mixdict.oneinstance import LOCALHOST, PORT, TIMEOUT, QUIT
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(TIMEOUT)
+            try:
+                s.connect((LOCALHOST, PORT))
+            except (ConnectionRefusedError, TimeoutError):
+                pass
+            else:
+                try:
+                    s.sendall(QUIT)
+                except OSError:
+                    pass
+
+        sys.exit(0)
 
     return args
 
@@ -87,15 +102,16 @@ def main(args: argparse.Namespace):
     storage = Storage()
     sources_registry = SourcesRegistry()
     window = Window(sources_registry, storage)
-    single_instance = SingleInstance(window)
+    tray = Tray(window)
+    single_instance = SingleInstance(window, tray)
     if not single_instance.run():
         return
 
     storage.init()
     sources_registry.init()
     window.init(args.hidden)
+    tray.init()
 
-    tray = Tray(window)
     HotKey(window)
     if config.DEBUG:
         Watcher(window, sources_registry)
