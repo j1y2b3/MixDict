@@ -42,7 +42,9 @@ class DictionarySource(ABC):
         Never raises under user mode; raises under debug mode.
         """
         if config.DEBUG and word == "$test-error-display":
-            return schema.ErrorPageMeta(Exception("This is an error."), word).get()
+            page = schema.ErrorPageMeta(Exception("This is an error."), word)
+            page.add_text("这是可附加的错误描述")
+            return page.get()
         try:
             return self._lookup(word)
         except Exception as error:
