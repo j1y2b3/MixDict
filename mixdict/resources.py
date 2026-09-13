@@ -52,7 +52,7 @@ def user_sources_dir() -> Path:
     """
     if getattr(sys, "frozen", False):
         # Packed: writable, in the same directory as the executable file
-        path = platformdirs.user_data_path() / "user_sources"
+        path = platformdirs.user_data_path() / config.APP_NAME / "user_sources"
     else:
         path = ROOT_DIR / "user_sources"  # Not packed: user_sources/ in the project root
 
