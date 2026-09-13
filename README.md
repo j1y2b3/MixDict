@@ -150,6 +150,7 @@ options:
   --version    show program's version number and exit
   -d, --debug  user debug mod
   --hidden     hide the window at startup
+  -q, --quit   request the current application instance to exit
 ```
 
 其中 --debug / -d 选项为用户临时调试选项，不改变用户数据储存位置和单实例锁监听端口。
@@ -210,16 +211,17 @@ python -X dev main.py
 
 ## 致谢
 
-| 项目                                                    | 用途                     | 许可证           |
-| ------------------------------------------------------- | ------------------------ | ---------------- |
-| [Python](https://www.python.org/)                       | 运行时                   | PSF License      |
-| [pywebview](https://pywebview.flowrl.com/)              | GUI 框架（WebView 封装） | BSD-3-Clause     |
-| [pystray](https://github.com/moses-palmer/pystray)      | 系统托盘                 | LGPL-3.0         |
-| [Pillow](https://python-pillow.github.io)               | 图片处理（托盘图标）     | MIT-CMU          |
-| [platformdirs](https://github.com/tox-dev/platformdirs) | 跨平台标准目录           | MIT              |
-| [Tabler Icons](https://tabler.io/icons)                 | 界面图标                 | MIT              |
-| Microsoft Edge WebView2 Runtime                         | Windows 平台界面渲染     | -                |
-| [PyInstaller](https://pyinstaller.org/)                 | 构建工具                 | GPL-2.0-or-later |
+| 项目                                                    | 用途                     | 许可证             |
+| ------------------------------------------------------- | ------------------------ | ------------------ |
+| [Python](https://www.python.org/)                       | 运行时                   | PSF License        |
+| [pywebview](https://pywebview.flowrl.com/)              | GUI 框架（WebView 封装） | BSD-3-Clause       |
+| [pystray](https://github.com/moses-palmer/pystray)      | 系统托盘                 | LGPL-3.0           |
+| [Pillow](https://python-pillow.github.io)               | 图片处理（托盘图标）     | MIT-CMU            |
+| [platformdirs](https://github.com/tox-dev/platformdirs) | 跨平台标准目录           | MIT                |
+| [Tabler Icons](https://tabler.io/icons)                 | 界面图标                 | MIT                |
+| Microsoft Edge WebView2 Runtime                         | Windows 平台界面渲染     | -                  |
+| [PyInstaller](https://pyinstaller.org/)                 | 构建工具                 | GPL-2.0-or-later   |
+| [Inno Setup](https://jrsoftware.org/isinfo.php)         | 生成安装程序             | Inno Setup License |
 
 > - `pystray` 以未修改的库形式使用，本程序对其源码未作任何改动。
 > - `PyInstaller` 采用 GPL 许可证，但其 Bootloader Exception 允许以任意许可证分发打包产物，因此不影响本程序以 MIT 许可证发布。
