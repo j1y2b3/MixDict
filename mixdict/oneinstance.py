@@ -150,6 +150,16 @@ class SingleInstance:
             logger.info("Exist another instance, exit after showing its window")
             return False
 
+        # For Inno Setup AppMutex.
+        if sys.platform.startswith("win32") and getattr(sys, "frozen", False):
+            import ctypes
+            mutex = ctypes.windll.kernel32.CreateMutexW(None, False, f"{config.APP_NAME}AppMutex")
+            if not mutex:
+                try:
+                    raise ctypes.WinError()
+                except:
+                    logger.exception("Fail to create mutex")
+
         threading.Thread(target=self._listen, args=[binded_socket],
                          daemon=True, name="mixdict-single-instance").start()
         logger.debug("Single instance lock start successfully, listening port %s", PORT)
