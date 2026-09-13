@@ -7,6 +7,7 @@ the existing application window.
 import errno
 import logging
 import socket
+import sys
 import threading
 
 from typing import TYPE_CHECKING
@@ -123,6 +124,7 @@ class SingleInstance:
                             continue
                         if recv == QUIT:
                             self.tray.exit()
+                            threading.Event().wait()  # Ensure main thread completely quit.
                             break
                         conn.sendall(QUIT)
                         if recv == SHOW:
