@@ -46,8 +46,7 @@ def user_sources_dir() -> Path:
     """Return the directory that stores user dictionary sources.
 
     Not packed: <project root>/user_sources.
-    Packed: <app dir>/user_sources, next to the executable file, so it stays
-    user-writable (bundled data under `_internal` is not suitable).
+    Packed: <user data dir>/user_sources.
     If directory not exist, will create one.
     """
     if getattr(sys, "frozen", False):
