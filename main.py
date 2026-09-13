@@ -79,8 +79,8 @@ def parse_args() -> argparse.Namespace:
         config.DEBUG = True
 
     if args.quit:
-        import socket
-        from mixdict.oneinstance import LOCALHOST, PORT, TIMEOUT, QUIT
+        import socket, time
+        from mixdict.oneinstance import LOCALHOST, PORT, TIMEOUT, BUFSIZE, QUIT
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(TIMEOUT)
@@ -91,6 +91,12 @@ def parse_args() -> argparse.Namespace:
             else:
                 try:
                     s.sendall(QUIT)
+                    s.settimeout(5.0)
+                    while True:
+                        recv = s.recv(BUFSIZE)
+                        if recv == b"":
+                            break
+                    time.sleep(0.1)
                 except OSError:
                     pass
 
