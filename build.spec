@@ -51,7 +51,7 @@ if sys.platform.startswith("win32"):
                     StringStruct('FileDescription', config.TITLE),
                     StringStruct('FileVersion', config.VERSION),
                     StringStruct('InternalName', config.APP_NAME),
-                    StringStruct('LegalCopyright', 'Copyright (C) 2026 Jin Yubin. Licensed under MIT.'),
+                    StringStruct('LegalCopyright', 'Copyright (C) 2026 Jin Yubin'),
                     StringStruct('OriginalFilename', f'{config.APP_NAME}.exe'),
                     StringStruct('ProductName', config.APP_NAME),
                     StringStruct('ProductVersion', config.VERSION),

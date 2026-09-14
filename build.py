@@ -30,6 +30,15 @@ def build():
     PyInstaller.__main__.run(args)
     print(f"Building finished: {ROOT_PATH / DIST_PATH / config.APP_NAME}")
 
+def collect():
+    print()
+    files = ("LICENSE.md", )
+
+    for file in files:
+        target_file = ROOT_PATH / DIST_PATH / config.APP_NAME / file
+        shutil.copy2(file, target_file)
+        print(f"Copied {file} to {target_file.relative_to(ROOT_PATH)}")
+
 def archive():
     dist_dir = ROOT_PATH / DIST_PATH
     file_base = dist_dir / f"{INFO_STRING}-portable"
@@ -64,6 +73,7 @@ def setup():
 def main():
     os.chdir(ROOT_PATH)
     build()
+    collect()
     archive()
     setup()
 
