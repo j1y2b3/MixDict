@@ -12,8 +12,9 @@ from mixdict import config
 
 ROOT_PATH = Path(__file__).resolve().parent
 SPEC_FILE = "build.spec"
-DIST_PATH = "dist"
-WORK_PATH = "build"
+ISS_FILE = "build.iss"
+DIST_PATH = ROOT_PATH / "dist"
+WORK_PATH = ROOT_PATH / "build"
 PlATFORM = "win-x64"
 INFO_STRING = f"{config.APP_NAME}-{config.VERSION}-{PlATFORM}"
 
@@ -28,19 +29,19 @@ def build():
 
     print(f"Building {config.APP_NAME}...\npyinstaller {' '.join(args)}")
     PyInstaller.__main__.run(args)
-    print(f"Building finished: {ROOT_PATH / DIST_PATH / config.APP_NAME}")
+    print(f"Building finished: {DIST_PATH / config.APP_NAME}")
 
 def collect():
     print()
     files = ("LICENSE.md", )
 
     for file in files:
-        target_file = ROOT_PATH / DIST_PATH / config.APP_NAME / file
+        target_file = DIST_PATH / config.APP_NAME / file
         shutil.copy2(file, target_file)
         print(f"Copied {file} to {target_file.relative_to(ROOT_PATH)}")
 
 def archive():
-    dist_dir = ROOT_PATH / DIST_PATH
+    dist_dir = DIST_PATH
     file_base = dist_dir / f"{INFO_STRING}-portable"
 
     print(f"\nCreating archive...")
@@ -52,10 +53,9 @@ def archive():
     print(f"Archive created: {file_path}")
 
 def setup():
-    ISS_FILE = "build.iss"
     OUTPUT_BASE_FILE_NAME = f"{INFO_STRING}-setup"
 
-    (ROOT_PATH / DIST_PATH / "config.iss").write_text(
+    (DIST_PATH / "config.iss").write_text(
         '\n'.join((
             f'#define AppName "{config.APP_NAME}"',
             f'#define AppDisplayName "{config.TITLE}"',
@@ -68,7 +68,7 @@ def setup():
     )
     print(f"\nCompiling installer...\niscc {ISS_FILE}")
     subprocess.run([r"iscc", ISS_FILE], check=True)
-    print(f"Installer created: {ROOT_PATH / DIST_PATH / OUTPUT_BASE_FILE_NAME}.exe")
+    print(f"Installer created: {DIST_PATH / OUTPUT_BASE_FILE_NAME}.exe")
 
 def main():
     os.chdir(ROOT_PATH)
