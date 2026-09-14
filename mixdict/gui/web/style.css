@@ -590,10 +590,6 @@
         &:focus-within {
             border: var(--border-focus);
         }
-
-        &:has(>input:focus-visible) {
-            outline: var(--outline-focus-style);
-        }
     }
 
     .query__input {
