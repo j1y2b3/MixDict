@@ -220,6 +220,12 @@
         outline: 2px solid var(--fg-stress);
     }
 
+    @media (forced-colors: active) {
+        input:focus-visible {
+            outline: auto;
+        }
+    }
+
     .icon {
         display: block;
     }
