@@ -98,7 +98,15 @@
                     <legend>启动项</legend>
                     <label onmousedown="return false">
                         开机自启
-                        <input id="startup-run-checkbox" type="checkbox">
+                        <div class="startup-run__checkbox">
+                            <input id="startup-run-checkbox" type="checkbox">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect class="startup-run__boxbackground" x="2" y="2" width="20" height="20" rx="4" />
+                                <path class="startup-run__boxtick" d="M5 12L10 17L19 8" stroke-width="4" />
+                                <rect class="startup-run__boxunknown" x="8" y="8" width="8" height="8" />
+                            </svg>
+                        </div>
                     </label>
                 </fieldset>
                 <fieldset class="setting__panel" data-panel="hotkey" hidden disabled>
