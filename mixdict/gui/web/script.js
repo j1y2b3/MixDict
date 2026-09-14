@@ -152,7 +152,7 @@ async function initStartupSetting() {
 
     const status = await pywebview.api.is_startup_run();
     if (status === null) checkbox.indeterminate = true;
-    else checkbox.checkbox = status;
+    else checkbox.checked = status;
 
     checkbox.addEventListener("change", async () => {
         checkbox.disabled = true;
