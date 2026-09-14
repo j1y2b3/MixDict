@@ -62,7 +62,7 @@ python main.py
 
 ### 自定义词典源
 
-以 Python 文件形式放入可执行文件同目录下 `user_sources` 文件夹中，暂不支持图形界面导入。
+以 Python 文件形式放入用户数据文件夹下的 `user_sources` 文件夹中，暂不支持图形界面导入。
 
 #### 示例（ user_sources/example.py ）
 
