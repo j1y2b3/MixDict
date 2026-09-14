@@ -18,32 +18,11 @@
 
         /* button background color */
         --btn-bg-active-base: #000;
-        --btn-bg-default-active: color-mix(in srgb,
-                transparent,
-                var(--btn-bg-active-base) 15%);
-        --btn-bg-raised-active: color-mix(in srgb,
-                var(--bg-raised),
-                transparent 60%);
-        --btn-bg-selected: color-mix(in srgb,
-                var(--bg-raised),
-                var(--border-focus-color) 30%);
-        --btn-bg-selected-active: color-mix(in srgb,
-                var(--btn-bg-selected),
-                transparent 30%);
 
         /* border */
         --border-style: 1px solid;
         --border-default-color: #c4c4c480;
         --border-strong-color: #adadada8;
-        --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
-        --border-default: var(--border-style) var(--border-default-color);
-        --border-strong: var(--border-style) var(--border-strong-color);
-        --border-focus: var(--border-style) var(--border-focus-color);
-
-        /* rounded corner */
-        --radius-small: 3px;
-        --radius-medium: 5px;
-        --radius-large: 8px;
     }
 
     /* follow system dark theme */
@@ -62,23 +41,10 @@
 
             /* button background color */
             --btn-bg-active-base: #fff;
-            --btn-bg-default-active: color-mix(in srgb,
-                    transparent,
-                    var(--btn-bg-active-base) 15%);
-            --btn-bg-raised-active: color-mix(in srgb,
-                    var(--bg-raised),
-                    transparent 60%);
-            --btn-bg-selected: color-mix(in srgb,
-                    var(--bg-raised),
-                    var(--border-focus-color) 30%);
-            --btn-bg-selected-active: color-mix(in srgb,
-                    var(--btn-bg-selected),
-                    transparent 30%);
 
             /* border */
             --border-default-color: #42424280;
             --border-strong-color: #5f5f5fa8;
-            --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
         }
     }
 
@@ -96,33 +62,12 @@
         --fg-error: #e00;
 
         /* button background color */
-        --btn-bg-active-base: #999;
-        --btn-bg-default-active: color-mix(in srgb,
-                transparent,
-                var(--btn-bg-active-base) 15%);
-        --btn-bg-raised-active: color-mix(in srgb,
-                var(--bg-raised),
-                var(--border-focus-color) 20%);
-        --btn-bg-selected: color-mix(in srgb,
-                var(--bg-raised),
-                var(--border-focus-color) 30%);
-        --btn-bg-selected-active: color-mix(in srgb,
-                var(--btn-bg-selected),
-                var(--border-focus-color) 10%);
+        --btn-bg-active-base: #000;
 
         /* border */
         --border-style: 1px solid;
         --border-default-color: #c4c4c480;
         --border-strong-color: #adadada8;
-        --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
-        --border-default: var(--border-style) var(--border-default-color);
-        --border-strong: var(--border-style) var(--border-strong-color);
-        --border-focus: var(--border-style) var(--border-focus-color);
-
-        /* rounded corner */
-        --radius-small: 3px;
-        --radius-medium: 5px;
-        --radius-large: 8px;
     }
 
     /* dark theme */
@@ -140,6 +85,15 @@
 
         /* button background color */
         --btn-bg-active-base: #fff;
+
+        /* border */
+        --border-default-color: #42424280;
+        --border-strong-color: #5f5f5fa8;
+    }
+
+    /* default style */
+    :root {
+        /* button background color */
         --btn-bg-default-active: color-mix(in srgb,
                 transparent,
                 var(--btn-bg-active-base) 15%);
@@ -154,9 +108,18 @@
                 transparent 30%);
 
         /* border */
-        --border-default-color: #42424280;
-        --border-strong-color: #5f5f5fa8;
         --border-focus-color: color-mix(in srgb, var(--fg-stress), transparent 50%);
+        --border-default: var(--border-style) var(--border-default-color);
+        --border-strong: var(--border-style) var(--border-strong-color);
+        --border-focus: var(--border-style) var(--border-focus-color);
+
+        /* rounded corner */
+        --radius-small: 3px;
+        --radius-medium: 5px;
+        --radius-large: 8px;
+
+        /* outline */
+        --outline-focus-style: 2px solid var(--fg-stress);
     }
 }
 
@@ -217,7 +180,7 @@
     }
 
     :focus-visible {
-        outline: 2px solid var(--fg-stress);
+        outline: var(--outline-focus-style);
     }
 
     @media (forced-colors: active) {
@@ -592,7 +555,7 @@
             }
 
             &:has(>input:focus-visible) {
-                outline: 2px solid var(--fg-stress);
+                outline: var(--outline-focus-style);
             }
         }
 
@@ -629,7 +592,7 @@
         }
 
         &:has(>input:focus-visible) {
-            outline: 2px solid var(--fg-stress);
+            outline: var(--outline-focus-style);
         }
     }
 
