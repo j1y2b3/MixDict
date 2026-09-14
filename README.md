@@ -5,6 +5,8 @@
 
 [![License](https://img.shields.io/github/license/j1y2b3/MixDict)](LICENSE.md)
 [![GUI](https://img.shields.io/badge/GUI-Dictionary%20Application-purple)]()
+![GitHub release (latest tag)](https://img.shields.io/github/v/release/j1y2b3/MixDict?display_name=tag&sort=semver)
+
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
 [![pywebview](https://img.shields.io/badge/pywebview-6.0%2B-darkgreen)](https://pywebview.flowrl.com/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue)]()
@@ -157,10 +159,11 @@ options:
 
 ## 已知问题
 
-- 一些功能（如快捷键，开机自启等）暂不支持非 Windows 平台。
+- 一些功能（如快捷键，应用内配置开机自启等）暂不支持非 Windows 平台。
 - 单实例锁会监听 127.0.0.1:50712 （开发时调试模式为 127.0.0.1:51712 ），可能会被其他应用程序占用导致无法打开，解除占用后再次打开即可。
 - 快速查词快捷键有时会失效。
 - 可执行文件的命令行功能没有控制台输出。
+- 隐藏窗口模式启动（ `--hidden` ）仍会有窗口一闪而过。
 - 开发模式下触发 CSS 热更新后再触发 HTML / JavaScript 热更新会回退 CSS 的热更新，再次触发 CSS 热更新即可。
 
 ## 构建
