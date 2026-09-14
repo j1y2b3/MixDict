@@ -567,7 +567,8 @@
         padding: 4px;
         gap: 6px;
 
-        button {
+        .source__option {
+            position: relative;
             width: 100%;
             padding: 4px;
             background: var(--bg-raised);
@@ -581,7 +582,7 @@
                 background: var(--btn-bg-raised-active);
             }
 
-            &.is-selected {
+            &:has(>input:checked) {
                 background: var(--btn-bg-selected);
                 border: var(--border-focus);
 
@@ -589,6 +590,15 @@
                     background: var(--btn-bg-selected-active);
                 }
             }
+
+            &:has(>input:focus-visible) {
+                outline: 2px solid var(--fg-stress);
+            }
+        }
+
+        .source__radio {
+            position: absolute;
+            opacity: 0;
         }
     }
 

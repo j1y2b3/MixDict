@@ -224,8 +224,7 @@ async function displayCurrentSource() {
     const currentSourceElement = document.getElementById("source-current");
     const currentSourceRegName = await pywebview.api.current_source_reg_name();
     const currentSourceName = await pywebview.api.get_source_name(currentSourceRegName);
-    currentSourceElement.replaceChildren();  // Clear the previously dispalyed source.
-    currentSourceElement.appendChild(document.createTextNode(currentSourceName));
+    currentSourceElement.replaceChildren(currentSourceName);
 }
 
 async function displayDictSourcesList() {
@@ -233,44 +232,46 @@ async function displayDictSourcesList() {
     const sourcesListElement = document.getElementById("source-list");
     const currentSourceRegName = await pywebview.api.current_source_reg_name();
 
-    let sourceElement, sourceButton;
-    let sourceName, sourceNameElement;
-    let sourceDescription, sourceDescriptionElement;
     for (const sourceRegName of sourcesList) {
-        sourceElement = document.createElement("li");
+        const sourceElement = document.createElement("li");
 
-        sourceButton = document.createElement("button");
-        sourceButton.classList.add("u-button-feedback");
-        sourceButton.type = "button";
-        sourceButton.dataset.source = sourceRegName;
-        if (sourceRegName === currentSourceRegName) sourceButton.classList.add("is-selected");
-        sourceButton.onclick = () => setSource(sourceRegName);
+        const sourceLabel = document.createElement("label");
+        sourceLabel.classList.add("source__option");
+        sourceElement.appendChild(sourceLabel);
 
-        sourceName = await pywebview.api.get_source_name(sourceRegName);
-        sourceNameElement = document.createElement("strong");
+        const sourceRadio = document.createElement("input");
+        sourceRadio.classList.add("source__radio");
+        sourceRadio.type = "radio";
+        sourceRadio.name = "source";
+        sourceRadio.value = sourceRegName;
+        if (sourceRegName === currentSourceRegName) sourceRadio.checked = true;
+        sourceLabel.appendChild(sourceRadio);
+
+        const sourceName = await pywebview.api.get_source_name(sourceRegName);
+        const sourceNameElement = document.createElement("strong");
         sourceNameElement.classList.add("source__name");
         sourceNameElement.appendChild(document.createTextNode(sourceName));
-        sourceButton.appendChild(sourceNameElement);
+        sourceLabel.appendChild(sourceNameElement);
 
-        sourceDescription = await pywebview.api.get_source_description(sourceRegName);
-        sourceDescriptionElement = document.createElement("small");
+        const sourceDescription = await pywebview.api.get_source_description(sourceRegName);
+        const sourceDescriptionElement = document.createElement("small");
         sourceDescriptionElement.classList.add("source__desc");
         sourceDescriptionElement.appendChild(document.createTextNode(sourceDescription));
-        sourceButton.appendChild(sourceDescriptionElement);
+        sourceLabel.appendChild(sourceDescriptionElement);
 
-        sourceElement.appendChild(sourceButton);
+        sourceElement.appendChild(sourceLabel);
         sourcesListElement.appendChild(sourceElement);
     }
+
+    document.getElementById("source-list").addEventListener("change", (event) => {
+        const sourceRadio = event.target;
+        if (sourceRadio.name !== "source") return;
+        setSource(sourceRadio.value);
+    });
 }
 
 function setSource(regName) {
     pywebview.api.set_current_source(regName);
-
-    document.querySelectorAll(".source__list button.is-selected")
-        .forEach((sourceButton) => sourceButton.classList.remove("is-selected"));
-    const currentSourceButton = document.querySelector(`.source__list button[data-source="${regName}"]`);
-    if (currentSourceButton) currentSourceButton.classList.add("is-selected");
-
     displayCurrentSource();
 }
 
