@@ -117,7 +117,9 @@ class DictApi:
         return autostart.SUPPORTED
 
     def is_startup_run(self) -> bool | None:
-        return autostart.is_enabled()
+        status = autostart.is_enabled()
+        logger.debug("Setup run status: %s", status)
+        return status
 
     def enable_startup_run(self) -> bool:
         return autostart.enable()
