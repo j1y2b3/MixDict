@@ -2,8 +2,9 @@
 
 import logging
 import os
-from pathlib import Path
+import subprocess
 import shutil
+from pathlib import Path
 
 import PyInstaller.__main__
 
@@ -13,6 +14,8 @@ ROOT_PATH = Path(__file__).resolve().parent
 SPEC_FILE = "build.spec"
 DIST_PATH = "dist"
 WORK_PATH = "build"
+PlATFORM = "win-x64"
+INFO_STRING = f"{config.APP_NAME}-{config.VERSION}-{PlATFORM}"
 
 def build():
     args = [
@@ -29,8 +32,7 @@ def build():
 
 def archive():
     dist_dir = ROOT_PATH / DIST_PATH
-    platform = "win-x64"
-    file_base = dist_dir / f"{config.APP_NAME}-{config.VERSION}-{platform}-portable"
+    file_base = dist_dir / f"{INFO_STRING}-portable"
 
     print(f"\nCreating archive...")
     logger = logging.getLogger(__name__)
@@ -40,10 +42,30 @@ def archive():
                                     logger=logger)
     print(f"Archive created: {file_path}")
 
+def setup():
+    ISS_FILE = "build.iss"
+    OUTPUT_BASE_FILE_NAME = f"{INFO_STRING}-setup"
+
+    (ROOT_PATH / DIST_PATH / "config.iss").write_text(
+        '\n'.join((
+            f'#define AppName "{config.APP_NAME}"',
+            f'#define AppDisplayName "{config.TITLE}"',
+            f'#define AppExeName "{config.APP_NAME}.exe"',
+            f'#define AppVersion "{config.VERSION}"',
+            f'#define AppPlatform "{PlATFORM}"',
+            f'#define OutputBaseFilename "{OUTPUT_BASE_FILE_NAME}"',
+        )),
+        encoding="utf-8"
+    )
+    print(f"\nCompiling installer...\niscc {ISS_FILE}")
+    subprocess.run([r"iscc", ISS_FILE], check=True)
+    print(f"Installer created: {ROOT_PATH / DIST_PATH / OUTPUT_BASE_FILE_NAME}.exe")
+
 def main():
     os.chdir(ROOT_PATH)
     build()
     archive()
+    setup()
 
 if __name__ == "__main__":
     main()
