@@ -18,6 +18,11 @@ WORK_PATH = ROOT_PATH / "build"
 PlATFORM = "win-x64"
 INFO_STRING = f"{config.APP_NAME}-{config.VERSION}-{PlATFORM}"
 
+def clean():
+    if DIST_PATH.exists():
+        shutil.rmtree(DIST_PATH)
+        print("\nRemoved old dist directory")
+
 def build():
     args = [
         "--noconfirm",
@@ -27,7 +32,7 @@ def build():
         SPEC_FILE,
     ]
 
-    print(f"Building {config.APP_NAME}...\npyinstaller {' '.join(args)}")
+    print(f"\nBuilding {config.APP_NAME}...\npyinstaller {' '.join(args)}")
     PyInstaller.__main__.run(args)
     print(f"Building finished: {DIST_PATH / config.APP_NAME}")
 
@@ -72,6 +77,7 @@ def setup():
 
 def main():
     os.chdir(ROOT_PATH)
+    clean()
     build()
     collect()
     archive()
