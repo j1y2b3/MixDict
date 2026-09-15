@@ -1,6 +1,6 @@
 """Global settings."""
 
-VERSION = "v0.1.0"
+VERSION = "v0.1.1"
 APP_NAME = "MixDict"
 TITLE = "东拼西凑的词典"
 DESCRIPTION = "A simple network dictionary GUI program built on some network dictionary sources and pywebview."

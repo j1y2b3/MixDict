@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mixdict"
-version = "0.1.0"
+version = "0.1.1"
 description = "A simple network dictionary GUI program built on some network dictionary sources and pywebview."
 readme = "README.md"
 authors = [
